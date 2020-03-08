@@ -18,6 +18,9 @@
     <None Update="Resources\Images\ground.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\Images\ground_test.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\Images\player.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
