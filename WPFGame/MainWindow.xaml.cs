@@ -59,7 +59,7 @@ namespace WPFGame
 
             CompositionTarget.Rendering += UpdateGraphics;
 
-            Timer timer = new Timer(1);
+            Timer timer = new Timer(16);
             timer.Elapsed += Update;
             timer.AutoReset = true;
             timer.Enabled = true;

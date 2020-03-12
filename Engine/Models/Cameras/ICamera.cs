@@ -10,8 +10,8 @@ namespace Engine.Models.Cameras
     public interface ICamera
     {
         public Vector2 Position { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
         public float XOffset { get; set; }
         public float YOffset { get; set; }
         public List<IGameObject> VisibleObjects { get; set; }
