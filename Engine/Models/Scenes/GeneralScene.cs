@@ -7,6 +7,10 @@ using System.Text;
 
 namespace Engine.Models.Scenes
 {
+    /// <summary>
+    /// A container for game objects
+    /// basically a location with its own context
+    /// </summary>
     public class GeneralScene : IScene
     {
         private List<IGameObject> _sceneElements;

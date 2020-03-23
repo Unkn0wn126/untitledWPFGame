@@ -37,10 +37,17 @@ namespace Engine.Models.Components
             _currentState = MovementState.STILL;
         }
 
+        /// <summary>
+        /// Should be called on every tick
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="logicContext"></param>
         public void Update(IGameObject entity, IScene logicContext)
         {
             float baseVelocity = 5f;
             Vector2 newPos = entity.Position;
+
+            // basically a simple state machine for player movement
             switch (_currentState)
             {
                 case MovementState.UP:

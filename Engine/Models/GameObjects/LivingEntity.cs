@@ -7,6 +7,10 @@ using System.Text;
 
 namespace Engine.Models.GameObjects
 {
+    /// <summary>
+    /// Game object whose purpose is to move around
+    /// the scene and to do so based on its AI or player input
+    /// </summary>
     public class LivingEntity : IGameObject
     {
         private Vector2 _position;

@@ -8,6 +8,10 @@ using System.Text;
 
 namespace Engine.ViewModels
 {
+    /// <summary>
+    /// Container of all the game objects, scenes, etc.
+    /// Keeps track of the context as a whole
+    /// </summary>
     public class Game : IGame
     {
         private List<IScene> _scenes;

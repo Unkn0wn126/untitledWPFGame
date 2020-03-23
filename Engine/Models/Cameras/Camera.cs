@@ -1,12 +1,9 @@
 ﻿#define TRACE
 using Engine.Models.GameObjects;
 using Engine.Models.Scenes;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace Engine.Models.Cameras
 {
@@ -28,23 +25,33 @@ namespace Engine.Models.Cameras
         public Camera()
         {
             VisibleObjects = new List<IGameObject>();
-            Width = 800;
-            Height = 600;
+            // This should be passed as a value in the future
+            // gonna be based on the size of the window
+            Width = 400;
+            Height = 300;
             XOffset = 350;
             YOffset = 250;
         }
 
+        /// <summary>
+        /// Updates the list of objects visible by this camera
+        /// </summary>
+        /// <param name="focusPoint"></param>
+        /// <param name="context"></param>
         public void UpdatePosition(IGameObject focusPoint, IScene context)
         {
             float halfWidth = Width / 2;
             float halfHeight = Height / 2;
 
+            // visible on the screen to the left and to the right of the focus point
             float minX = focusPoint.Position.X - halfWidth;
             float maxX = focusPoint.Position.X + halfWidth;
 
+            // visible on the screen up and down of the focus point
             float minY = focusPoint.Position.Y - halfHeight;
             float maxY = focusPoint.Position.Y + halfHeight;
-            //VisibleObjects = context.SceneElements.Where(x => Vector2.Distance(focusPoint.Position, x.Position) < 200 && x != focusPoint).ToList();
+
+            // Check boundary of x axis and then of y axis on reduced set of objects
             VisibleObjects = context.SceneElements.Where(x => x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint)
                 .Where(y => y.Position.Y + y.Height > minY && y.Position.Y - y.Height < maxY).ToList();
         }

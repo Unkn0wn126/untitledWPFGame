@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Engine.Models.GameObjects
 {
+    /// <summary>
+    /// Object for representing a walkable ground
+    /// </summary>
     public class Ground : IGameObject
     {
         private Vector2 _position;
