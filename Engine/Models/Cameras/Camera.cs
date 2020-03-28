@@ -22,15 +22,14 @@ namespace Engine.Models.Cameras
         public float XOffset { get => _xOffset; set => _xOffset = value; }
         public float YOffset { get => _yOffset; set => _yOffset = value; }
 
-        public Camera()
+        // Keep window res as well as renderable res
+        public Camera(float width, float height)
         {
             VisibleObjects = new List<IGameObject>();
             // This should be passed as a value in the future
             // gonna be based on the size of the window
-            Width = 400;
-            Height = 300;
-            XOffset = 350;
-            YOffset = 250;
+            Width = width;
+            Height = height;
         }
 
         /// <summary>
@@ -43,6 +42,8 @@ namespace Engine.Models.Cameras
             float halfWidth = Width / 2;
             float halfHeight = Height / 2;
 
+            XOffset = halfWidth - focusPoint.Width;
+            YOffset = halfHeight - focusPoint.Height;
             // visible on the screen to the left and to the right of the focus point
             float minX = focusPoint.Position.X - halfWidth;
             float maxX = focusPoint.Position.X + halfWidth;

@@ -1,5 +1,6 @@
 ﻿using Engine.Models.GameObjects;
 using Engine.Models.Scenes;
+using Engine.ResourceConstants.Images;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -12,7 +13,7 @@ namespace Engine.Models.Components
         public Vector2 Position { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
-        public string CurrentImageName { get; set; }
-        public List<string> ImageNames { get; set; }
+        public ImgNames CurrentImageName { get; set; }
+        public List<ImgNames> ImageNames { get; set; }
     }
 }

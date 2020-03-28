@@ -13,16 +13,16 @@ namespace Engine.Models.GameObjects
     public class Ground : IGameObject
     {
         private Vector2 _position;
-        private double _width;
-        private double _height;
+        private float _width;
+        private float _height;
         private IGraphicsComponent _graphicsComponent;
-        public double Width { get => _width; set => _width = value; }
-        public double Height { get => _height; set => _height = value; }
+        public float Width { get => _width; set => _width = value; }
+        public float Height { get => _height; set => _height = value; }
 
         public IGraphicsComponent GraphicsComponent { get => _graphicsComponent; set => _graphicsComponent = value; }
         public Vector2 Position { get => _position; set => _position = value; }
 
-        public Ground(IGraphicsComponent graphicsComponent, Vector2 position, double width, double height)
+        public Ground(IGraphicsComponent graphicsComponent, Vector2 position, float width, float height)
         {
             GraphicsComponent = graphicsComponent;
             Position = position;

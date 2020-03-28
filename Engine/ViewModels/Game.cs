@@ -1,6 +1,8 @@
 ﻿using Engine.Models.Components;
 using Engine.Models.GameObjects;
+using Engine.Models.GameStateMachine;
 using Engine.Models.Scenes;
+using Engine.ResourceConstants.Images;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -14,6 +16,9 @@ namespace Engine.ViewModels
     /// </summary>
     public class Game : IGame
     {
+        private GameStateMachine _state;
+        private ImagePaths _imgPaths;
+
         private List<IScene> _scenes;
         private IScene _currentScene;
 
@@ -27,25 +32,42 @@ namespace Engine.ViewModels
 
 
         public List<IGraphicsComponent> GraphicsComponents { get => _graphicsComponents; set => _graphicsComponents = value; }
+        public GameStateMachine State { get => _state; set => _state = value; }
+        public ImagePaths ImgPaths { get => _imgPaths; set => _imgPaths = value; }
 
-        public Game()
+        public Game(float xRes, float yRes)
         {
             GraphicsComponents = new List<IGraphicsComponent>();
+            _imgPaths = new ImagePaths();
+
+            _state = new GameStateMachine
+            {
+                CurrentState = GameState.RUNNING
+            };
 
             _playerMovement = new PlayerMovementComponent();
-            List<string> testList = new List<string> { "ground.png" };
+            List<ImgNames> testList = new List<ImgNames> { ImgNames.PLAYER };
             _gameObjects = new List<IGameObject>();
             IGraphicsComponent test = new GraphicsComponent(testList);
             GraphicsComponents.Add(test);
             _player = new LivingEntity(test, _playerMovement, 50, 50, new Vector2(0, 0), 10);
             _scenes = new List<IScene>();
 
-
+            // This is gonna be in a factory...
             for (int i = 0; i < 100; i++)
             {
                 for (int j = 0; j < 100; j++)
                 {
-                    IGraphicsComponent current = new GraphicsComponent(new List<string> { "ground.png" });
+                    ImgNames currentName;
+                    if (i % 2 == 0 && j % 2 == 0)
+                    {
+                        currentName = ImgNames.DIRT;
+                    }
+                    else
+                    {
+                        currentName = ImgNames.COBBLESTONE;
+                    }
+                    IGraphicsComponent current = new GraphicsComponent(new List<ImgNames> { currentName });
                     current.Width = 50;
                     current.Height = 50;
                     Vector2 currentPos = current.Position;
@@ -59,7 +81,7 @@ namespace Engine.ViewModels
             }
             _gameObjects.Add(_player);
 
-            _scenes.Add(new GeneralScene(_gameObjects, _player));
+            _scenes.Add(new GeneralScene(_gameObjects, _player, xRes, yRes));
             _currentScene = _scenes[0];
         }
 
@@ -72,7 +94,10 @@ namespace Engine.ViewModels
 
         public void Update()
         {
-            _currentScene.Update();
+            if (_state.IsRunning())
+            {
+                _currentScene.Update();
+            }
         }
     }
 }

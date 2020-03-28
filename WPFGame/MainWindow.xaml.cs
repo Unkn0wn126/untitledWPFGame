@@ -1,5 +1,7 @@
 ﻿#define TRACE
 using Engine.Models.Components;
+using Engine.Models.GameObjects;
+using Engine.ResourceConstants.Images;
 using Engine.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -33,6 +35,8 @@ namespace WPFGame
         private readonly Dictionary<int, Action> _userInputActions =
             new Dictionary<int, Action>();
 
+        private readonly Dictionary<ImgNames, BitmapImage> _sprites = new Dictionary<ImgNames, BitmapImage>();
+
         private readonly Dictionary<Key, int> _keyCodes =
             new Dictionary<Key, int>();
 
@@ -41,19 +45,28 @@ namespace WPFGame
         private int _currentKeyValue = 0;
 
         private BitmapImage _groundImage;
+        private BitmapImage _cobbleImage;
         private BitmapImage _playerAvatar;
         private ImageBrush _groundBrush;
         private ImageBrush _playerBrush;
 
+        private ImageBrush _brush;
+
         public MainWindow()
         {
             InitializeComponent();
-            _session = new Game();
+            _session = new Game(800, 600);
             // placeholder images
             // I intend to load them all at launch and assign them to a string constant
             // to give objects information of their "avatar" while keeping it independent
-            _groundImage = new BitmapImage(new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
-            _playerAvatar = new BitmapImage(new Uri(@"./Resources/Images/player.png", UriKind.Relative));
+            _groundImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.DIRT]);
+            _cobbleImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.COBBLESTONE]);
+            _playerAvatar = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.PLAYER]);
+            _sprites.Add(ImgNames.DIRT, _groundImage);
+            _sprites.Add(ImgNames.COBBLESTONE, _cobbleImage);
+            _sprites.Add(ImgNames.PLAYER, _playerAvatar);
+            _brush = new ImageBrush();
+
             _groundBrush = new ImageBrush(_groundImage);
             _playerBrush = new ImageBrush(_playerAvatar);
             InitializeUserInputActions();
@@ -61,7 +74,7 @@ namespace WPFGame
             bitmap = new RenderTargetBitmap(800, 600, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
-            CompositionTarget.Rendering += UpdateGraphics;
+            //CompositionTarget.Rendering += UpdateGraphics;
 
             // another timer to allow for independent non-graphics update
             Timer timer = new Timer(16);
@@ -72,6 +85,8 @@ namespace WPFGame
 
         private void InitializeUserInputActions()
         {
+            // This could be it's own separate class...
+            // Kind of like a state machine of pressed down keys
             // powers of 2 to allow diagonal movement
             _keyCodes.Add(Key.W, 2);
             _keyCodes.Add(Key.A, 4);
@@ -93,7 +108,7 @@ namespace WPFGame
             _session.Update();
         }
 
-        private void UpdateGraphics(object sender, EventArgs e)
+        public void UpdateGraphics(object sender, EventArgs e)
         {
             // redrawing a bitmap image should be faster
             bitmap.Clear();
@@ -126,8 +141,10 @@ namespace WPFGame
 
                 Rect rectangle = new Rect(graphicX, graphicY, item.Width, item.Height);
 
-                drawingContext.DrawImage(_groundImage, rectangle);
+                drawingContext.DrawImage(_sprites[item.GraphicsComponent.CurrentImageName], rectangle);
             }
+
+            IGameObject player = _session.CurrentScene.PlayerObject;
 
             // focus point always rendered at the center of the scene
             Rect rec = new Rect(_session.CurrentScene.SceneCamera.XOffset,
@@ -135,7 +152,7 @@ namespace WPFGame
                 _session.CurrentScene.PlayerObject.Width, 
                 _session.CurrentScene.PlayerObject.Height);
 
-            drawingContext.DrawImage(_playerAvatar, rec);
+            drawingContext.DrawImage(_sprites[player.GraphicsComponent.CurrentImageName], rec);
 
             drawingContext.Close();
             bitmap.Render(drawingVisual);
@@ -143,6 +160,38 @@ namespace WPFGame
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Escape)
+            {
+                _session.State.TogglePause();
+                if (!_session.State.IsRunning())
+                {
+                    Rectangle overlay = new Rectangle();
+                    Color testColor = Color.FromArgb(172, 172, 172, 255);
+                    overlay.Width = 800;
+                    overlay.Height = 600;
+                    overlay.Fill = new SolidColorBrush(testColor);
+                    GameCanvas.Children.Add(overlay);
+
+                    TextBlock textBlock = new TextBlock();
+
+                    textBlock.Text = "PAUSED";
+
+                    textBlock.FontSize = 60;
+
+                    textBlock.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+
+                    Canvas.SetLeft(textBlock, 350);
+
+                    Canvas.SetTop(textBlock, 250);
+
+                    GameCanvas.Children.Add(textBlock);
+                }
+                else
+                {
+                    GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
+                    GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
+                }
+            }
             if (!_previousKeys.Contains(e.Key))
             {
                 _previousKeys.Add(e.Key);

@@ -20,11 +20,11 @@ namespace Engine.Models.Scenes
         public IGameObject PlayerObject { get => _playerObject; set => _playerObject = value; }
         public ICamera SceneCamera { get => _sceneCamera; set => _sceneCamera = value; }
 
-        public GeneralScene(List<IGameObject> sceneElements, IGameObject playerObject)
+        public GeneralScene(List<IGameObject> sceneElements, IGameObject playerObject, float visibleWidth, float visibleHeight)
         {
             SceneElements = sceneElements;
             PlayerObject = playerObject;
-            SceneCamera = new Camera();
+            SceneCamera = new Camera(visibleWidth, visibleHeight);
         }
 
         public void Update()
