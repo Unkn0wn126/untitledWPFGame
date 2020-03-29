@@ -4,6 +4,7 @@ using Engine.Models.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Engine.Models.Scenes
 {
@@ -13,26 +14,28 @@ namespace Engine.Models.Scenes
     /// </summary>
     public class GeneralScene : IScene
     {
-        private List<IGameObject> _sceneElements;
-        private IGameObject _playerObject;
-        private ICamera _sceneCamera;
-        public List<IGameObject> SceneElements { get => _sceneElements; set => _sceneElements = value; }
-        public IGameObject PlayerObject { get => _playerObject; set => _playerObject = value; }
-        public ICamera SceneCamera { get => _sceneCamera; set => _sceneCamera = value; }
+        public List<IGameObject> SceneObjects { get; set; }
+        public IGameObject PlayerObject { get; set; }
+        public ICamera SceneCamera { get; set; }
+        public List<IGraphicsComponent> SceneGraphicsComponents { get; set; }
+        public IGraphicsComponent PlayerGraphicsComponent { get; set; }
 
         public GeneralScene(List<IGameObject> sceneElements, IGameObject playerObject, float visibleWidth, float visibleHeight)
         {
-            SceneElements = sceneElements;
+            SceneObjects = sceneElements;
             PlayerObject = playerObject;
+            PlayerGraphicsComponent = PlayerObject.GraphicsComponent;
             SceneCamera = new Camera(visibleWidth, visibleHeight);
+            SceneGraphicsComponents = new List<IGraphicsComponent>();
+            SceneObjects.ForEach(x => SceneGraphicsComponents.Add(x.GraphicsComponent));
         }
 
         public void Update()
         {
-            foreach (var item in _sceneElements)
+            Parallel.ForEach(SceneObjects, item =>
             {
                 item.Update(this);
-            }
+            });
         }
     }
 }

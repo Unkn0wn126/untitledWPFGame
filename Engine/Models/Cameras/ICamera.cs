@@ -1,4 +1,5 @@
-﻿using Engine.Models.GameObjects;
+﻿using Engine.Models.Components;
+using Engine.Models.GameObjects;
 using Engine.Models.Scenes;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Engine.Models.Cameras
         public float Height { get; set; }
         public float XOffset { get; set; }
         public float YOffset { get; set; }
-        public List<IGameObject> VisibleObjects { get; set; }
-        public void UpdatePosition(IGameObject focusPoint, IScene context);
+        public List<IGraphicsComponent> VisibleObjects { get; set; }
+        public void UpdatePosition(IGraphicsComponent focusPoint, IScene context);
     }
 }

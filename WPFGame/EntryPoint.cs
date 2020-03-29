@@ -20,8 +20,8 @@ namespace WPFGame
             {
                 Game game = new Game(800, 600);
                 System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"./Resources/Sounds/arena_loop2.wav");
-                player.Play();
-                player.SoundLocation = @"./Resources/Sounds/arena_loop2.wav";
+                //player.Play();
+                //player.SoundLocation = @"./Resources/Sounds/arena_loop2.wav";
 
 
                 MainWindow window = new MainWindow();

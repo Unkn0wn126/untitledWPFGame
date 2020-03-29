@@ -47,50 +47,50 @@ namespace Engine.Models.Components
             float baseVelocity = 5f;
             Vector2 newPos = entity.Position;
 
-            // basically a simple state machine for player movement
-            switch (_currentState)
-            {
-                case MovementState.UP:
-                    newPos.Y -= baseVelocity;
-                    entity.Position = newPos;
-                    break;
-                case MovementState.DOWN:
-                    newPos.Y += baseVelocity;
-                    entity.Position = newPos;
-                    break;
-                case MovementState.LEFT:
-                    newPos.X -= baseVelocity;
-                    entity.Position = newPos;
-                    break;
-                case MovementState.RIGHT:
-                    newPos.X += baseVelocity;
-                    entity.Position = newPos;
-                    break;                
-                case MovementState.UPLEFT:
-                    newPos.X -= baseVelocity;
-                    newPos.Y -= baseVelocity;
-                    entity.Position = newPos;
-                    break;                
-                case MovementState.UPRIGHT:
-                    newPos.X += baseVelocity;
-                    newPos.Y -= baseVelocity;
-                    entity.Position = newPos;
-                    break;                
-                case MovementState.DOWNLEFT:
-                    newPos.X -= baseVelocity;
-                    newPos.Y += baseVelocity;
-                    entity.Position = newPos;
-                    break;                
-                case MovementState.DOWNRIGHT:
-                    newPos.X += baseVelocity;
-                    newPos.Y += baseVelocity;
-                    entity.Position = newPos;
-                    break;
-                case MovementState.STILL:
-                    break;
-            }
+                // basically a simple state machine for player movement
+                switch (_currentState)
+                {
+                    case MovementState.UP:
+                        newPos.Y -= baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.DOWN:
+                        newPos.Y += baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.LEFT:
+                        newPos.X -= baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.RIGHT:
+                        newPos.X += baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.UPLEFT:
+                        newPos.X -= baseVelocity;
+                        newPos.Y -= baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.UPRIGHT:
+                        newPos.X += baseVelocity;
+                        newPos.Y -= baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.DOWNLEFT:
+                        newPos.X -= baseVelocity;
+                        newPos.Y += baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.DOWNRIGHT:
+                        newPos.X += baseVelocity;
+                        newPos.Y += baseVelocity;
+                        entity.Position = newPos;
+                        break;
+                    case MovementState.STILL:
+                        break;
+                }
 
-            //Trace.WriteLine($"X: [{entity.Position.X}]; Y: [{entity.Position.Y}]");
+                //Trace.WriteLine($"X: [{entity.Position.X}]; Y: [{entity.Position.Y}]");
         }
     }
 }

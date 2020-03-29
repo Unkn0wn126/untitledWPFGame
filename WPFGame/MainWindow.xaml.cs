@@ -1,6 +1,8 @@
 ﻿#define TRACE
+using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.GameObjects;
+using Engine.Models.Scenes;
 using Engine.ResourceConstants.Images;
 using Engine.ViewModels;
 using System;
@@ -10,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -81,6 +84,9 @@ namespace WPFGame
             timer.Elapsed += Update;
             timer.AutoReset = true;
             timer.Enabled = true;
+
+            currentScene = _session.CurrentScene;
+            currentCamera = currentScene.SceneCamera;
         }
 
         private void InitializeUserInputActions()
@@ -108,6 +114,9 @@ namespace WPFGame
             _session.Update();
         }
 
+        private IScene currentScene;
+        private ICamera currentCamera;
+
         public void UpdateGraphics(object sender, EventArgs e)
         {
             // redrawing a bitmap image should be faster
@@ -122,18 +131,16 @@ namespace WPFGame
                     null,
                     new Rect(0, 0, 800, 600)
                     );
-            int counter = 0;
 
             // need to update the camera to know what is visible
-            _session.CurrentScene.SceneCamera.UpdatePosition(_session.CurrentScene.PlayerObject, _session.CurrentScene);
+            _session.CurrentScene.SceneCamera.UpdatePosition(currentScene.PlayerGraphicsComponent, currentScene);
 
-            float xOffset = _session.CurrentScene.SceneCamera.XOffset;
-            float yOffset = _session.CurrentScene.SceneCamera.YOffset;
-            Vector2 focusPos = _session.CurrentScene.PlayerObject.Position;
+            float xOffset = currentCamera.XOffset;
+            float yOffset = currentCamera.YOffset;
+            Vector2 focusPos = currentScene.PlayerGraphicsComponent.Position;
 
-            foreach (var item in _session.CurrentScene.SceneCamera.VisibleObjects)
+            foreach (var item in currentCamera.VisibleObjects)
             {
-                counter++;
 
                 // conversion of logical coordinates to graphical ones
                 float graphicX = item.Position.X < focusPos.X ? xOffset - (focusPos.X - item.Position.X) : xOffset + (item.Position.X - focusPos.X);
@@ -141,18 +148,18 @@ namespace WPFGame
 
                 Rect rectangle = new Rect(graphicX, graphicY, item.Width, item.Height);
 
-                drawingContext.DrawImage(_sprites[item.GraphicsComponent.CurrentImageName], rectangle);
+                drawingContext.DrawImage(_sprites[item.CurrentImageName], rectangle);
             }
 
-            IGameObject player = _session.CurrentScene.PlayerObject;
+            IGraphicsComponent player = currentScene.PlayerGraphicsComponent;
 
             // focus point always rendered at the center of the scene
-            Rect rec = new Rect(_session.CurrentScene.SceneCamera.XOffset,
-                _session.CurrentScene.SceneCamera.YOffset, 
-                _session.CurrentScene.PlayerObject.Width, 
-                _session.CurrentScene.PlayerObject.Height);
+            Rect rec = new Rect(currentCamera.XOffset,
+                currentCamera.YOffset,
+                player.Width,
+                player.Height);
 
-            drawingContext.DrawImage(_sprites[player.GraphicsComponent.CurrentImageName], rec);
+            drawingContext.DrawImage(_sprites[player.CurrentImageName], rec);
 
             drawingContext.Close();
             bitmap.Render(drawingVisual);
