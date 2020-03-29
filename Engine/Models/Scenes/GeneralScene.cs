@@ -1,4 +1,5 @@
-﻿using Engine.Models.Cameras;
+﻿using Engine.Coordinates;
+using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.GameObjects;
 using System;
@@ -19,9 +20,11 @@ namespace Engine.Models.Scenes
         public ICamera SceneCamera { get; set; }
         public List<IGraphicsComponent> SceneGraphicsComponents { get; set; }
         public IGraphicsComponent PlayerGraphicsComponent { get; set; }
+        public Grid Grid { get; set; }
 
-        public GeneralScene(List<IGameObject> sceneElements, IGameObject playerObject, float visibleWidth, float visibleHeight)
+        public GeneralScene(Grid coordinates, List<IGameObject> sceneElements, IGameObject playerObject, float visibleWidth, float visibleHeight)
         {
+            Grid = coordinates;
             SceneObjects = sceneElements;
             PlayerObject = playerObject;
             PlayerGraphicsComponent = PlayerObject.GraphicsComponent;

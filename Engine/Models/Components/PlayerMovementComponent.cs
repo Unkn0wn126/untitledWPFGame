@@ -52,43 +52,45 @@ namespace Engine.Models.Components
                 {
                     case MovementState.UP:
                         newPos.Y -= baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.DOWN:
                         newPos.Y += baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.LEFT:
                         newPos.X -= baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.RIGHT:
                         newPos.X += baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.UPLEFT:
                         newPos.X -= baseVelocity;
                         newPos.Y -= baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.UPRIGHT:
                         newPos.X += baseVelocity;
                         newPos.Y -= baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.DOWNLEFT:
                         newPos.X -= baseVelocity;
                         newPos.Y += baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.DOWNRIGHT:
                         newPos.X += baseVelocity;
                         newPos.Y += baseVelocity;
-                        entity.Position = newPos;
+                        //entity.Position = newPos;
                         break;
                     case MovementState.STILL:
                         break;
                 }
+
+            entity.Move(newPos);
 
                 //Trace.WriteLine($"X: [{entity.Position.X}]; Y: [{entity.Position.Y}]");
         }

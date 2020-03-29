@@ -139,6 +139,8 @@ namespace WPFGame
             float yOffset = currentCamera.YOffset;
             Vector2 focusPos = currentScene.PlayerGraphicsComponent.Position;
 
+            Rect rectangle = new Rect();
+
             foreach (var item in currentCamera.VisibleObjects)
             {
 
@@ -146,7 +148,10 @@ namespace WPFGame
                 float graphicX = item.Position.X < focusPos.X ? xOffset - (focusPos.X - item.Position.X) : xOffset + (item.Position.X - focusPos.X);
                 float graphicY = item.Position.Y < focusPos.Y ? yOffset - (focusPos.Y - item.Position.Y) : yOffset + (item.Position.Y - focusPos.Y);
 
-                Rect rectangle = new Rect(graphicX, graphicY, item.Width, item.Height);
+                rectangle.X = graphicX;
+                rectangle.Y = graphicY;
+                rectangle.Width = item.Width;
+                rectangle.Height = item.Height;
 
                 drawingContext.DrawImage(_sprites[item.CurrentImageName], rectangle);
             }
@@ -154,12 +159,17 @@ namespace WPFGame
             IGraphicsComponent player = currentScene.PlayerGraphicsComponent;
 
             // focus point always rendered at the center of the scene
-            Rect rec = new Rect(currentCamera.XOffset,
-                currentCamera.YOffset,
-                player.Width,
-                player.Height);
+            //Rect rec = new Rect(currentCamera.XOffset,
+            //    currentCamera.YOffset,
+            //    player.Width,
+            //    player.Height);
 
-            drawingContext.DrawImage(_sprites[player.CurrentImageName], rec);
+            rectangle.X = currentCamera.XOffset;
+            rectangle.Y = currentCamera.YOffset;
+            rectangle.Width = player.Width;
+            rectangle.Height = player.Height;
+
+            drawingContext.DrawImage(_sprites[player.CurrentImageName], rectangle);
 
             drawingContext.Close();
             bitmap.Render(drawingVisual);

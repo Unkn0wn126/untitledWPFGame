@@ -1,4 +1,5 @@
 ﻿#define TRACE
+using Engine.Coordinates;
 using Engine.Models.Components;
 using Engine.Models.GameObjects;
 using Engine.Models.Scenes;
@@ -40,28 +41,33 @@ namespace Engine.Models.Cameras
         /// <param name="context"></param>
         public void UpdatePosition(IGraphicsComponent focusPoint, IScene context)
         {
+            Grid grid = context.Grid;
+            IGameObject focus = context.PlayerObject;
+
+            VisibleObjects = grid.GetGraphicsComponentsInRadius(focus, 3);
+            //temp.ForEach(x => VisibleObjects.Add(x.GraphicsComponent));
             float halfWidth = Width / 2;
             float halfHeight = Height / 2;
 
             XOffset = halfWidth - focusPoint.Width;
             YOffset = halfHeight - focusPoint.Height;
             // visible on the screen to the left and to the right of the focus point
-            float minX = focusPoint.Position.X - halfWidth;
-            float maxX = focusPoint.Position.X + halfWidth;
+            //    float minX = focusPoint.Position.X - halfWidth;
+            //    float maxX = focusPoint.Position.X + halfWidth;
 
-            // visible on the screen up and down of the focus point
-            float minY = focusPoint.Position.Y - halfHeight;
-            float maxY = focusPoint.Position.Y + halfHeight;
+            //    // visible on the screen up and down of the focus point
+            //    float minY = focusPoint.Position.Y - halfHeight;
+            //    float maxY = focusPoint.Position.Y + halfHeight;
 
-            VisibleObjects.Clear();
-            // Check boundary of x axis and then of y axis on reduced set of objects
-            //context.SceneGraphicsComponents.ForEach(x => { if (x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint &&
-            //    x.Position.Y + x.Height > minY && x.Position.Y - x.Height < maxY) { VisibleObjects.Add(x); }
-            //});
-            VisibleObjects = context.SceneGraphicsComponents.AsParallel().Where(x => x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint)
-                .Where(y => y.Position.Y + y.Height > minY && y.Position.Y - y.Height < maxY).ToList();
-            //VisibleObjects = context.SceneElements.Where(x => x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint)
-            //    .Where(y => y.Position.Y + y.Height > minY && y.Position.Y - y.Height < maxY).ToList();
+            //    VisibleObjects.Clear();
+            //    // Check boundary of x axis and then of y axis on reduced set of objects
+            //    //context.SceneGraphicsComponents.ForEach(x => { if (x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint &&
+            //    //    x.Position.Y + x.Height > minY && x.Position.Y - x.Height < maxY) { VisibleObjects.Add(x); }
+            //    //});
+            //    VisibleObjects = context.SceneGraphicsComponents.AsParallel().Where(x => x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint)
+            //        .Where(y => y.Position.Y + y.Height > minY && y.Position.Y - y.Height < maxY).ToList();
+            //    //VisibleObjects = context.SceneElements.Where(x => x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint)
+            //    //    .Where(y => y.Position.Y + y.Height > minY && y.Position.Y - y.Height < maxY).ToList();
         }
     }
 }
