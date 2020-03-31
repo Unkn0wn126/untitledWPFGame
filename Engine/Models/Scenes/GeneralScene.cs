@@ -4,6 +4,7 @@ using Engine.Models.Components;
 using Engine.Models.GameObjects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,10 +36,13 @@ namespace Engine.Models.Scenes
 
         public void Update()
         {
-            Parallel.ForEach(SceneObjects, item =>
-            {
-                item.Update(this);
-            });
+            List<IGameObject> activeObjects = Grid.GetObjectsInRadius(PlayerObject, 5);
+            activeObjects.ForEach(x => { if (x != PlayerObject) x.Update(this); });
+            //Parallel.ForEach(activeObjects, item =>
+            //{
+            //    item.Update(this);
+            //});
+            PlayerObject.Update(this);
         }
     }
 }

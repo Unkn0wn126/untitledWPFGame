@@ -1,6 +1,8 @@
-﻿using Engine.ViewModels;
+﻿#define TRACE
+using Engine.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -24,10 +26,12 @@ namespace WPFGame
                 //player.SoundLocation = @"./Resources/Sounds/arena_loop2.wav";
 
 
+                //RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
                 MainWindow window = new MainWindow();
                 CompositionTarget.Rendering += window.UpdateGraphics;
 
                 var app = new App();
+
                 app.Run(window);
 
             }

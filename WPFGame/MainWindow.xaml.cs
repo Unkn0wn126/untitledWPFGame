@@ -45,6 +45,8 @@ namespace WPFGame
 
         private List<Key> _previousKeys = new List<Key>();
 
+        private DrawingVisual _drawingVisual = new DrawingVisual();
+
         private int _currentKeyValue = 0;
 
         private BitmapImage _groundImage;
@@ -70,12 +72,18 @@ namespace WPFGame
             _sprites.Add(ImgNames.PLAYER, _playerAvatar);
             _brush = new ImageBrush();
 
+            var cache = new BitmapCache();
+            cache.RenderAtScale = 0.5;
+            cache.SnapsToDevicePixels = false;
+            _drawingVisual.CacheMode = cache;
+
             _groundBrush = new ImageBrush(_groundImage);
             _playerBrush = new ImageBrush(_playerAvatar);
             InitializeUserInputActions();
             // this is what everything renders to
             bitmap = new RenderTargetBitmap(800, 600, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
+            //GameImage.CacheMode = new BitmapCache(1);
 
             //CompositionTarget.Rendering += UpdateGraphics;
 
@@ -122,8 +130,9 @@ namespace WPFGame
             // redrawing a bitmap image should be faster
             bitmap.Clear();
 
-            var drawingVisual = new DrawingVisual();
-            var drawingContext = drawingVisual.RenderOpen();
+            //var drawingVisual = new DrawingVisual();
+            //drawingVisual.CacheMode = new BitmapCache(1);
+            var drawingContext = _drawingVisual.RenderOpen();
 
             // to have a black background as a default
             drawingContext.DrawRectangle(
@@ -153,6 +162,8 @@ namespace WPFGame
                 rectangle.Width = item.Width;
                 rectangle.Height = item.Height;
 
+                //drawingContext.DrawRectangle(Brushes.Gray, null, rectangle);
+
                 drawingContext.DrawImage(_sprites[item.CurrentImageName], rectangle);
             }
 
@@ -172,7 +183,7 @@ namespace WPFGame
             drawingContext.DrawImage(_sprites[player.CurrentImageName], rectangle);
 
             drawingContext.Close();
-            bitmap.Render(drawingVisual);
+            bitmap.Render(_drawingVisual);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)

@@ -55,14 +55,8 @@ namespace Engine.ViewModels
                 for (int j = 0; j < 100; j++)
                 {
                     ImgNames currentName;
-                    //if (i % 2 == 0 && j % 2 == 0)
-                    //{
-                    //currentName = ImgNames.DIRT;
-                    //}
-                    //else
-                    //{
                     currentName = ImgNames.COBBLESTONE;
-                    //}
+
                     IGraphicsComponent current = new GraphicsComponent(new List<ImgNames> { currentName });
                     current.Width = 50;
                     current.Height = 50;
