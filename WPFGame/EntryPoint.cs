@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 
@@ -20,20 +21,13 @@ namespace WPFGame
             }
             else
             {
-                Game game = new Game(800, 600);
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"./Resources/Sounds/arena_loop2.wav");
+                // sound testing
+                //System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"./Resources/Sounds/arena_loop2.wav");
                 //player.Play();
                 //player.SoundLocation = @"./Resources/Sounds/arena_loop2.wav";
 
-
-                //RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
-                MainWindow window = new MainWindow();
-                CompositionTarget.Rendering += window.UpdateGraphics;
-
-                var app = new App();
-
-                app.Run(window);
-
+                GameEngine engine = new GameEngine(800, 600);
+                engine.StartRun();
             }
         }
     }

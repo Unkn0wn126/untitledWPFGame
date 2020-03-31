@@ -33,68 +33,87 @@ namespace WPFGame
     public partial class MainWindow : Window
     {
         private IGame _session;
+
+        // image to render to
         private RenderTargetBitmap bitmap;
 
+        // TODO: Put in a separate class
         private readonly Dictionary<int, Action> _userInputActions =
             new Dictionary<int, Action>();
 
+        // Possibly better in another class
         private readonly Dictionary<ImgNames, BitmapImage> _sprites = new Dictionary<ImgNames, BitmapImage>();
 
+        // TODO: Put in a separate class
         private readonly Dictionary<Key, int> _keyCodes =
             new Dictionary<Key, int>();
 
+        // TODO: Put in a separate class
         private List<Key> _previousKeys = new List<Key>();
 
+        // needed for rendering
         private DrawingVisual _drawingVisual = new DrawingVisual();
 
+
+        // TODO: Move into separate class
         private int _currentKeyValue = 0;
 
         private BitmapImage _groundImage;
         private BitmapImage _cobbleImage;
         private BitmapImage _playerAvatar;
-        private ImageBrush _groundBrush;
-        private ImageBrush _playerBrush;
 
-        private ImageBrush _brush;
+        private IScene _currentScene;
+        private ICamera _currentCamera;
 
-        public MainWindow()
+        Rect _rectangle;
+
+        private int _xRes;
+        private int _yRes;
+
+        public MainWindow(IGame session, int xRes, int yRes)
         {
+            _xRes = xRes;
+            _yRes = yRes;
+
             InitializeComponent();
-            _session = new Game(800, 600);
+            _session = session;
+            InitializeImages();
+            //InitializeCaching();
+
+
+            InitializeUserInputActions();
+
+            // this is what everything renders to
+            bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
+            GameImage.Source = bitmap;
+
+            // to get shorter routes to frequently used objects
+            _currentScene = _session.CurrentScene;
+            _currentCamera = _currentScene.SceneCamera;
+        }
+
+        private void InitializeCaching()
+        {
+            var cache = new BitmapCache();
+            cache.RenderAtScale = 0.5; // render at half the resolution for now
+            cache.SnapsToDevicePixels = false;
+            _drawingVisual.CacheMode = cache;
+        }
+
+        private void InitializeImages()
+        {
             // placeholder images
             // I intend to load them all at launch and assign them to a string constant
             // to give objects information of their "avatar" while keeping it independent
             _groundImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.DIRT]);
             _cobbleImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.COBBLESTONE]);
             _playerAvatar = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.PLAYER]);
+
             _sprites.Add(ImgNames.DIRT, _groundImage);
             _sprites.Add(ImgNames.COBBLESTONE, _cobbleImage);
             _sprites.Add(ImgNames.PLAYER, _playerAvatar);
-            _brush = new ImageBrush();
 
-            var cache = new BitmapCache();
-            cache.RenderAtScale = 0.5;
-            cache.SnapsToDevicePixels = false;
-            _drawingVisual.CacheMode = cache;
-
-            _groundBrush = new ImageBrush(_groundImage);
-            _playerBrush = new ImageBrush(_playerAvatar);
-            InitializeUserInputActions();
-            // this is what everything renders to
-            bitmap = new RenderTargetBitmap(800, 600, 96, 96, PixelFormats.Pbgra32);
-            GameImage.Source = bitmap;
-            //GameImage.CacheMode = new BitmapCache(1);
-
-            //CompositionTarget.Rendering += UpdateGraphics;
-
-            // another timer to allow for independent non-graphics update
-            Timer timer = new Timer(16);
-            timer.Elapsed += Update;
-            timer.AutoReset = true;
-            timer.Enabled = true;
-
-            currentScene = _session.CurrentScene;
-            currentCamera = currentScene.SceneCamera;
+            _rectangle = new Rect();
         }
 
         private void InitializeUserInputActions()
@@ -117,70 +136,52 @@ namespace WPFGame
             _userInputActions.Add(24, () => _session.HandleUserInput(MovementState.DOWNRIGHT));
         }
 
-        private void Update(object sender, ElapsedEventArgs e)
-        {
-            _session.Update();
-        }
-
-        private IScene currentScene;
-        private ICamera currentCamera;
-
         public void UpdateGraphics(object sender, EventArgs e)
         {
             // redrawing a bitmap image should be faster
             bitmap.Clear();
-
-            //var drawingVisual = new DrawingVisual();
-            //drawingVisual.CacheMode = new BitmapCache(1);
             var drawingContext = _drawingVisual.RenderOpen();
 
             // to have a black background as a default
-            drawingContext.DrawRectangle(
-                    Brushes.Black,
-                    null,
-                    new Rect(0, 0, 800, 600)
-                    );
+            _rectangle.X = 0;
+            _rectangle.Y = 0;
+            _rectangle.Width = _xRes;
+            _rectangle.Height = _yRes;
+            drawingContext.DrawRectangle(Brushes.Black, null, _rectangle);
 
             // need to update the camera to know what is visible
-            _session.CurrentScene.SceneCamera.UpdatePosition(currentScene.PlayerGraphicsComponent, currentScene);
+            _session.CurrentScene.SceneCamera.UpdatePosition(_currentScene.PlayerGraphicsComponent, _currentScene);
 
-            float xOffset = currentCamera.XOffset;
-            float yOffset = currentCamera.YOffset;
-            Vector2 focusPos = currentScene.PlayerGraphicsComponent.Position;
+            float xOffset = _currentCamera.XOffset;
+            float yOffset = _currentCamera.YOffset;
+            Vector2 focusPos = _currentScene.PlayerGraphicsComponent.Position;
 
-            Rect rectangle = new Rect();
-
-            foreach (var item in currentCamera.VisibleObjects)
+            foreach (var item in _currentCamera.VisibleObjects)
             {
 
                 // conversion of logical coordinates to graphical ones
                 float graphicX = item.Position.X < focusPos.X ? xOffset - (focusPos.X - item.Position.X) : xOffset + (item.Position.X - focusPos.X);
                 float graphicY = item.Position.Y < focusPos.Y ? yOffset - (focusPos.Y - item.Position.Y) : yOffset + (item.Position.Y - focusPos.Y);
 
-                rectangle.X = graphicX;
-                rectangle.Y = graphicY;
-                rectangle.Width = item.Width;
-                rectangle.Height = item.Height;
+                _rectangle.X = graphicX;
+                _rectangle.Y = graphicY;
+                _rectangle.Width = item.Width;
+                _rectangle.Height = item.Height;
 
-                //drawingContext.DrawRectangle(Brushes.Gray, null, rectangle);
+                //drawingContext.DrawRectangle(Brushes.Gray, null, _rectangle);
 
-                drawingContext.DrawImage(_sprites[item.CurrentImageName], rectangle);
+                drawingContext.DrawImage(_sprites[item.CurrentImageName], _rectangle);
             }
 
-            IGraphicsComponent player = currentScene.PlayerGraphicsComponent;
+            IGraphicsComponent player = _currentScene.PlayerGraphicsComponent;
 
             // focus point always rendered at the center of the scene
-            //Rect rec = new Rect(currentCamera.XOffset,
-            //    currentCamera.YOffset,
-            //    player.Width,
-            //    player.Height);
+            _rectangle.X = _currentCamera.XOffset;
+            _rectangle.Y = _currentCamera.YOffset;
+            _rectangle.Width = player.Width;
+            _rectangle.Height = player.Height;
 
-            rectangle.X = currentCamera.XOffset;
-            rectangle.Y = currentCamera.YOffset;
-            rectangle.Width = player.Width;
-            rectangle.Height = player.Height;
-
-            drawingContext.DrawImage(_sprites[player.CurrentImageName], rectangle);
+            drawingContext.DrawImage(_sprites[player.CurrentImageName], _rectangle);
 
             drawingContext.Close();
             bitmap.Render(_drawingVisual);
@@ -193,10 +194,11 @@ namespace WPFGame
                 _session.State.TogglePause();
                 if (!_session.State.IsRunning())
                 {
+                    // show "Pause" overlay
                     Rectangle overlay = new Rectangle();
                     Color testColor = Color.FromArgb(172, 172, 172, 255);
-                    overlay.Width = 800;
-                    overlay.Height = 600;
+                    overlay.Width = _xRes;
+                    overlay.Height = _yRes;
                     overlay.Fill = new SolidColorBrush(testColor);
                     GameCanvas.Children.Add(overlay);
 

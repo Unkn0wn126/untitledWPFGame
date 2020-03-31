@@ -34,7 +34,14 @@ namespace Engine.ViewModels
             GraphicsComponents = new List<IGraphicsComponent>();
             ImgPaths = new ImagePaths();
 
-            Grid grid = new Grid(20, 250);
+            int objectSize = 50;
+            int cellSize = 250;
+            int numOfObjectsOnX = 100;
+            int numOfObjectsOnY = 100;
+            int numCellsX = (numOfObjectsOnX * objectSize) / cellSize;
+            int numCellsY = (numOfObjectsOnY * objectSize) / cellSize;
+
+            Grid grid = new Grid(numCellsX, numCellsY, cellSize);
 
             State = new GameStateMachine
             {
@@ -46,27 +53,27 @@ namespace Engine.ViewModels
             _gameObjects = new List<IGameObject>();
             IGraphicsComponent test = new GraphicsComponent(testList);
             GraphicsComponents.Add(test);
-            _player = new LivingEntity(grid, test, _playerMovement, 50, 50, new Vector2(0, 0), 10);
+            _player = new LivingEntity(grid, test, _playerMovement, objectSize, objectSize, new Vector2(0, 0), 10);
             _scenes = new List<IScene>();
 
             // This is gonna be in a factory...
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < numOfObjectsOnX; i++)
             {
-                for (int j = 0; j < 100; j++)
+                for (int j = 0; j < numOfObjectsOnY; j++)
                 {
                     ImgNames currentName;
                     currentName = ImgNames.COBBLESTONE;
 
                     IGraphicsComponent current = new GraphicsComponent(new List<ImgNames> { currentName });
-                    current.Width = 50;
-                    current.Height = 50;
+                    current.Width = objectSize;
+                    current.Height = objectSize;
                     Vector2 currentPos = current.Position;
-                    currentPos.X = i * 50;
-                    currentPos.Y = j * 50;
+                    currentPos.X = i * objectSize;
+                    currentPos.Y = j * objectSize;
                     current.Position = currentPos;
                     GraphicsComponents.Add(current);
 
-                    _gameObjects.Add(new Ground(grid, current, new Vector2(i * 50, j * 50), 50, 50));
+                    _gameObjects.Add(new Ground(grid, current, new Vector2(i * objectSize, j * objectSize), objectSize, objectSize));
                 }
             }
             _gameObjects.Add(_player);

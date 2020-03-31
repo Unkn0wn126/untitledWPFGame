@@ -11,24 +11,26 @@ namespace Engine.Coordinates
 {
     public class Grid
     {
-        private int _numOfCells;
+        private int _numOfCellsOnX;
+        private int _numOfCellsOnY;
         private int _cellSize;
         public List<IGameObject>[][] Cells { get; set; }
 
-        public Grid(int numOfCells, int cellSize)
+        public Grid(int numOfCellsOnX, int numOfCellsOnY, int cellSize)
         {
-            _numOfCells = numOfCells;
+            _numOfCellsOnX = numOfCellsOnX;
+            _numOfCellsOnY = numOfCellsOnY;
             _cellSize = cellSize;
 
-            Cells = new List<IGameObject>[_numOfCells][];
-            for (int i = 0; i < _numOfCells; i++)
+            Cells = new List<IGameObject>[_numOfCellsOnX][];
+            for (int i = 0; i < _numOfCellsOnX; i++)
             {
-                Cells[i] = new List<IGameObject>[_numOfCells];
+                Cells[i] = new List<IGameObject>[numOfCellsOnY];
             }
 
-            for (int i = 0; i < _numOfCells; i++)
+            for (int i = 0; i < numOfCellsOnX; i++)
             {
-                for (int j = 0; j < _numOfCells; j++)
+                for (int j = 0; j < numOfCellsOnY; j++)
                 {
                     Cells[i][j] = new List<IGameObject>();
                 }
@@ -49,10 +51,10 @@ namespace Engine.Coordinates
 
             List<IGameObject> gameObjects = new List<IGameObject>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
-            int maxX = cellX + cellRadius < _numOfCells ? cellX + cellRadius : _numOfCells;            
+            int maxX = cellX + cellRadius < _numOfCellsOnX ? cellX + cellRadius : _numOfCellsOnX;            
             
             int minY = cellY - cellRadius > 0 ? cellY - cellRadius : 0;
-            int maxY = cellY + cellRadius < _numOfCells ? cellY + cellRadius : _numOfCells;
+            int maxY = cellY + cellRadius < _numOfCellsOnY ? cellY + cellRadius : _numOfCellsOnY;
             //Parallel.For(minX, maxX, index =>
             //{
             //    Parallel.For(minY, maxY, innerIndex =>
@@ -78,10 +80,10 @@ namespace Engine.Coordinates
 
             List<IGraphicsComponent> gameObjects = new List<IGraphicsComponent>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
-            int maxX = cellX + cellRadius < _numOfCells ? cellX + cellRadius : _numOfCells;            
+            int maxX = cellX + cellRadius < _numOfCellsOnX ? cellX + cellRadius : _numOfCellsOnX;            
             
             int minY = cellY - cellRadius > 0 ? cellY - cellRadius : 0;
-            int maxY = cellY + cellRadius < _numOfCells ? cellY + cellRadius : _numOfCells;
+            int maxY = cellY + cellRadius < _numOfCellsOnY ? cellY + cellRadius : _numOfCellsOnY;
             //Parallel.For(minX, maxX, index =>
             //{
             //    Parallel.For(minY, maxY, innerIndex =>

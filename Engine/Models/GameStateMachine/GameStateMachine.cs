@@ -7,7 +7,8 @@ namespace Engine.Models.GameStateMachine
     public enum GameState
     {
         RUNNING,
-        PAUSED
+        PAUSED,
+        LOADING
     }
     public class GameStateMachine
     {
