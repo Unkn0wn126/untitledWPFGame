@@ -12,19 +12,19 @@ namespace Engine.Models.Components
 {
     public class GraphicsComponent : IGraphicsComponent
     {
-        private Vector2 _position;
+
+        public ITransformComponent Transform { get; set; }
 
         public ImgNames CurrentImageName { get; set; }
 
         public List<ImgNames> ImageNames { get; set; }
-        public Vector2 Position { get => _position; set => _position = value; }
-        public float Width { get; set; }
-        public float Height { get; set; }
 
-        public GraphicsComponent(List<ImgNames> imageNames)
+        public GraphicsComponent(List<ImgNames> imageNames, ITransformComponent transform)
         {
             ImageNames = imageNames;
             CurrentImageName = ImageNames[0];
+
+            Transform = transform;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Engine.Models.Components
         /// <param name="logicContext"></param>
         public void Update(IGameObject entity, IScene logicContext)
         {
-            Position = entity.Position;
-            Width = entity.Width;
-            Height = entity.Height;
+            //Position = entity.Position;
+            //Width = entity.Width;
+            //Height = entity.Height;
         }
     }
 }

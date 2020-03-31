@@ -49,8 +49,8 @@ namespace Engine.Models.Cameras
             float halfWidth = Width / 2;
             float halfHeight = Height / 2;
 
-            XOffset = halfWidth - focusPoint.Width;
-            YOffset = halfHeight - focusPoint.Height;
+            XOffset = halfWidth - focusPoint.Transform.ScaleX;
+            YOffset = halfHeight - focusPoint.Transform.ScaleY;
             // visible on the screen to the left and to the right of the focus point
             //    float minX = focusPoint.Position.X - halfWidth;
             //    float maxX = focusPoint.Position.X + halfWidth;

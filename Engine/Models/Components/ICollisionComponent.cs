@@ -6,5 +6,6 @@ namespace Engine.Models.Components
 {
     public interface ICollisionComponent : IGameComponent
     {
+        public ITransformComponent Transform { get; set; }
     }
 }

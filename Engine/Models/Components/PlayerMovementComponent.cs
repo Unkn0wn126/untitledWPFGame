@@ -45,7 +45,7 @@ namespace Engine.Models.Components
         public void Update(IGameObject entity, IScene logicContext)
         {
             float baseVelocity = 5f;
-            Vector2 newPos = entity.Position;
+            Vector2 newPos = entity.Transform.Position;
 
                 // basically a simple state machine for player movement
                 switch (_currentState)

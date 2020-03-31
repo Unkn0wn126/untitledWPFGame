@@ -39,15 +39,15 @@ namespace Engine.Coordinates
 
         public void Add(IGameObject unit)
         {
-            int cellX = (int)(unit.Position.X / _cellSize);
-            int cellY = (int)(unit.Position.Y / _cellSize);
+            int cellX = (int)(unit.Transform.Position.X / _cellSize);
+            int cellY = (int)(unit.Transform.Position.Y / _cellSize);
             Cells[cellX][cellY].Add(unit);
         }
 
         public List<IGameObject> GetObjectsInRadius(IGameObject focus, int cellRadius)
         {
-            int cellX = (int)(focus.Position.X / _cellSize);
-            int cellY = (int)(focus.Position.Y / _cellSize);
+            int cellX = (int)(focus.Transform.Position.X / _cellSize);
+            int cellY = (int)(focus.Transform.Position.Y / _cellSize);
 
             List<IGameObject> gameObjects = new List<IGameObject>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
@@ -75,8 +75,8 @@ namespace Engine.Coordinates
 
         public List<IGraphicsComponent> GetGraphicsComponentsInRadius(IGameObject focus, int cellRadius)
         {
-            int cellX = (int)(focus.Position.X / _cellSize);
-            int cellY = (int)(focus.Position.Y / _cellSize);
+            int cellX = (int)(focus.Transform.Position.X / _cellSize);
+            int cellY = (int)(focus.Transform.Position.Y / _cellSize);
 
             List<IGraphicsComponent> gameObjects = new List<IGraphicsComponent>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
@@ -104,14 +104,14 @@ namespace Engine.Coordinates
 
         public void Move(IGameObject unit, float x, float y)
         {
-            int oldCellX = (int)(unit.Position.X / _cellSize);
-            int oldCellY = (int)(unit.Position.Y / _cellSize);
+            int oldCellX = (int)(unit.Transform.Position.X / _cellSize);
+            int oldCellY = (int)(unit.Transform.Position.Y / _cellSize);
 
             int cellX = (int)(x / _cellSize);
             int cellY = (int)(y / _cellSize);
 
             Vector2 newPos = new Vector2(x, y);
-            unit.Position = newPos;
+            unit.Transform.Position = newPos;
 
             // If it didn't change cells, we're done.
             if (oldCellX == cellX && oldCellY == cellY) return;

@@ -154,19 +154,19 @@ namespace WPFGame
 
             float xOffset = _currentCamera.XOffset;
             float yOffset = _currentCamera.YOffset;
-            Vector2 focusPos = _currentScene.PlayerGraphicsComponent.Position;
+            Vector2 focusPos = _currentScene.PlayerGraphicsComponent.Transform.Position;
 
             foreach (var item in _currentCamera.VisibleObjects)
             {
 
                 // conversion of logical coordinates to graphical ones
-                float graphicX = item.Position.X < focusPos.X ? xOffset - (focusPos.X - item.Position.X) : xOffset + (item.Position.X - focusPos.X);
-                float graphicY = item.Position.Y < focusPos.Y ? yOffset - (focusPos.Y - item.Position.Y) : yOffset + (item.Position.Y - focusPos.Y);
+                float graphicX = item.Transform.Position.X < focusPos.X ? xOffset - (focusPos.X - item.Transform.Position.X) : xOffset + (item.Transform.Position.X - focusPos.X);
+                float graphicY = item.Transform.Position.Y < focusPos.Y ? yOffset - (focusPos.Y - item.Transform.Position.Y) : yOffset + (item.Transform.Position.Y - focusPos.Y);
 
                 _rectangle.X = graphicX;
                 _rectangle.Y = graphicY;
-                _rectangle.Width = item.Width;
-                _rectangle.Height = item.Height;
+                _rectangle.Width = item.Transform.ScaleX;
+                _rectangle.Height = item.Transform.ScaleY;
 
                 //drawingContext.DrawRectangle(Brushes.Gray, null, _rectangle);
 
@@ -178,8 +178,8 @@ namespace WPFGame
             // focus point always rendered at the center of the scene
             _rectangle.X = _currentCamera.XOffset;
             _rectangle.Y = _currentCamera.YOffset;
-            _rectangle.Width = player.Width;
-            _rectangle.Height = player.Height;
+            _rectangle.Width = player.Transform.ScaleX;
+            _rectangle.Height = player.Transform.ScaleY;
 
             drawingContext.DrawImage(_sprites[player.CurrentImageName], _rectangle);
 

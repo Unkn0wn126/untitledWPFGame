@@ -35,7 +35,8 @@ namespace Engine.ViewModels
             ImgPaths = new ImagePaths();
 
             int objectSize = 50;
-            int cellSize = 250;
+            int numOfObjectsInCell = 5;
+            int cellSize = objectSize * numOfObjectsInCell;
             int numOfObjectsOnX = 100;
             int numOfObjectsOnY = 100;
             int numCellsX = (numOfObjectsOnX * objectSize) / cellSize;
@@ -45,15 +46,16 @@ namespace Engine.ViewModels
 
             State = new GameStateMachine
             {
-                CurrentState = GameState.RUNNING
+                CurrentState = GameState.LOADING
             };
 
             _playerMovement = new PlayerMovementComponent();
             List<ImgNames> testList = new List<ImgNames> { ImgNames.PLAYER };
             _gameObjects = new List<IGameObject>();
-            IGraphicsComponent test = new GraphicsComponent(testList);
+            ITransformComponent playerTransform = new TransformComponent(new Vector2(0, 0), objectSize, objectSize, new Vector2(0, 0));
+            IGraphicsComponent test = new GraphicsComponent(testList, playerTransform);
             GraphicsComponents.Add(test);
-            _player = new LivingEntity(grid, test, _playerMovement, objectSize, objectSize, new Vector2(0, 0), 10);
+            _player = new LivingEntity(grid, test, _playerMovement, playerTransform, 10);
             _scenes = new List<IScene>();
 
             // This is gonna be in a factory...
@@ -62,24 +64,21 @@ namespace Engine.ViewModels
                 for (int j = 0; j < numOfObjectsOnY; j++)
                 {
                     ImgNames currentName;
-                    currentName = ImgNames.COBBLESTONE;
+                    currentName = ImgNames.DIRT;
 
-                    IGraphicsComponent current = new GraphicsComponent(new List<ImgNames> { currentName });
-                    current.Width = objectSize;
-                    current.Height = objectSize;
-                    Vector2 currentPos = current.Position;
-                    currentPos.X = i * objectSize;
-                    currentPos.Y = j * objectSize;
-                    current.Position = currentPos;
+                    ITransformComponent currTransform = new TransformComponent(new Vector2(i * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                    IGraphicsComponent current = new GraphicsComponent(new List<ImgNames> { currentName }, currTransform);
                     GraphicsComponents.Add(current);
 
-                    _gameObjects.Add(new Ground(grid, current, new Vector2(i * objectSize, j * objectSize), objectSize, objectSize));
+                    _gameObjects.Add(new Ground(grid, current, currTransform));
                 }
             }
             _gameObjects.Add(_player);
 
             _scenes.Add(new GeneralScene(grid, _gameObjects, _player, xRes, yRes));
             CurrentScene = _scenes[0];
+
+            State.CurrentState = GameState.RUNNING;
         }
 
         public void HandleUserInput(MovementState newState)

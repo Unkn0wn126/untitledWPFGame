@@ -10,9 +10,7 @@ namespace Engine.Models.Components
 {
     public interface IGraphicsComponent : IGameComponent
     {
-        public Vector2 Position { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
+        public ITransformComponent Transform { get; set; }
         public ImgNames CurrentImageName { get; set; }
         public List<ImgNames> ImageNames { get; set; }
     }
