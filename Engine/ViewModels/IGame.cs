@@ -1,5 +1,6 @@
 ﻿using Engine.Models.Components;
 using Engine.Models.GameStateMachine;
+using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.ResourceConstants.Images;
 using System;
@@ -15,6 +16,6 @@ namespace Engine.ViewModels
         public List<IGraphicsComponent> GraphicsComponents { get; set; }
         public IScene CurrentScene { get; set; }
         public void Update();
-        public void HandleUserInput(MovementState newState);
+        public void HandleUserInput(IMovementStrategy newState);
     }
 }

@@ -2,6 +2,7 @@
 using Engine.Models.Components;
 using Engine.Models.GameObjects;
 using Engine.Models.GameStateMachine;
+using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.ResourceConstants.Images;
 using System;
@@ -81,8 +82,9 @@ namespace Engine.ViewModels
             State.CurrentState = GameState.RUNNING;
         }
 
-        public void HandleUserInput(MovementState newState)
+        public void HandleUserInput(IMovementStrategy newState)
         {
+            // TODO: Change this to just a general entityMovementComponent interface...
             ((PlayerMovementComponent)_playerMovement).SetMovementState(newState);
         }
 

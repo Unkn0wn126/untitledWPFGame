@@ -2,6 +2,7 @@
 using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.GameObjects;
+using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.ResourceConstants.Images;
 using Engine.ViewModels;
@@ -34,29 +35,16 @@ namespace WPFGame
     {
         private IGame _session;
 
+        private UserInputHandler _inputHandler;
+
         // image to render to
         private RenderTargetBitmap bitmap;
-
-        // TODO: Put in a separate class
-        private readonly Dictionary<int, Action> _userInputActions =
-            new Dictionary<int, Action>();
 
         // Possibly better in another class
         private readonly Dictionary<ImgNames, BitmapImage> _sprites = new Dictionary<ImgNames, BitmapImage>();
 
-        // TODO: Put in a separate class
-        private readonly Dictionary<Key, int> _keyCodes =
-            new Dictionary<Key, int>();
-
-        // TODO: Put in a separate class
-        private List<Key> _previousKeys = new List<Key>();
-
         // needed for rendering
         private DrawingVisual _drawingVisual = new DrawingVisual();
-
-
-        // TODO: Move into separate class
-        private int _currentKeyValue = 0;
 
         private BitmapImage _groundImage;
         private BitmapImage _cobbleImage;
@@ -80,8 +68,7 @@ namespace WPFGame
             InitializeImages();
             //InitializeCaching();
 
-
-            InitializeUserInputActions();
+            _inputHandler = new UserInputHandler();
 
             // this is what everything renders to
             bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
@@ -116,25 +103,7 @@ namespace WPFGame
             _rectangle = new Rect();
         }
 
-        private void InitializeUserInputActions()
-        {
-            // This could be it's own separate class...
-            // Kind of like a state machine of pressed down keys
-            // powers of 2 to allow diagonal movement
-            _keyCodes.Add(Key.W, 2);
-            _keyCodes.Add(Key.A, 4);
-            _keyCodes.Add(Key.S, 8);
-            _keyCodes.Add(Key.D, 16);
 
-            _userInputActions.Add(2, () => _session.HandleUserInput(MovementState.UP));
-            _userInputActions.Add(4, () => _session.HandleUserInput(MovementState.LEFT));
-            _userInputActions.Add(6, () => _session.HandleUserInput(MovementState.UPLEFT));
-            _userInputActions.Add(8, () => _session.HandleUserInput(MovementState.DOWN));
-            _userInputActions.Add(12, () => _session.HandleUserInput(MovementState.DOWNLEFT));
-            _userInputActions.Add(16, () => _session.HandleUserInput(MovementState.RIGHT));
-            _userInputActions.Add(18, () => _session.HandleUserInput(MovementState.UPRIGHT));
-            _userInputActions.Add(24, () => _session.HandleUserInput(MovementState.DOWNRIGHT));
-        }
 
         public void UpdateGraphics(object sender, EventArgs e)
         {
@@ -222,57 +191,15 @@ namespace WPFGame
                     GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
                 }
             }
-            if (!_previousKeys.Contains(e.Key))
-            {
-                _previousKeys.Add(e.Key);
-            }
 
-            _currentKeyValue = 0;
-
-            foreach (var item in _previousKeys)
-            {
-                if (_keyCodes.ContainsKey(item))
-                {
-                    _currentKeyValue += _keyCodes[item];
-                }
-            }
-
-            if (_userInputActions.ContainsKey(_currentKeyValue))
-            {
-                _userInputActions[_currentKeyValue].Invoke();
-            }
-            else
-            {
-                _session.HandleUserInput(MovementState.STILL);
-            }
+            IMovementStrategy movementStrategy = _inputHandler.HandleKeyPressed(e.Key);
+            _session.HandleUserInput(movementStrategy);
         }        
         
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-
-            if (_previousKeys.Contains(e.Key))
-            {
-                _previousKeys.Remove(e.Key);
-            }
-
-            _currentKeyValue = 0;
-
-            foreach (var item in _previousKeys)
-            {
-                if (_keyCodes.ContainsKey(item))
-                {
-                    _currentKeyValue += _keyCodes[item];
-                }
-            }
-
-            if (_userInputActions.ContainsKey(_currentKeyValue))
-            {
-                _userInputActions[_currentKeyValue].Invoke();
-            }
-            else
-            {
-                _session.HandleUserInput(MovementState.STILL);
-            }
+            IMovementStrategy movementStrategy = _inputHandler.HandleKeyReleased(e.Key);
+            _session.HandleUserInput(movementStrategy);
         }
     }
 }

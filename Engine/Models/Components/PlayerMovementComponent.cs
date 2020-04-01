@@ -1,5 +1,6 @@
 ﻿//#define TRACE
 using Engine.Models.GameObjects;
+using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using System;
 using System.Collections.Generic;
@@ -25,16 +26,16 @@ namespace Engine.Models.Components
 
     public class PlayerMovementComponent : IGameComponent
     {
-        private MovementState _currentState;
+        private IMovementStrategy _currentMovementStrategy;
 
-        public void SetMovementState(MovementState newState)
+        public void SetMovementState(IMovementStrategy newMovementStrategy)
         {
-            _currentState = newState;
+            _currentMovementStrategy = newMovementStrategy;
         }
 
         public PlayerMovementComponent()
         {
-            _currentState = MovementState.STILL;
+            _currentMovementStrategy = null;
         }
 
         /// <summary>
@@ -44,55 +45,7 @@ namespace Engine.Models.Components
         /// <param name="logicContext"></param>
         public void Update(IGameObject entity, IScene logicContext)
         {
-            float baseVelocity = 5f;
-            Vector2 newPos = entity.Transform.Position;
-
-                // basically a simple state machine for player movement
-                switch (_currentState)
-                {
-                    case MovementState.UP:
-                        newPos.Y -= baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.DOWN:
-                        newPos.Y += baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.LEFT:
-                        newPos.X -= baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.RIGHT:
-                        newPos.X += baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.UPLEFT:
-                        newPos.X -= baseVelocity;
-                        newPos.Y -= baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.UPRIGHT:
-                        newPos.X += baseVelocity;
-                        newPos.Y -= baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.DOWNLEFT:
-                        newPos.X -= baseVelocity;
-                        newPos.Y += baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.DOWNRIGHT:
-                        newPos.X += baseVelocity;
-                        newPos.Y += baseVelocity;
-                        //entity.Position = newPos;
-                        break;
-                    case MovementState.STILL:
-                        break;
-                }
-
-            entity.Move(newPos);
-
-                //Trace.WriteLine($"X: [{entity.Position.X}]; Y: [{entity.Position.Y}]");
+            _currentMovementStrategy?.ExecuteStrategy(entity);
         }
     }
 }
