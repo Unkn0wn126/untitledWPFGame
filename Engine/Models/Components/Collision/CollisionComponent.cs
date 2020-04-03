@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Models.Components
+namespace Engine.Models.Components.Collision
 {
-    public interface ICollisionComponent : IGameComponent
+    public class CollisionComponent : ICollisionComponent
     {
         public bool IsSolid { get; set; }
     }

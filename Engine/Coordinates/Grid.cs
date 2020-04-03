@@ -1,10 +1,5 @@
-﻿using Engine.Models.GameObjects;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Engine.Models.Components;
 
 namespace Engine.Coordinates
@@ -14,7 +9,7 @@ namespace Engine.Coordinates
         private int _numOfCellsOnX;
         private int _numOfCellsOnY;
         private int _cellSize;
-        public List<IGameObject>[][] Cells { get; set; }
+        public List<uint>[][] Cells { get; set; }
 
         public Grid(int numOfCellsOnX, int numOfCellsOnY, int cellSize)
         {
@@ -22,34 +17,34 @@ namespace Engine.Coordinates
             _numOfCellsOnY = numOfCellsOnY;
             _cellSize = cellSize;
 
-            Cells = new List<IGameObject>[_numOfCellsOnX][];
+            Cells = new List<uint>[_numOfCellsOnX][];
             for (int i = 0; i < _numOfCellsOnX; i++)
             {
-                Cells[i] = new List<IGameObject>[numOfCellsOnY];
+                Cells[i] = new List<uint>[numOfCellsOnY];
             }
 
             for (int i = 0; i < numOfCellsOnX; i++)
             {
                 for (int j = 0; j < numOfCellsOnY; j++)
                 {
-                    Cells[i][j] = new List<IGameObject>();
+                    Cells[i][j] = new List<uint>();
                 }
             }
         }
 
-        public void Add(IGameObject unit)
+        public void Add(uint unit, ITransformComponent position)
         {
-            int cellX = (int)(unit.Transform.Position.X / _cellSize);
-            int cellY = (int)(unit.Transform.Position.Y / _cellSize);
+            int cellX = (int)(position.Position.X / _cellSize);
+            int cellY = (int)(position.Position.Y / _cellSize);
             Cells[cellX][cellY].Add(unit);
         }
 
-        public List<IGameObject> GetObjectsInRadius(ITransformComponent focus, int cellRadius)
+        public List<uint> GetObjectsInRadius(ITransformComponent focus, int cellRadius)
         {
             int cellX = (int)(focus.Position.X / _cellSize);
             int cellY = (int)(focus.Position.Y / _cellSize);
 
-            List<IGameObject> gameObjects = new List<IGameObject>();
+            List<uint> gameObjects = new List<uint>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
             int maxX = cellX + cellRadius < _numOfCellsOnX ? cellX + cellRadius : _numOfCellsOnX;            
             
@@ -73,54 +68,29 @@ namespace Engine.Coordinates
             return gameObjects;
         }
 
-        public List<IGraphicsComponent> GetGraphicsComponentsInRadius(ITransformComponent focus, int cellRadius)
+        public void Move(uint unit, ITransformComponent position, float x, float y)
         {
-            int cellX = (int)(focus.Position.X / _cellSize);
-            int cellY = (int)(focus.Position.Y / _cellSize);
-
-            List<IGraphicsComponent> gameObjects = new List<IGraphicsComponent>();
-            int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
-            int maxX = cellX + cellRadius < _numOfCellsOnX ? cellX + cellRadius : _numOfCellsOnX;            
-            
-            int minY = cellY - cellRadius > 0 ? cellY - cellRadius : 0;
-            int maxY = cellY + cellRadius < _numOfCellsOnY ? cellY + cellRadius : _numOfCellsOnY;
-            //Parallel.For(minX, maxX, index =>
-            //{
-            //    Parallel.For(minY, maxY, innerIndex =>
-            //    {
-            //        gameObjects.AddRange(Cells[index][innerIndex]);
-            //    });
-            //});
-            for (int i = minX; i < maxX; i++)
-            {
-                for (int j = minY; j < maxY; j++)
-                {
-                    Cells[i][j].ForEach(x => gameObjects.Add(x.GraphicsComponent));
-                }
-            }
-
-            return gameObjects;
-        }
-
-        public void Move(IGameObject unit, float x, float y)
-        {
-            int oldCellX = (int)(unit.Transform.Position.X / _cellSize);
-            int oldCellY = (int)(unit.Transform.Position.Y / _cellSize);
+            int oldCellX = (int)(position.Position.X / _cellSize);
+            int oldCellY = (int)(position.Position.Y / _cellSize);
 
             int cellX = (int)(x / _cellSize);
             int cellY = (int)(y / _cellSize);
 
             Vector2 newPos = new Vector2(x, y);
-            unit.Transform.Position = newPos;
+            position.Position = newPos;
 
             // If it didn't change cells, we're done.
             if (oldCellX == cellX && oldCellY == cellY) return;
 
             // Unlink it from the list of its old cell.
-            Cells[cellX][cellY].Remove(unit);
+            if (cellX < Cells.Length && cellX >= 0 && cellY < Cells[0].Length && cellY >= 0)
+            {
+                Cells[cellX][cellY].Remove(unit);
 
-            // Add it back to the grid at its new cell.
-            Add(unit);
+                // Add it back to the grid at its new cell.
+                Add(unit, position);
+            }
+
         }
     }
 }

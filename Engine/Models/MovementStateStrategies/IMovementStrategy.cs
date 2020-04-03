@@ -1,12 +1,10 @@
-﻿using Engine.Models.GameObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Engine.Coordinates;
+using Engine.Models.Components;
 
 namespace Engine.Models.MovementStateStrategies
 {
     public interface IMovementStrategy
     {
-        public void ExecuteStrategy(ILivingEntity entity);
+        public void ExecuteStrategy(uint entity, ITransformComponent transform, ISpatialIndex grid);
     }
 }

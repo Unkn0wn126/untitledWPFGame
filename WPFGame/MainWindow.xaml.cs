@@ -1,28 +1,18 @@
 ﻿#define TRACE
 using Engine.Models.Cameras;
 using Engine.Models.Components;
-using Engine.Models.GameObjects;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.ResourceConstants.Images;
 using Engine.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace WPFGame
@@ -112,12 +102,13 @@ namespace WPFGame
             DrawBackground(drawingContext);
 
             // need to update the camera to know what is visible
-            _session.CurrentScene.SceneCamera.UpdatePosition(_currentScene.PlayerObject, _currentScene);
+            _session.UpdateGraphics();
 
             DrawSceneObjects(drawingContext);
 
             // focus point always rendered at the center of the scene
-            DrawGraphicsComponent(_currentScene.PlayerGraphicsComponent, _currentCamera.XOffset, _currentCamera.YOffset, drawingContext);
+            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), _currentCamera.XOffset, _currentCamera.YOffset, _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext);
+            //DrawGraphicsComponent(_currentScene.PlayerGraphicsComponent, _currentCamera.XOffset, _currentCamera.YOffset, drawingContext);
 
             drawingContext.Close();
             bitmap.Render(_drawingVisual);
@@ -125,15 +116,18 @@ namespace WPFGame
 
         private void DrawSceneObjects(DrawingContext drawingContext)
         {
-            Vector2 focusPos = _currentScene.PlayerGraphicsComponent.Transform.Position;
+            Vector2 focusPos = _currentScene.Transform.Position;
+            int index = 0;
+            List<ITransformComponent> transformComponents = _currentCamera.VisibleTransforms;
 
             foreach (var item in _currentCamera.VisibleObjects)
             {
                 // conversion of logical coordinates to graphical ones
-                float graphicX = CalculateGraphicsCoordinate(item.Transform.Position.X, _currentCamera.XOffset, focusPos.X);
-                float graphicY = CalculateGraphicsCoordinate(item.Transform.Position.Y, _currentCamera.YOffset, focusPos.Y);
+                float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
+                float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
 
-                DrawGraphicsComponent(item, graphicX, graphicY, drawingContext);
+                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext);
+                index++;
             }
         }
 
@@ -142,12 +136,12 @@ namespace WPFGame
             return logicalPosition < focusPos ? offset - (focusPos - logicalPosition) : offset + (logicalPosition - focusPos);
         }
 
-        private void DrawGraphicsComponent(IGraphicsComponent item, float graphicX, float graphicY, DrawingContext drawingContext)
+        private void DrawGraphicsComponent(IGraphicsComponent item, float graphicX, float graphicY, float width, float height, DrawingContext drawingContext)
         {
             _rectangle.X = graphicX;
             _rectangle.Y = graphicY;
-            _rectangle.Width = item.Transform.ScaleX;
-            _rectangle.Height = item.Transform.ScaleY;
+            _rectangle.Width = width;
+            _rectangle.Height = height;
 
             //drawingContext.DrawRectangle(Brushes.Gray, null, _rectangle);
 

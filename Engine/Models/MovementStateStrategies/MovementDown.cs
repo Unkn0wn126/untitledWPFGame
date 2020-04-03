@@ -1,20 +1,27 @@
-﻿using Engine.Models.GameObjects;
-using System;
-using System.Collections.Generic;
+﻿using Engine.Coordinates;
+using Engine.Models.Components;
 using System.Numerics;
-using System.Text;
 
 namespace Engine.Models.MovementStateStrategies
 {
     public class MovementDown : IMovementStrategy
     {
-        public void ExecuteStrategy(ILivingEntity entity)
-        {
-            float baseVelocity = entity.Stats.Speed;
-            Vector2 newPos = entity.Transform.Position;
-            newPos.Y += baseVelocity;
+        private float _xModifier;
+        private float _yModifier;
 
-            entity.Move(newPos);
+        public MovementDown()
+        {
+            _xModifier = 0;
+            _yModifier = 1;
+        }
+        public void ExecuteStrategy(uint entity, ITransformComponent transform, ISpatialIndex grid)
+        {
+            float baseVelocity = 5f;
+            Vector2 newPos = transform.Position;
+            newPos.X += baseVelocity * _xModifier;
+            newPos.Y += baseVelocity * _yModifier;
+
+            grid.Move(entity, transform, newPos.X, newPos.Y);
         }
     }
 }

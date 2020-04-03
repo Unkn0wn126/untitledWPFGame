@@ -1,11 +1,6 @@
-﻿#define TRACE
-using Engine.Coordinates;
+﻿using Engine.EntityManagers;
 using Engine.Models.Components;
-using Engine.Models.GameObjects;
-using Engine.Models.Scenes;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 
 namespace Engine.Models.Cameras
 {
@@ -13,10 +8,10 @@ namespace Engine.Models.Cameras
     {
         private float _halfWidth;
         private float _halfHeight;
-        public Vector2 Position { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
         public List<IGraphicsComponent> VisibleObjects { get; set; }
+        public List<ITransformComponent> VisibleTransforms { get; set; }
         public float XOffset { get; set; }
         public float YOffset { get; set; }
 
@@ -24,6 +19,7 @@ namespace Engine.Models.Cameras
         public Camera(float width, float height)
         {
             VisibleObjects = new List<IGraphicsComponent>();
+            VisibleTransforms = new List<ITransformComponent>();
             // This should be passed as a value in the future
             // gonna be based on the size of the window
             Width = width;
@@ -37,14 +33,13 @@ namespace Engine.Models.Cameras
         /// </summary>
         /// <param name="focusPoint"></param>
         /// <param name="context"></param>
-        public void UpdatePosition(IGameObject focusPoint, IScene context)
+        public void UpdatePosition(ITransformComponent focusPoint, IEntityManager entityManager)
         {
-            ISpatialIndex grid = context.Grid;
+            VisibleObjects = entityManager.GetAllActiveGraphicsComponents();
+            VisibleTransforms = entityManager.GetAllActiveTransformComponents();
 
-            VisibleObjects = grid.GetGraphicsComponentsInRadius(focusPoint.Transform, 3);
-
-            XOffset = _halfWidth - focusPoint.Transform.ScaleX;
-            YOffset = _halfHeight - focusPoint.Transform.ScaleY;
+            XOffset = _halfWidth - focusPoint.ScaleX;
+            YOffset = _halfHeight - focusPoint.ScaleY;
         }
     }
 }
