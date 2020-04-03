@@ -1,6 +1,7 @@
 ﻿using Engine.Coordinates;
 using Engine.Models.Components;
 using Engine.Models.GameObjects;
+using Engine.Models.GameObjects.LivingEntities;
 using Engine.Models.GameStateMachine;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
@@ -19,8 +20,8 @@ namespace Engine.ViewModels
     public class Game : IGame
     {
         private List<IScene> _scenes;
-        private IGameComponent _playerMovement;
-        private IGameObject _player;
+        private IEntityMovementComponent _playerMovement;
+        private ILivingEntity _player;
         private List<IGameObject> _gameObjects;
 
         public IScene CurrentScene { get; set; }
@@ -30,11 +31,8 @@ namespace Engine.ViewModels
         public GameStateMachine State { get; set; }
         public ImagePaths ImgPaths { get; set; }
 
-        public Game(float xRes, float yRes)
+        private IScene GenerateScene(float xRes, float yRes)
         {
-            GraphicsComponents = new List<IGraphicsComponent>();
-            ImgPaths = new ImagePaths();
-
             int objectSize = 50;
             int numOfObjectsInCell = 5;
             int cellSize = objectSize * numOfObjectsInCell;
@@ -45,19 +43,14 @@ namespace Engine.ViewModels
 
             Grid grid = new Grid(numCellsX, numCellsY, cellSize);
 
-            State = new GameStateMachine
-            {
-                CurrentState = GameState.LOADING
-            };
-
-            _playerMovement = new PlayerMovementComponent();
+            _playerMovement = new EntityMovementComponent();
             List<ImgNames> testList = new List<ImgNames> { ImgNames.PLAYER };
             _gameObjects = new List<IGameObject>();
             ITransformComponent playerTransform = new TransformComponent(new Vector2(0, 0), objectSize, objectSize, new Vector2(0, 0));
             IGraphicsComponent test = new GraphicsComponent(testList, playerTransform);
             GraphicsComponents.Add(test);
-            _player = new LivingEntity(grid, test, _playerMovement, playerTransform, 10);
-            _scenes = new List<IScene>();
+            _player = new LivingEntity(grid, test, _playerMovement, playerTransform, new GeneralEntityStats(100, 5f, 10, 10));
+
 
             // This is gonna be in a factory...
             for (int i = 0; i < numOfObjectsOnX; i++)
@@ -76,7 +69,21 @@ namespace Engine.ViewModels
             }
             _gameObjects.Add(_player);
 
-            _scenes.Add(new GeneralScene(grid, _gameObjects, _player, xRes, yRes));
+            return new GeneralScene(grid, _gameObjects, _player, xRes, yRes);
+        }
+
+        public Game(float xRes, float yRes)
+        {
+            GraphicsComponents = new List<IGraphicsComponent>();
+            ImgPaths = new ImagePaths();
+            _scenes = new List<IScene>();
+
+            State = new GameStateMachine
+            {
+                CurrentState = GameState.LOADING
+            };
+
+            _scenes.Add(GenerateScene(xRes, yRes));
             CurrentScene = _scenes[0];
 
             State.CurrentState = GameState.RUNNING;
@@ -84,14 +91,14 @@ namespace Engine.ViewModels
 
         public void HandleUserInput(IMovementStrategy newState)
         {
-            // TODO: Change this to just a general entityMovementComponent interface...
-            ((PlayerMovementComponent)_playerMovement).SetMovementState(newState);
+            _playerMovement.SetMovementState(newState);
         }
 
         // Create objects here? Through factories...
 
         public void Update()
         {
+            // TODO: Change this to a state class resolved system
             if (State.IsRunning())
             {
                 CurrentScene.Update();

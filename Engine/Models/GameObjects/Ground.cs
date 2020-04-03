@@ -17,9 +17,9 @@ namespace Engine.Models.GameObjects
 
         public IGraphicsComponent GraphicsComponent { get; set; }
         public ITransformComponent Transform { get; set; }
-        public Grid Grid { get; set; }
+        public ISpatialIndex Grid { get; set; }
 
-        public Ground(Grid grid, IGraphicsComponent graphicsComponent, ITransformComponent transform)
+        public Ground(ISpatialIndex grid, IGraphicsComponent graphicsComponent, ITransformComponent transform)
         {
             Grid = grid;
             GraphicsComponent = graphicsComponent;
@@ -29,7 +29,7 @@ namespace Engine.Models.GameObjects
 
         public void Update(IScene logicContext)
         {
-            GraphicsComponent.Update(this, logicContext);
+            //GraphicsComponent.Update(this, logicContext);
         }
 
         public void Move(Vector2 newPos)

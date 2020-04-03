@@ -16,6 +16,6 @@ namespace Engine.Models.Cameras
         public float XOffset { get; set; }
         public float YOffset { get; set; }
         public List<IGraphicsComponent> VisibleObjects { get; set; }
-        public void UpdatePosition(IGraphicsComponent focusPoint, IScene context);
+        public void UpdatePosition(IGameObject focusPoint, IScene context);
     }
 }

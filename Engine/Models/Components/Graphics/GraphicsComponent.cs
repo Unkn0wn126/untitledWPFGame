@@ -26,17 +26,5 @@ namespace Engine.Models.Components
 
             Transform = transform;
         }
-
-        /// <summary>
-        /// Should be called with every update of graphics
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="logicContext"></param>
-        public void Update(IGameObject entity, IScene logicContext)
-        {
-            //Position = entity.Position;
-            //Width = entity.Width;
-            //Height = entity.Height;
-        }
     }
 }

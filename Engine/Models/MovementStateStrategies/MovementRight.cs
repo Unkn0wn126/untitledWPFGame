@@ -8,9 +8,9 @@ namespace Engine.Models.MovementStateStrategies
 {
     public class MovementRight : IMovementStrategy
     {
-        public void ExecuteStrategy(IGameObject entity)
+        public void ExecuteStrategy(ILivingEntity entity)
         {
-            float baseVelocity = 5f; // TODO: Change this to get the speed from the entity
+            float baseVelocity = entity.Stats.Speed;
             Vector2 newPos = entity.Transform.Position;
             newPos.X += baseVelocity;
 

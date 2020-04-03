@@ -12,27 +12,28 @@ namespace Engine.Models.GameObjects
     /// Game object whose purpose is to move around
     /// the scene and to do so based on its AI or player input
     /// </summary>
-    public class LivingEntity : IGameObject
+    public class LivingEntity : ILivingEntity
     {
         public Guid Id { get; set; }
         public ITransformComponent Transform { get; set; }
         public IGraphicsComponent GraphicsComponent { get; set; }
-        public IGameComponent PlayerMovementComponent { get; set; }
-        public Grid Grid { get; set; }
+        public IEntityMovementComponent PlayerMovementComponent { get; set; }
+        public IEntityStats Stats { get; set; }
+        public ISpatialIndex Grid { get; set; }
 
-        public LivingEntity(Grid grid, IGraphicsComponent graphicsComponent, IGameComponent playerMovementComponent, ITransformComponent transform, float baseVelocity)
+        public LivingEntity(ISpatialIndex grid, IGraphicsComponent graphicsComponent, IEntityMovementComponent playerMovementComponent, ITransformComponent transform, IEntityStats stats)
         {
             Grid = grid;
             GraphicsComponent = graphicsComponent;
             PlayerMovementComponent = playerMovementComponent;
             Transform = transform;
+            Stats = stats;
             grid.Add(this);
         }
 
         public void Update(IScene logicContext)
         {
-            GraphicsComponent.Update(this, logicContext);
-            PlayerMovementComponent.Update(this, logicContext);
+            PlayerMovementComponent.Update(this);
         }
 
         public void Move(Vector2 newPos)

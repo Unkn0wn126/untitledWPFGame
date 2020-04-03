@@ -9,7 +9,7 @@ using Engine.Models.Components;
 
 namespace Engine.Coordinates
 {
-    public class Grid
+    public class Grid : ISpatialIndex
     {
         private int _numOfCellsOnX;
         private int _numOfCellsOnY;
@@ -44,10 +44,10 @@ namespace Engine.Coordinates
             Cells[cellX][cellY].Add(unit);
         }
 
-        public List<IGameObject> GetObjectsInRadius(IGameObject focus, int cellRadius)
+        public List<IGameObject> GetObjectsInRadius(ITransformComponent focus, int cellRadius)
         {
-            int cellX = (int)(focus.Transform.Position.X / _cellSize);
-            int cellY = (int)(focus.Transform.Position.Y / _cellSize);
+            int cellX = (int)(focus.Position.X / _cellSize);
+            int cellY = (int)(focus.Position.Y / _cellSize);
 
             List<IGameObject> gameObjects = new List<IGameObject>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;
@@ -73,10 +73,10 @@ namespace Engine.Coordinates
             return gameObjects;
         }
 
-        public List<IGraphicsComponent> GetGraphicsComponentsInRadius(IGameObject focus, int cellRadius)
+        public List<IGraphicsComponent> GetGraphicsComponentsInRadius(ITransformComponent focus, int cellRadius)
         {
-            int cellX = (int)(focus.Transform.Position.X / _cellSize);
-            int cellY = (int)(focus.Transform.Position.Y / _cellSize);
+            int cellX = (int)(focus.Position.X / _cellSize);
+            int cellY = (int)(focus.Position.Y / _cellSize);
 
             List<IGraphicsComponent> gameObjects = new List<IGraphicsComponent>();
             int minX = cellX - cellRadius > 0 ? cellX - cellRadius : 0;

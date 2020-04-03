@@ -13,7 +13,7 @@ namespace Engine.Models.Scenes
         public List<IGraphicsComponent> SceneGraphicsComponents { get; set; }
         public List<IGameObject> SceneObjects { get; set; }
         public IGameObject PlayerObject { get; set; }
-        public Grid Grid { get; set; }
+        public ISpatialIndex Grid { get; set; }
         public IGraphicsComponent PlayerGraphicsComponent { get; set; }
         public ICamera SceneCamera { get; set; }
         public void Update();

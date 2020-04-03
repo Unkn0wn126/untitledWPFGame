@@ -1,12 +1,12 @@
 ﻿using Engine.Models.GameObjects;
-using Engine.Models.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Models.Components
+namespace Engine.Models.Factories
 {
-    public interface IGameComponent
+    public interface IGameObjectFactory
     {
+        public IGameObject CreateObject();
     }
 }

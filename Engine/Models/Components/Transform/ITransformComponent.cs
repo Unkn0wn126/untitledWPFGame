@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Engine.Models.Components
 {
-    public interface ITransformComponent
+    public interface ITransformComponent : IGameComponent
     {
         public float ScaleX { get; set; }
         public float ScaleY { get; set; }

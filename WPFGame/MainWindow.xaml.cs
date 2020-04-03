@@ -103,57 +103,65 @@ namespace WPFGame
             _rectangle = new Rect();
         }
 
-
-
         public void UpdateGraphics(object sender, EventArgs e)
         {
             // redrawing a bitmap image should be faster
             bitmap.Clear();
             var drawingContext = _drawingVisual.RenderOpen();
 
+            DrawBackground(drawingContext);
+
+            // need to update the camera to know what is visible
+            _session.CurrentScene.SceneCamera.UpdatePosition(_currentScene.PlayerObject, _currentScene);
+
+            DrawSceneObjects(drawingContext);
+
+            // focus point always rendered at the center of the scene
+            DrawGraphicsComponent(_currentScene.PlayerGraphicsComponent, _currentCamera.XOffset, _currentCamera.YOffset, drawingContext);
+
+            drawingContext.Close();
+            bitmap.Render(_drawingVisual);
+        }
+
+        private void DrawSceneObjects(DrawingContext drawingContext)
+        {
+            Vector2 focusPos = _currentScene.PlayerGraphicsComponent.Transform.Position;
+
+            foreach (var item in _currentCamera.VisibleObjects)
+            {
+                // conversion of logical coordinates to graphical ones
+                float graphicX = CalculateGraphicsCoordinate(item.Transform.Position.X, _currentCamera.XOffset, focusPos.X);
+                float graphicY = CalculateGraphicsCoordinate(item.Transform.Position.Y, _currentCamera.YOffset, focusPos.Y);
+
+                DrawGraphicsComponent(item, graphicX, graphicY, drawingContext);
+            }
+        }
+
+        private float CalculateGraphicsCoordinate(float logicalPosition, float offset, float focusPos)
+        {
+            return logicalPosition < focusPos ? offset - (focusPos - logicalPosition) : offset + (logicalPosition - focusPos);
+        }
+
+        private void DrawGraphicsComponent(IGraphicsComponent item, float graphicX, float graphicY, DrawingContext drawingContext)
+        {
+            _rectangle.X = graphicX;
+            _rectangle.Y = graphicY;
+            _rectangle.Width = item.Transform.ScaleX;
+            _rectangle.Height = item.Transform.ScaleY;
+
+            //drawingContext.DrawRectangle(Brushes.Gray, null, _rectangle);
+
+            drawingContext.DrawImage(_sprites[item.CurrentImageName], _rectangle);
+        }
+
+        private void DrawBackground(DrawingContext drawingContext)
+        {
             // to have a black background as a default
             _rectangle.X = 0;
             _rectangle.Y = 0;
             _rectangle.Width = _xRes;
             _rectangle.Height = _yRes;
             drawingContext.DrawRectangle(Brushes.Black, null, _rectangle);
-
-            // need to update the camera to know what is visible
-            _session.CurrentScene.SceneCamera.UpdatePosition(_currentScene.PlayerGraphicsComponent, _currentScene);
-
-            float xOffset = _currentCamera.XOffset;
-            float yOffset = _currentCamera.YOffset;
-            Vector2 focusPos = _currentScene.PlayerGraphicsComponent.Transform.Position;
-
-            foreach (var item in _currentCamera.VisibleObjects)
-            {
-
-                // conversion of logical coordinates to graphical ones
-                float graphicX = item.Transform.Position.X < focusPos.X ? xOffset - (focusPos.X - item.Transform.Position.X) : xOffset + (item.Transform.Position.X - focusPos.X);
-                float graphicY = item.Transform.Position.Y < focusPos.Y ? yOffset - (focusPos.Y - item.Transform.Position.Y) : yOffset + (item.Transform.Position.Y - focusPos.Y);
-
-                _rectangle.X = graphicX;
-                _rectangle.Y = graphicY;
-                _rectangle.Width = item.Transform.ScaleX;
-                _rectangle.Height = item.Transform.ScaleY;
-
-                //drawingContext.DrawRectangle(Brushes.Gray, null, _rectangle);
-
-                drawingContext.DrawImage(_sprites[item.CurrentImageName], _rectangle);
-            }
-
-            IGraphicsComponent player = _currentScene.PlayerGraphicsComponent;
-
-            // focus point always rendered at the center of the scene
-            _rectangle.X = _currentCamera.XOffset;
-            _rectangle.Y = _currentCamera.YOffset;
-            _rectangle.Width = player.Transform.ScaleX;
-            _rectangle.Height = player.Transform.ScaleY;
-
-            drawingContext.DrawImage(_sprites[player.CurrentImageName], _rectangle);
-
-            drawingContext.Close();
-            bitmap.Render(_drawingVisual);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -163,27 +171,7 @@ namespace WPFGame
                 _session.State.TogglePause();
                 if (!_session.State.IsRunning())
                 {
-                    // show "Pause" overlay
-                    Rectangle overlay = new Rectangle();
-                    Color testColor = Color.FromArgb(172, 172, 172, 255);
-                    overlay.Width = _xRes;
-                    overlay.Height = _yRes;
-                    overlay.Fill = new SolidColorBrush(testColor);
-                    GameCanvas.Children.Add(overlay);
-
-                    TextBlock textBlock = new TextBlock();
-
-                    textBlock.Text = "PAUSED";
-
-                    textBlock.FontSize = 60;
-
-                    textBlock.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-
-                    Canvas.SetLeft(textBlock, 350);
-
-                    Canvas.SetTop(textBlock, 250);
-
-                    GameCanvas.Children.Add(textBlock);
+                    ShowPauseOverlay();
                 }
                 else
                 {
@@ -194,7 +182,32 @@ namespace WPFGame
 
             IMovementStrategy movementStrategy = _inputHandler.HandleKeyPressed(e.Key);
             _session.HandleUserInput(movementStrategy);
-        }        
+        }
+        
+        private void ShowPauseOverlay()
+        {
+            // show "Pause" overlay
+            Rectangle overlay = new Rectangle();
+            Color testColor = Color.FromArgb(172, 172, 172, 255);
+            overlay.Width = _xRes;
+            overlay.Height = _yRes;
+            overlay.Fill = new SolidColorBrush(testColor);
+            GameCanvas.Children.Add(overlay);
+
+            TextBlock textBlock = new TextBlock();
+
+            textBlock.Text = "PAUSED";
+
+            textBlock.FontSize = 60;
+
+            textBlock.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+
+            Canvas.SetLeft(textBlock, 350);
+
+            Canvas.SetTop(textBlock, 250);
+
+            GameCanvas.Children.Add(textBlock);
+        }
         
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {

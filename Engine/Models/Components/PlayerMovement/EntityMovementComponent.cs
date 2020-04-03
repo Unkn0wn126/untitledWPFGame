@@ -1,5 +1,4 @@
-﻿//#define TRACE
-using Engine.Models.GameObjects;
+﻿using Engine.Models.GameObjects;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using System;
@@ -24,7 +23,7 @@ namespace Engine.Models.Components
         STILL
     }
 
-    public class PlayerMovementComponent : IGameComponent
+    public class EntityMovementComponent : IEntityMovementComponent
     {
         private IMovementStrategy _currentMovementStrategy;
 
@@ -33,7 +32,7 @@ namespace Engine.Models.Components
             _currentMovementStrategy = newMovementStrategy;
         }
 
-        public PlayerMovementComponent()
+        public EntityMovementComponent()
         {
             _currentMovementStrategy = null;
         }
@@ -42,8 +41,7 @@ namespace Engine.Models.Components
         /// Should be called on every tick
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="logicContext"></param>
-        public void Update(IGameObject entity, IScene logicContext)
+        public void Update(ILivingEntity entity)
         {
             _currentMovementStrategy?.ExecuteStrategy(entity);
         }

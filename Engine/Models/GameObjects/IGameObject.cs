@@ -10,7 +10,7 @@ namespace Engine.Models.GameObjects
 {
     public interface IGameObject
     {
-        public Grid Grid { get; set; }
+        public ISpatialIndex Grid { get; set; }
         public Guid Id { get; set; }
         public ITransformComponent Transform { get; set; }
         public IGraphicsComponent GraphicsComponent {get;set;}

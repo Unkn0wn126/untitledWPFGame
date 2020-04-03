@@ -7,6 +7,6 @@ namespace Engine.Models.MovementStateStrategies
 {
     public interface IMovementStrategy
     {
-        public void ExecuteStrategy(IGameObject entity);
+        public void ExecuteStrategy(ILivingEntity entity);
     }
 }

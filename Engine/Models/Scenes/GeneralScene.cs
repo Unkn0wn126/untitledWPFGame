@@ -21,9 +21,9 @@ namespace Engine.Models.Scenes
         public ICamera SceneCamera { get; set; }
         public List<IGraphicsComponent> SceneGraphicsComponents { get; set; }
         public IGraphicsComponent PlayerGraphicsComponent { get; set; }
-        public Grid Grid { get; set; }
+        public ISpatialIndex Grid { get; set; }
 
-        public GeneralScene(Grid coordinates, List<IGameObject> sceneElements, IGameObject playerObject, float visibleWidth, float visibleHeight)
+        public GeneralScene(ISpatialIndex coordinates, List<IGameObject> sceneElements, IGameObject playerObject, float visibleWidth, float visibleHeight)
         {
             Grid = coordinates;
             SceneObjects = sceneElements;
@@ -36,12 +36,8 @@ namespace Engine.Models.Scenes
 
         public void Update()
         {
-            List<IGameObject> activeObjects = Grid.GetObjectsInRadius(PlayerObject, 5);
+            List<IGameObject> activeObjects = Grid.GetObjectsInRadius(PlayerObject.Transform, 5);
             activeObjects.ForEach(x => { if (x != PlayerObject) x.Update(this); });
-            //Parallel.ForEach(activeObjects, item =>
-            //{
-            //    item.Update(this);
-            //});
             PlayerObject.Update(this);
         }
     }
