@@ -2,6 +2,7 @@
 using Engine.EntityManagers;
 using Engine.Models.Cameras;
 using Engine.Models.Components;
+using Engine.Models.Components.Collision;
 using Engine.Models.GameStateMachine;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
@@ -28,6 +29,7 @@ namespace Engine.ViewModels
         public GameStateMachine State { get; set; }
         public ImagePaths ImgPaths { get; set; }
         private IProcessor _graphicsProcessor;
+        private IProcessor _collisionProcessor;
         private ITransformComponent _playerTransform;
 
         private IMovementStrategy _movementStrategy;
@@ -62,20 +64,34 @@ namespace Engine.ViewModels
                 }
             }
 
-            //_playerMovement = new EntityMovementComponent();
-            //List<ImgNames> testList = new List<ImgNames> { ImgNames.PLAYER };
-            //_gameObjects = new List<IGameObject>();
+            for (int i = 0; i < numOfObjectsOnX / 2; i+=2)
+            {
+                for (int j = 0; j < numOfObjectsOnY / 2; j+=2)
+                {
+                    ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize * 2, j * objectSize * 2), objectSize, objectSize, new Vector2(0, 0));
+                    IGraphicsComponent blockcurrent = new GraphicsComponent(ImgNames.ROCK);
+
+                    uint block = manager.AddEntity(blockTransform);
+                    manager.AddComponentToEntity(block, blockcurrent);
+
+                    ICollisionComponent blockCollision = new CollisionComponent(i + 1, false);
+                    manager.AddComponentToEntity(block, blockCollision);
+                }
+            }
+
             ITransformComponent playerTransform = new TransformComponent(new Vector2(0, 0), objectSize, objectSize, new Vector2(0, 0));
             IGraphicsComponent test = new GraphicsComponent(ImgNames.PLAYER);
             _playerTransform = playerTransform;
-            //GraphicsComponents.Add(test);
-            //_player = new LivingEntity(grid, test, _playerMovement, playerTransform, new GeneralEntityStats(100, 5f, 10, 10));
 
             uint player = manager.AddEntity(playerTransform);
             manager.AddComponentToEntity(player, test);
+
+            ICollisionComponent collision = new CollisionComponent(3, true);
+            manager.AddComponentToEntity(player, collision);
             IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, player, playerTransform, grid);
 
             _graphicsProcessor = new GraphicsProcessor(scene, playerTransform);
+            _collisionProcessor = new CollisionProcessor(scene);
 
             return scene;
         }
@@ -94,7 +110,7 @@ namespace Engine.ViewModels
             _scenes.Add(GenerateScene(xRes, yRes));
             CurrentScene = _scenes[0];
 
-            State.CurrentState = GameState.RUNNING;
+            //State.CurrentState = GameState.RUNNING;
         }
 
         public void HandleUserInput(IMovementStrategy newState)
@@ -109,6 +125,8 @@ namespace Engine.ViewModels
             // TODO: Change this to a state class resolved system
             if (State.IsRunning())
             {
+                CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
+                _collisionProcessor.ProcessOnEeGameTick(0);
                 _movementStrategy?.ExecuteStrategy(CurrentScene.PlayerEntity, CurrentScene.Transform, CurrentScene.Coordinates);
             }
         }

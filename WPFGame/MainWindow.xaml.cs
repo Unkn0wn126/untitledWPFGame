@@ -38,6 +38,7 @@ namespace WPFGame
 
         private BitmapImage _groundImage;
         private BitmapImage _cobbleImage;
+        private BitmapImage _rockImage;
         private BitmapImage _playerAvatar;
 
         private IScene _currentScene;
@@ -85,10 +86,12 @@ namespace WPFGame
             _groundImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.DIRT]);
             _cobbleImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.COBBLESTONE]);
             _playerAvatar = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.PLAYER]);
+            _rockImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.ROCK]);
 
             _sprites.Add(ImgNames.DIRT, _groundImage);
             _sprites.Add(ImgNames.COBBLESTONE, _cobbleImage);
             _sprites.Add(ImgNames.PLAYER, _playerAvatar);
+            _sprites.Add(ImgNames.ROCK, _rockImage);
 
             _rectangle = new Rect();
         }

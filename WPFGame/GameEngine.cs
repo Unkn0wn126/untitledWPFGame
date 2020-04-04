@@ -1,4 +1,5 @@
-﻿using Engine.ViewModels;
+﻿using Engine.Models.GameStateMachine;
+using Engine.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,6 +35,7 @@ namespace WPFGame
             _app = new App();
 
             _app.Run(_graphicsEngine);
+            _logicEngine.State.CurrentState = GameState.RUNNING;
         }
 
         private void Update(object sender, ElapsedEventArgs e)

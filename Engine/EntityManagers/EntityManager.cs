@@ -31,6 +31,11 @@ namespace Engine.EntityManagers
             _soundComponents = new Dictionary<uint, ISoundComponent>();
         }
 
+        public List<uint> GetAllEntities()
+        {
+            return _entities;
+        }
+
         public void UpdateActiveEntities(ITransformComponent focusPoint)
         {
             _activeEntities = _grid.GetObjectsInRadius(focusPoint, 3);
@@ -180,19 +185,24 @@ namespace Engine.EntityManagers
 
         public bool EntityHasComponent(uint id, Type componentType)
         {
-            if (componentType is IGraphicsComponent)
+            if (componentType.Name == typeof(IGraphicsComponent).Name)
                 return _graphicsComponents.ContainsKey(id);
 
-            if (componentType is ITransformComponent)
+            if (componentType.Name == typeof(ITransformComponent).Name)
                 return _transformComponents.ContainsKey(id);
 
-            if (componentType is ICollisionComponent)
+            if (componentType.Name == typeof(ICollisionComponent).Name)
                 return _collisionComponents.ContainsKey(id);
 
-            if (componentType is ISoundComponent)
+            if (componentType.Name == typeof(ISoundComponent).Name)
                 return _soundComponents.ContainsKey(id);
 
             return false;
+        }
+
+        public List<uint> GetAllActiveEntities()
+        {
+            return _activeEntities;
         }
     }
 }

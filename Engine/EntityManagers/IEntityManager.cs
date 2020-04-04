@@ -11,6 +11,7 @@ namespace Engine.EntityManagers
     /// </summary>
     public interface IEntityManager
     {
+        public List<uint> GetAllEntities();
         public uint AddEntity();
         public uint AddEntity(ITransformComponent transform);
         public void RemoveEntity(uint id);
@@ -38,6 +39,7 @@ namespace Engine.EntityManagers
         public List<ISoundComponent> GetAllActiveSoundComponents();
 
         public List<uint> GetAllEntitiesPossessingComponent(Type componentType);
+        public List<uint> GetAllActiveEntities();
         public bool EntityHasComponent(uint id, Type componentType);
     }
 }

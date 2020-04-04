@@ -33,10 +33,10 @@ namespace Engine.Models.Cameras
         /// </summary>
         /// <param name="focusPoint"></param>
         /// <param name="context"></param>
-        public void UpdatePosition(ITransformComponent focusPoint, IEntityManager entityManager)
+        public void UpdatePosition(ITransformComponent focusPoint, List<IGraphicsComponent> graphicsComponents, List<ITransformComponent> transformComponents)
         {
-            VisibleObjects = entityManager.GetAllActiveGraphicsComponents();
-            VisibleTransforms = entityManager.GetAllActiveTransformComponents();
+            VisibleObjects = graphicsComponents;
+            VisibleTransforms = transformComponents;
 
             XOffset = _halfWidth - focusPoint.ScaleX;
             YOffset = _halfHeight - focusPoint.ScaleY;
