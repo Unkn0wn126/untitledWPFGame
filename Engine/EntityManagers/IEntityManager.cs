@@ -1,5 +1,7 @@
-﻿using Engine.Models;
+﻿using Engine.Coordinates;
+using Engine.Models;
 using Engine.Models.Components;
+using Engine.Models.Components.RigidBody;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +13,7 @@ namespace Engine.EntityManagers
     /// </summary>
     public interface IEntityManager
     {
+        public ISpatialIndex Coordinates { get; set; }
         public List<uint> GetAllEntities();
         public uint AddEntity();
         public uint AddEntity(ITransformComponent transform);
@@ -34,9 +37,14 @@ namespace Engine.EntityManagers
         public List<ICollisionComponent> GetAllActiveCollicionComponents();
         
         // Sound
-        public ISoundComponent GetSoundComponents(uint entity);
+        public ISoundComponent GetSoundComponent(uint entity);
         public List<ISoundComponent> GetAllSoundComponents();
         public List<ISoundComponent> GetAllActiveSoundComponents();
+        
+        // Rigid Body
+        public IRigidBodyComponent GetRigidBodyComponent(uint entity);
+        public List<IRigidBodyComponent> GetAllRigidBodyComponents();
+        public List<IRigidBodyComponent> GetAllActiveRigidBodyComponents();
 
         public List<uint> GetAllEntitiesPossessingComponent(Type componentType);
         public List<uint> GetAllActiveEntities();

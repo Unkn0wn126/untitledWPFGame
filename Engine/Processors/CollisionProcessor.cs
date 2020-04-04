@@ -10,15 +10,11 @@ namespace Engine.Processors
 {
     public class CollisionProcessor : IProcessor
     {
-        private List<ICollisionComponent> _collisions;
-        private List<ITransformComponent> _transforms;
 
         private IScene _context;
 
         public CollisionProcessor(IScene context)
         {
-            _collisions = new List<ICollisionComponent>();
-            _transforms = new List<ITransformComponent>();
             _context = context;
         }
 
@@ -27,6 +23,7 @@ namespace Engine.Processors
             List<ICollisionComponent> collisions = new List<ICollisionComponent>();
             List<ITransformComponent> transforms = new List<ITransformComponent>();
             List<uint> active = _context.EntityManager.GetAllActiveEntities();
+            List<uint> useful = new List<uint>();
             active.ForEach(x =>
             {
                 if (_context.EntityManager.EntityHasComponent(x, typeof(ICollisionComponent)) && _context.EntityManager.EntityHasComponent(x, typeof(ITransformComponent)))
@@ -38,6 +35,7 @@ namespace Engine.Processors
                     {
                         collisions.Add(a);
                         transforms.Add(b);
+                        useful.Add(x);
                     }
                         
                 }
@@ -50,26 +48,26 @@ namespace Engine.Processors
                     //Trace.WriteLine($"j: {j}; i: {i}; count: {collisions.Count}");
                     if (IsPairColliding(transforms[i], transforms[j]) && transforms[i] != transforms[j])
                     {
-                        if (!collisions[i].CollidingWith.Contains(collisions[j]) && collisions[i].IsDynamic)
+                        if (!collisions[i].CollidingWith.Contains(useful[j]) && collisions[i].IsDynamic)
                         {
-                            collisions[i].CollidingWith.Add(collisions[j]);
+                            collisions[i].CollidingWith.Add(useful[j]);
                         }
                         
-                        if (!collisions[j].CollidingWith.Contains(collisions[i]) && collisions[j].IsDynamic)
+                        if (!collisions[j].CollidingWith.Contains(useful[i]) && collisions[j].IsDynamic)
                         {
-                            collisions[j].CollidingWith.Add(collisions[i]);
+                            collisions[j].CollidingWith.Add(useful[i]);
                         }
                     }
                     else
                     {
-                        if (collisions[i].CollidingWith.Contains(collisions[j]) && collisions[i].IsDynamic)
+                        if (collisions[i].CollidingWith.Contains(useful[j]) && collisions[i].IsDynamic)
                         {
-                            collisions[i].CollidingWith.Remove(collisions[j]);
+                            collisions[i].CollidingWith.Remove(useful[j]);
                         }
 
-                        if (collisions[j].CollidingWith.Contains(collisions[i]) && collisions[j].IsDynamic)
+                        if (collisions[j].CollidingWith.Contains(useful[i]) && collisions[j].IsDynamic)
                         {
-                            collisions[j].CollidingWith.Remove(collisions[i]);
+                            collisions[j].CollidingWith.Remove(useful[i]);
                         }
 
                     }

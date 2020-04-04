@@ -32,6 +32,7 @@ namespace WPFGame
 
         // Possibly better in another class
         private readonly Dictionary<ImgNames, BitmapImage> _sprites = new Dictionary<ImgNames, BitmapImage>();
+        private readonly Dictionary<ImgNames, Brush> _colors = new Dictionary<ImgNames, Brush>();
 
         // needed for rendering
         private DrawingVisual _drawingVisual = new DrawingVisual();
@@ -93,6 +94,11 @@ namespace WPFGame
             _sprites.Add(ImgNames.PLAYER, _playerAvatar);
             _sprites.Add(ImgNames.ROCK, _rockImage);
 
+            _colors.Add(ImgNames.DIRT, Brushes.Brown);
+            _colors.Add(ImgNames.COBBLESTONE, Brushes.LightGray);
+            _colors.Add(ImgNames.PLAYER, Brushes.Green);
+            _colors.Add(ImgNames.ROCK, Brushes.DarkGray);
+
             _rectangle = new Rect();
         }
 
@@ -110,7 +116,7 @@ namespace WPFGame
             DrawSceneObjects(drawingContext);
 
             // focus point always rendered at the center of the scene
-            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), _currentCamera.XOffset, _currentCamera.YOffset, _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext);
+            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), _currentCamera.XOffset, _currentCamera.YOffset, _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, false);
             //DrawGraphicsComponent(_currentScene.PlayerGraphicsComponent, _currentCamera.XOffset, _currentCamera.YOffset, drawingContext);
 
             drawingContext.Close();
@@ -129,7 +135,7 @@ namespace WPFGame
                 float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
                 float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
 
-                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext);
+                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext, false);
                 index++;
             }
         }
@@ -139,16 +145,17 @@ namespace WPFGame
             return logicalPosition < focusPos ? offset - (focusPos - logicalPosition) : offset + (logicalPosition - focusPos);
         }
 
-        private void DrawGraphicsComponent(IGraphicsComponent item, float graphicX, float graphicY, float width, float height, DrawingContext drawingContext)
+        private void DrawGraphicsComponent(IGraphicsComponent item, float graphicX, float graphicY, float width, float height, DrawingContext drawingContext, bool textureMode)
         {
             _rectangle.X = graphicX;
             _rectangle.Y = graphicY;
             _rectangle.Width = width;
             _rectangle.Height = height;
+            if (textureMode)
+                drawingContext.DrawImage(_sprites[item.CurrentImageName], _rectangle);
+            else
+                drawingContext.DrawRectangle(_colors[item.CurrentImageName], null, _rectangle);
 
-            //drawingContext.DrawRectangle(Brushes.Gray, null, _rectangle);
-
-            drawingContext.DrawImage(_sprites[item.CurrentImageName], _rectangle);
         }
 
         private void DrawBackground(DrawingContext drawingContext)
@@ -177,7 +184,7 @@ namespace WPFGame
                 }
             }
 
-            IMovementStrategy movementStrategy = _inputHandler.HandleKeyPressed(e.Key);
+            AxisStrategy movementStrategy = _inputHandler.HandleKeyPressed(e.Key);
             _session.HandleUserInput(movementStrategy);
         }
         
@@ -208,7 +215,7 @@ namespace WPFGame
         
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            IMovementStrategy movementStrategy = _inputHandler.HandleKeyReleased(e.Key);
+            AxisStrategy movementStrategy = _inputHandler.HandleKeyReleased(e.Key);
             _session.HandleUserInput(movementStrategy);
         }
     }

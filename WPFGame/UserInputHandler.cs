@@ -8,8 +8,8 @@ namespace WPFGame
 {
     public class UserInputHandler
     {
-        private readonly Dictionary<int, IMovementStrategy> _userInputActions =
-            new Dictionary<int, IMovementStrategy>();
+        private readonly Dictionary<int, AxisStrategy> _userInputActions =
+            new Dictionary<int, AxisStrategy>();
 
         private readonly Dictionary<Key, int> _keyCodes =
             new Dictionary<Key, int>();
@@ -41,17 +41,17 @@ namespace WPFGame
 
         private void InitializeKeyCodesMeaning()
         {
-            _userInputActions.Add(2, new MovementUp());
-            _userInputActions.Add(4, new MovementLeft());
-            _userInputActions.Add(6, new MovementUpLeft());
-            _userInputActions.Add(8, new MovementDown());
-            _userInputActions.Add(12, new MovementDownLeft());
-            _userInputActions.Add(16, new MovementRight());
-            _userInputActions.Add(18, new MovementUpRight());
-            _userInputActions.Add(24, new MovementDownRight());
+            _userInputActions.Add(2, AxisStrategy.UP);
+            _userInputActions.Add(4, AxisStrategy.LEFT);
+            _userInputActions.Add(6, AxisStrategy.UPLEFT);
+            _userInputActions.Add(8, AxisStrategy.DOWN);
+            _userInputActions.Add(12, AxisStrategy.DOWNLEFT);
+            _userInputActions.Add(16, AxisStrategy.RIGHT);
+            _userInputActions.Add(18, AxisStrategy.UPRIGHT);
+            _userInputActions.Add(24, AxisStrategy.DOWNRIGHT);
         }
 
-        public IMovementStrategy HandleKeyPressed(Key e)
+        public AxisStrategy HandleKeyPressed(Key e)
         {
             if (!_previousKeys.Contains(e))
             {
@@ -61,7 +61,7 @@ namespace WPFGame
             return ProcessPressedKeys(e);
         }
 
-        public IMovementStrategy HandleKeyReleased(Key e)
+        public AxisStrategy HandleKeyReleased(Key e)
         {
             if (_previousKeys.Contains(e))
             {
@@ -71,7 +71,7 @@ namespace WPFGame
             return ProcessPressedKeys(e);
         }
 
-        private IMovementStrategy ProcessPressedKeys(Key e)
+        private AxisStrategy ProcessPressedKeys(Key e)
         {
             _currentKeyValue = 0;
 
@@ -89,7 +89,7 @@ namespace WPFGame
             }
             else
             {
-                return null;
+                return AxisStrategy.NEUTRAL;
             }
         }
     }

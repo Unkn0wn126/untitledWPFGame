@@ -8,14 +8,14 @@ namespace Engine.Models.Components.Collision
     {
         public bool IsSolid { get; set; }
         private int _id;
-        public List<ICollisionComponent> CollidingWith { get; set; }
+        public List<uint> CollidingWith { get; set; }
         public bool IsDynamic { get; set; }
 
         public CollisionComponent(int id, bool dynamic)
         {
             _id = id;
             IsDynamic = dynamic;
-            CollidingWith = new List<ICollisionComponent>();
+            CollidingWith = new List<uint>();
         }
     }
 }

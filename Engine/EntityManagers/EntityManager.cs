@@ -1,6 +1,7 @@
 ﻿using Engine.Coordinates;
 using Engine.Models;
 using Engine.Models.Components;
+using Engine.Models.Components.RigidBody;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,10 @@ namespace Engine.EntityManagers
         private Dictionary<uint, IGraphicsComponent> _graphicsComponents;
         private Dictionary<uint, ICollisionComponent> _collisionComponents;
         private Dictionary<uint, ISoundComponent> _soundComponents;
+        private Dictionary<uint, IRigidBodyComponent> _rigidBodyComponents;
         private ISpatialIndex _grid;
+
+        public ISpatialIndex Coordinates { get => _grid; set => _grid = value; }
 
         public EntityManager(ISpatialIndex grid)
         {
@@ -29,6 +33,7 @@ namespace Engine.EntityManagers
             _graphicsComponents = new Dictionary<uint, IGraphicsComponent>();
             _collisionComponents = new Dictionary<uint, ICollisionComponent>();
             _soundComponents = new Dictionary<uint, ISoundComponent>();
+            _rigidBodyComponents = new Dictionary<uint, IRigidBodyComponent>();
         }
 
         public List<uint> GetAllEntities()
@@ -56,6 +61,9 @@ namespace Engine.EntityManagers
                     break;
                 case ISoundComponent s:
                     _soundComponents.Add(entityID, s);
+                    break;
+                case IRigidBodyComponent r:
+                    _rigidBodyComponents.Add(entityID, r);
                     break;
             }
         }
@@ -166,7 +174,7 @@ namespace Engine.EntityManagers
             return active;
         }
 
-        public ISoundComponent GetSoundComponents(uint entity)
+        public ISoundComponent GetSoundComponent(uint entity)
         {
             return _soundComponents[entity];
         }
@@ -197,12 +205,32 @@ namespace Engine.EntityManagers
             if (componentType.Name == typeof(ISoundComponent).Name)
                 return _soundComponents.ContainsKey(id);
 
+            if (componentType.Name == typeof(IRigidBodyComponent).Name)
+                return _rigidBodyComponents.ContainsKey(id);
+
             return false;
         }
 
         public List<uint> GetAllActiveEntities()
         {
             return _activeEntities;
+        }
+
+        public IRigidBodyComponent GetRigidBodyComponent(uint entity)
+        {
+            return _rigidBodyComponents[entity];
+        }
+
+        public List<IRigidBodyComponent> GetAllRigidBodyComponents()
+        {
+            return new List<IRigidBodyComponent>(_rigidBodyComponents.Values);
+        }
+
+        public List<IRigidBodyComponent> GetAllActiveRigidBodyComponents()
+        {
+            List<IRigidBodyComponent> active = new List<IRigidBodyComponent>();
+            _activeEntities.ForEach(x => { if (_transformComponents.ContainsKey(x)) active.Add(_rigidBodyComponents[x]); });
+            return active;
         }
     }
 }

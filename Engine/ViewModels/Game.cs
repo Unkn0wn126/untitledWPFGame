@@ -3,6 +3,7 @@ using Engine.EntityManagers;
 using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Components.Collision;
+using Engine.Models.Components.RigidBody;
 using Engine.Models.GameStateMachine;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
@@ -10,6 +11,7 @@ using Engine.Processors;
 using Engine.ResourceConstants.Images;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Text;
 
@@ -30,17 +32,18 @@ namespace Engine.ViewModels
         public ImagePaths ImgPaths { get; set; }
         private IProcessor _graphicsProcessor;
         private IProcessor _collisionProcessor;
+        private IProcessor _rigidBodyProcessor;
         private ITransformComponent _playerTransform;
 
-        private IMovementStrategy _movementStrategy;
+        private PlayerMovementScript _movementStrategy;
 
         private IScene GenerateScene(float xRes, float yRes)
         {
             int objectSize = 50;
             int numOfObjectsInCell = 5;
             int cellSize = objectSize * numOfObjectsInCell;
-            int numOfObjectsOnX = 100;
-            int numOfObjectsOnY = 100;
+            int numOfObjectsOnX = 1000;
+            int numOfObjectsOnY = 1000;
             int numCellsX = (numOfObjectsOnX * objectSize) / cellSize;
             int numCellsY = (numOfObjectsOnY * objectSize) / cellSize;
 
@@ -64,7 +67,7 @@ namespace Engine.ViewModels
                 }
             }
 
-            for (int i = 0; i < numOfObjectsOnX / 2; i+=2)
+            for (int i = 1; i < numOfObjectsOnX / 2 - 1; i+=2)
             {
                 for (int j = 0; j < numOfObjectsOnY / 2; j+=2)
                 {
@@ -88,10 +91,17 @@ namespace Engine.ViewModels
 
             ICollisionComponent collision = new CollisionComponent(3, true);
             manager.AddComponentToEntity(player, collision);
+
+            IRigidBodyComponent rigidBody = new RigidBodyComponent();
+            manager.AddComponentToEntity(player, rigidBody);
+
             IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, player, playerTransform, grid);
 
             _graphicsProcessor = new GraphicsProcessor(scene, playerTransform);
             _collisionProcessor = new CollisionProcessor(scene);
+            _rigidBodyProcessor = new RigidBodyProcessor(scene);
+
+            _movementStrategy = new PlayerMovementScript(scene, player, 5f);
 
             return scene;
         }
@@ -110,24 +120,32 @@ namespace Engine.ViewModels
             _scenes.Add(GenerateScene(xRes, yRes));
             CurrentScene = _scenes[0];
 
+            _stopwatch = new Stopwatch();
+            _stopwatch.Start();
+
             //State.CurrentState = GameState.RUNNING;
         }
 
-        public void HandleUserInput(IMovementStrategy newState)
+        public void HandleUserInput(AxisStrategy axisStrategy)
         {
-            _movementStrategy = newState;
+            _movementStrategy.UpdatePosition(axisStrategy);
         }
 
+        private long _lastFrame = 0;
+        private Stopwatch _stopwatch;
         // Create objects here? Through factories...
-
         public void Update()
         {
             // TODO: Change this to a state class resolved system
             if (State.IsRunning())
             {
+                Trace.WriteLine($"Elapsed: {_stopwatch.ElapsedMilliseconds}; Difference: {_stopwatch.ElapsedMilliseconds - _lastFrame}");
+                long diff = _stopwatch.ElapsedMilliseconds - _lastFrame;
+                _lastFrame = _stopwatch.ElapsedMilliseconds;
+                _movementStrategy.ApplyForce();
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
-                _collisionProcessor.ProcessOnEeGameTick(0);
-                _movementStrategy?.ExecuteStrategy(CurrentScene.PlayerEntity, CurrentScene.Transform, CurrentScene.Coordinates);
+                _collisionProcessor.ProcessOnEeGameTick(diff);
+                _rigidBodyProcessor.ProcessOnEeGameTick(diff);
             }
         }
 
