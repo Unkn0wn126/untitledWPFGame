@@ -1,8 +1,6 @@
 ﻿using Engine.Models.Components;
 using Engine.Models.Scenes;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Engine.ViewModels
 {

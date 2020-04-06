@@ -3,21 +3,12 @@ using Engine.Models.Components;
 using Engine.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WPFGame
 {
@@ -131,8 +122,8 @@ namespace WPFGame
 
             // focus point always rendered at the center of the scene
             Rect rec = new Rect(_session.CurrentScene.SceneCamera.XOffset,
-                _session.CurrentScene.SceneCamera.YOffset, 
-                _session.CurrentScene.PlayerObject.Width, 
+                _session.CurrentScene.SceneCamera.YOffset,
+                _session.CurrentScene.PlayerObject.Width,
                 _session.CurrentScene.PlayerObject.Height);
 
             drawingContext.DrawImage(_playerAvatar, rec);
@@ -166,8 +157,8 @@ namespace WPFGame
             {
                 _session.HandleUserInput(MovementState.STILL);
             }
-        }        
-        
+        }
+
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
 

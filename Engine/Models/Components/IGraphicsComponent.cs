@@ -1,9 +1,5 @@
-﻿using Engine.Models.GameObjects;
-using Engine.Models.Scenes;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace Engine.Models.Components
 {

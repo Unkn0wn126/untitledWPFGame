@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Shapes;
 
 namespace Adapter.Graphics
@@ -20,8 +17,8 @@ namespace Adapter.Graphics
         public void Draw(IGraphicsComponentAdapter<Rectangle> data)
         {
             Canvas.GetLeft(data.Data);
-            Canvas.SetLeft(data.Data, data.XPos);            
-            
+            Canvas.SetLeft(data.Data, data.XPos);
+
             Canvas.GetTop(data.Data);
             Canvas.SetTop(data.Data, data.YPos);
             _context.Children.Add(data.Data);

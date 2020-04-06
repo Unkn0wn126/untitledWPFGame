@@ -1,11 +1,7 @@
 ﻿//#define TRACE
 using Engine.Models.GameObjects;
 using Engine.Models.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
-using System.Text;
 
 namespace Engine.Models.Components
 {
@@ -65,22 +61,22 @@ namespace Engine.Models.Components
                 case MovementState.RIGHT:
                     newPos.X += baseVelocity;
                     entity.Position = newPos;
-                    break;                
+                    break;
                 case MovementState.UPLEFT:
                     newPos.X -= baseVelocity;
                     newPos.Y -= baseVelocity;
                     entity.Position = newPos;
-                    break;                
+                    break;
                 case MovementState.UPRIGHT:
                     newPos.X += baseVelocity;
                     newPos.Y -= baseVelocity;
                     entity.Position = newPos;
-                    break;                
+                    break;
                 case MovementState.DOWNLEFT:
                     newPos.X -= baseVelocity;
                     newPos.Y += baseVelocity;
                     entity.Position = newPos;
-                    break;                
+                    break;
                 case MovementState.DOWNRIGHT:
                     newPos.X += baseVelocity;
                     newPos.Y += baseVelocity;

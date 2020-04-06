@@ -1,9 +1,6 @@
 ﻿using Engine.Models.Components;
 using Engine.Models.Scenes;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace Engine.Models.GameObjects
 {
@@ -12,7 +9,7 @@ namespace Engine.Models.GameObjects
         public Vector2 Position { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
-        public IGraphicsComponent GraphicsComponent {get;set;}
+        public IGraphicsComponent GraphicsComponent { get; set; }
         public void Update(IScene logicContext);
     }
 }
