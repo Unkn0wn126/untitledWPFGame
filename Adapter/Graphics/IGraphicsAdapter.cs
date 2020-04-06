@@ -4,11 +4,9 @@ namespace Adapter.Graphics
 {
     public interface IGraphicsAdapter
     {
-        public double Height { get; }
-        public double Width { get; }
-
-        public void Draw(IGraphicsComponentAdapter<Rectangle> data);
-
-        public void Clear();
+        double Height { get; }
+        double Width { get; }
+        void Draw(IGraphicsComponentAdapter<Rectangle> data);
+        void Clear();
     }
 }

@@ -2,8 +2,8 @@
 {
     public interface IGraphicsComponentAdapter<T>
     {
-        public T Data { get; set; }
-        public double XPos { get; set; }
-        public double YPos { get; set; }
+       T Data { get; set; }
+       double XPos { get; set; }
+       double YPos { get; set; }
     }
 }

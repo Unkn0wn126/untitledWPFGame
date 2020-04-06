@@ -6,7 +6,6 @@ namespace Adapter.Graphics
     public class GraphicsAdapter : IGraphicsAdapter
     {
         private Canvas _context;
-
         public double Height { get { return _context.ActualHeight; } }
         public double Width { get { return _context.ActualWidth; } }
         public GraphicsAdapter(Canvas context)
