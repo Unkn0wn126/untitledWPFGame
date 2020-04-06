@@ -5,20 +5,6 @@ using System.Numerics;
 
 namespace Engine.Models.Components
 {
-
-    public enum MovementState
-    {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        UPLEFT,
-        UPRIGHT,
-        DOWNLEFT,
-        DOWNRIGHT,
-        STILL
-    }
-
     public class PlayerMovementComponent : IGameComponent
     {
         private MovementState _currentState;

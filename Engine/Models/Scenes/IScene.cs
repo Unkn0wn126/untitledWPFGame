@@ -6,9 +6,9 @@ namespace Engine.Models.Scenes
 {
     public interface IScene
     {
-        public List<IGameObject> SceneElements { get; set; }
-        public IGameObject PlayerObject { get; set; }
-        public ICamera SceneCamera { get; set; }
-        public void Update();
+        List<IGameObject> SceneElements { get; set; }
+        IGameObject PlayerObject { get; set; }
+        ICamera SceneCamera { get; set; }
+        void Update();
     }
 }

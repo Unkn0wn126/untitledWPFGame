@@ -13,18 +13,13 @@ namespace Engine.ViewModels
     public class Game : IGame
     {
         private List<IScene> _scenes;
-        private IScene _currentScene;
-
         private IGameComponent _playerMovement;
         private IGameObject _player;
-
-        private List<IGraphicsComponent> _graphicsComponents;
         private List<IGameObject> _gameObjects;
 
-        public IScene CurrentScene { get => _currentScene; set => _currentScene = value; }
+        public IScene CurrentScene { get; set; }
 
-
-        public List<IGraphicsComponent> GraphicsComponents { get => _graphicsComponents; set => _graphicsComponents = value; }
+        public List<IGraphicsComponent> GraphicsComponents { get; set; }
 
         public Game()
         {
@@ -58,7 +53,7 @@ namespace Engine.ViewModels
             _gameObjects.Add(_player);
 
             _scenes.Add(new GeneralScene(_gameObjects, _player));
-            _currentScene = _scenes[0];
+            CurrentScene = _scenes[0];
         }
 
         public void HandleUserInput(MovementState newState)
@@ -70,7 +65,7 @@ namespace Engine.ViewModels
 
         public void Update()
         {
-            _currentScene.Update();
+            CurrentScene.Update();
         }
     }
 }

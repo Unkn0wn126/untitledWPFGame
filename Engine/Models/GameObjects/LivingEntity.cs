@@ -11,13 +11,10 @@ namespace Engine.Models.GameObjects
     public class LivingEntity : IGameObject
     {
         private Vector2 _position;
-        private double _width;
-        private double _height;
-        private IGraphicsComponent _graphicsComponent;
-        public double Width { get => _width; set => _width = value; }
-        public double Height { get => _height; set => _height = value; }
+        public double Width { get; set; }
+        public double Height { get; set; }
 
-        public IGraphicsComponent GraphicsComponent { get => _graphicsComponent; set => _graphicsComponent = value; }
+        public IGraphicsComponent GraphicsComponent { get; set; }
         public IGameComponent PlayerMovementComponent { get; set; }
         public Vector2 Position { get => _position; set => _position = value; }
 

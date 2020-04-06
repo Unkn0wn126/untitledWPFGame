@@ -10,17 +10,13 @@ namespace Engine.Models.Cameras
     public class Camera : ICamera
     {
         private Vector2 _position;
-        private float _width;
-        private float _height;
-        private List<IGameObject> _visibleObjects;
-        private float _xOffset;
-        private float _yOffset;
+
         public Vector2 Position { get => _position; set => _position = value; }
-        public float Width { get => _width; set => _width = value; }
-        public float Height { get => _height; set => _height = value; }
-        public List<IGameObject> VisibleObjects { get => _visibleObjects; set => _visibleObjects = value; }
-        public float XOffset { get => _xOffset; set => _xOffset = value; }
-        public float YOffset { get => _yOffset; set => _yOffset = value; }
+        public float Width { get; set; }
+        public float Height { get; set; }
+        public List<IGameObject> VisibleObjects { get; set; }
+        public float XOffset { get; set; }
+        public float YOffset { get; set; }
 
         public Camera()
         {

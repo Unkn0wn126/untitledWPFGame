@@ -6,9 +6,9 @@ namespace Engine.ViewModels
 {
     public interface IGame
     {
-        public List<IGraphicsComponent> GraphicsComponents { get; set; }
-        public IScene CurrentScene { get; set; }
-        public void Update();
-        public void HandleUserInput(MovementState newState);
+        List<IGraphicsComponent> GraphicsComponents { get; set; }
+        IScene CurrentScene { get; set; }
+        void Update();
+        void HandleUserInput(MovementState newState);
     }
 }

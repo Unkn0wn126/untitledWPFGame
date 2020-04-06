@@ -8,22 +8,11 @@ namespace Engine.Models.Components
 {
     public class GraphicsComponent : IGraphicsComponent
     {
-        private string _currentImageName;
-        private List<string> _imageNames;
-        private Vector2 _position;
-        private double _width;
-        private double _height;
-
-        public string CurrentImageName
-        {
-            get { return _currentImageName; }
-            set { _currentImageName = value; }
-        }
-
-        public List<string> ImageNames { get => _imageNames; set => _imageNames = value; }
-        public Vector2 Position { get => _position; set => _position = value; }
-        public double Width { get => _width; set => _width = value; }
-        public double Height { get => _height; set => _height = value; }
+        public string CurrentImageName { get; set; }
+        public List<string> ImageNames { get; set; }
+        public Vector2 Position { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
 
         public GraphicsComponent(List<string> imageNames)
         {

@@ -10,12 +10,9 @@ namespace Engine.Models.Scenes
     /// </summary>
     public class GeneralScene : IScene
     {
-        private List<IGameObject> _sceneElements;
-        private IGameObject _playerObject;
-        private ICamera _sceneCamera;
-        public List<IGameObject> SceneElements { get => _sceneElements; set => _sceneElements = value; }
-        public IGameObject PlayerObject { get => _playerObject; set => _playerObject = value; }
-        public ICamera SceneCamera { get => _sceneCamera; set => _sceneCamera = value; }
+        public List<IGameObject> SceneElements { get; set; }
+        public IGameObject PlayerObject { get; set; }
+        public ICamera SceneCamera { get; set; }
 
         public GeneralScene(List<IGameObject> sceneElements, IGameObject playerObject)
         {
@@ -26,7 +23,7 @@ namespace Engine.Models.Scenes
 
         public void Update()
         {
-            foreach (var item in _sceneElements)
+            foreach (var item in SceneElements)
             {
                 item.Update(this);
             }
