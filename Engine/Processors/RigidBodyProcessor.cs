@@ -46,18 +46,35 @@ namespace Engine.Processors
                     if (!collision.IsDynamic && !collision.IsSolid)
                     {
                         ITransformComponent transform = manager.GetTransformComponent(x);
-                        float diffX = transforms[i].Position.X - transform.Position.X;
-                        float diffY = transforms[i].Position.Y - transform.Position.Y;
-                        double deltaTime = GetDeltaTime(lastFrameTime);
+                        // difference betveen origins on x
+                        float originDiffX = transforms[i].Position.X - transform.Position.X;
+                        // difference between origins on y
+                        float originDiffY = transforms[i].Position.Y - transform.Position.Y;
 
-                        // going in the direction of the collision
-                        if (diffX < 0 && rigidBodies[i].ForceX > 0 || diffX > 0 && rigidBodies[i].ForceX < 0)
+                        int firstStartX = (int)Math.Round(transforms[i].Position.X);
+                        int firstEndX = (int)Math.Round(transforms[i].Position.X + transforms[i].ScaleX);
+
+                        int firstStartY = (int)Math.Round(transforms[i].Position.Y);
+                        int firstEndY = (int)Math.Round(transforms[i].Position.Y + transforms[i].ScaleY);
+
+                        int secondStartX = (int)Math.Round(transform.Position.X);
+                        int secondEndX = (int)Math.Round(transform.Position.X + transform.ScaleX);
+
+                        int secondStartY = (int)Math.Round(transform.Position.Y);
+                        int secondEndY = (int)Math.Round(transform.Position.Y + transform.ScaleY);
+
+                        float deltaTime = GetDeltaTime(lastFrameTime);
+
+                        //// going in the direction of the collision
+                        if ((originDiffX < 0 && rigidBodies[i].ForceX > 0 || originDiffX > 0 && rigidBodies[i].ForceX < 0)
+                        && (firstStartY < secondEndY && firstEndY > secondStartY))
                         {
-                            newPos.X -= rigidBodies[i].ForceX * (float) deltaTime;
-                        }                        
-                        if (diffY < 0 && rigidBodies[i].ForceY > 0 || diffY > 0 && rigidBodies[i].ForceY < 0)
+                            newPos.X -= rigidBodies[i].ForceX * deltaTime;
+                        }
+                        if ((originDiffY < 0 && rigidBodies[i].ForceY > 0 || originDiffY > 0 && rigidBodies[i].ForceY < 0)
+                        && (firstStartX < secondEndX && firstEndX > secondStartX))
                         {
-                            newPos.Y -= rigidBodies[i].ForceY * (float)deltaTime;
+                            newPos.Y -= rigidBodies[i].ForceY * deltaTime;
                         }
                     }
                 });
@@ -67,15 +84,15 @@ namespace Engine.Processors
 
         private float GetDeltaTime(long lastFrameTime)
         {
-            return (float)(lastFrameTime * 0.01);
+            return (lastFrameTime / 10000000f);
         }
 
         private Vector2 UpdatePos(IRigidBodyComponent force, ITransformComponent transform, long lastFrameTime)
         {
             Vector2 newPos = transform.Position;
-            double deltaTime = GetDeltaTime(lastFrameTime);
-            newPos.X += force.ForceX * (float)deltaTime;
-            newPos.Y += force.ForceY * (float)deltaTime;
+            float deltaTime = GetDeltaTime(lastFrameTime);
+            newPos.X += force.ForceX * deltaTime;
+            newPos.Y += force.ForceY * deltaTime;
 
             return newPos;
         }

@@ -101,7 +101,7 @@ namespace Engine.ViewModels
             _collisionProcessor = new CollisionProcessor(scene);
             _rigidBodyProcessor = new RigidBodyProcessor(scene);
 
-            _movementStrategy = new PlayerMovementScript(scene, player, 5f);
+            _movementStrategy = new PlayerMovementScript(scene, player, 50f);
 
             return scene;
         }
@@ -129,23 +129,30 @@ namespace Engine.ViewModels
         public void HandleUserInput(AxisStrategy axisStrategy)
         {
             _movementStrategy.UpdatePosition(axisStrategy);
+            _movementStrategy.ApplyForce();
         }
 
         private long _lastFrame = 0;
         private Stopwatch _stopwatch;
+        private DateTime time1 = DateTime.Now;
+        private DateTime time2 = DateTime.Now;
         // Create objects here? Through factories...
         public void Update()
         {
             // TODO: Change this to a state class resolved system
             if (State.IsRunning())
             {
-                Trace.WriteLine($"Elapsed: {_stopwatch.ElapsedMilliseconds}; Difference: {_stopwatch.ElapsedMilliseconds - _lastFrame}");
+                time2 = DateTime.Now;
+                long deltaTime = (time2.Ticks - time1.Ticks) /*/ 10000000f*/;
+                //Trace.WriteLine($"Elapsed: {_stopwatch.ElapsedMilliseconds}; Difference: {_stopwatch.ElapsedMilliseconds - _lastFrame}");
+                //Trace.WriteLine($"Elapsed: {time2.Ticks - time1.Ticks}; Difference: {deltaTime / 10000000f}");
+                time1 = time2;
                 long diff = _stopwatch.ElapsedMilliseconds - _lastFrame;
                 _lastFrame = _stopwatch.ElapsedMilliseconds;
-                _movementStrategy.ApplyForce();
+                
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
-                _collisionProcessor.ProcessOnEeGameTick(diff);
-                _rigidBodyProcessor.ProcessOnEeGameTick(diff);
+                _collisionProcessor.ProcessOnEeGameTick(deltaTime);
+                _rigidBodyProcessor.ProcessOnEeGameTick(deltaTime);
             }
         }
 
