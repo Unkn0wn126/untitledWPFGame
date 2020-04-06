@@ -20,15 +20,9 @@ namespace WPFGame
     {
         private IGame _session;
         private RenderTargetBitmap bitmap;
-
-        private readonly Dictionary<int, Action> _userInputActions =
-            new Dictionary<int, Action>();
-
-        private readonly Dictionary<Key, int> _keyCodes =
-            new Dictionary<Key, int>();
-
+        private readonly Dictionary<int, Action> _userInputActions = new Dictionary<int, Action>();
+        private readonly Dictionary<Key, int> _keyCodes = new Dictionary<Key, int>();
         private List<Key> _previousKeys = new List<Key>();
-
         private int _currentKeyValue = 0;
 
         private BitmapImage _groundImage;
@@ -93,11 +87,7 @@ namespace WPFGame
             var drawingContext = drawingVisual.RenderOpen();
 
             // to have a black background as a default
-            drawingContext.DrawRectangle(
-                    Brushes.Black,
-                    null,
-                    new Rect(0, 0, 800, 600)
-                    );
+            drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, 800, 600));
             int counter = 0;
 
             // need to update the camera to know what is visible
@@ -161,7 +151,6 @@ namespace WPFGame
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-
             if (_previousKeys.Contains(e.Key))
             {
                 _previousKeys.Remove(e.Key);
