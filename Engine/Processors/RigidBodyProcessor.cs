@@ -69,12 +69,12 @@ namespace Engine.Processors
                         if ((originDiffX < 0 && rigidBodies[i].ForceX > 0 || originDiffX > 0 && rigidBodies[i].ForceX < 0)
                         && (firstStartY < secondEndY && firstEndY > secondStartY))
                         {
-                            newPos.X -= rigidBodies[i].ForceX * deltaTime;
+                            newPos.X = originDiffX < 0 ? secondStartX - transforms[i].ScaleX : secondEndX;
                         }
                         if ((originDiffY < 0 && rigidBodies[i].ForceY > 0 || originDiffY > 0 && rigidBodies[i].ForceY < 0)
                         && (firstStartX < secondEndX && firstEndX > secondStartX))
                         {
-                            newPos.Y -= rigidBodies[i].ForceY * deltaTime;
+                            newPos.Y = originDiffY < 0 ? secondStartY - transforms[i].ScaleY : secondEndY;
                         }
                     }
                 });

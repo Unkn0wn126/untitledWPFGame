@@ -89,22 +89,22 @@ namespace Engine.Processors
 
         private bool IsPairColliding(ITransformComponent firstItem, ITransformComponent secondItem)
         {
-            float itemOneMinX = firstItem.Position.X;
-            float itemOneMaxX = itemOneMinX + firstItem.ScaleX;
+            int itemOneMinX = (int)Math.Round(firstItem.Position.X);
+            int itemOneMaxX = (int)Math.Round(itemOneMinX + firstItem.ScaleX);
 
-            float itemOneMinY = firstItem.Position.Y;
-            float itemOneMaxY = itemOneMinY + firstItem.ScaleY;
+            int itemOneMinY = (int)Math.Round(firstItem.Position.Y);
+            int itemOneMaxY = (int)Math.Round(itemOneMinY + firstItem.ScaleY);
 
-            float itemTwoMinX = secondItem.Position.X;
-            float itemTwoMaxX = itemTwoMinX + secondItem.ScaleX;
+            int itemTwoMinX = (int)Math.Round(secondItem.Position.X);
+            int itemTwoMaxX = (int)Math.Round(itemTwoMinX + secondItem.ScaleX);
 
-            float itemTwoMinY = secondItem.Position.Y;
-            float itemTwoMaxY = itemTwoMinY + secondItem.ScaleY;
+            int itemTwoMinY = (int)Math.Round(secondItem.Position.Y);
+            int itemTwoMaxY = (int)Math.Round(itemTwoMinY + secondItem.ScaleY);
 
             return (IsBetween(itemOneMinX, itemOneMaxX, itemTwoMinX) || IsBetween(itemOneMinX, itemOneMaxX, itemTwoMaxX)) && (IsBetween(itemOneMinY, itemOneMaxY, itemTwoMinY) || IsBetween(itemOneMinY, itemOneMaxY, itemTwoMaxY));
         }
 
-        private bool IsBetween(float minBound, float maxBound, float tested)
+        private bool IsBetween(int minBound, int maxBound, int tested)
         {
             return tested >= minBound && tested <= maxBound;
         }

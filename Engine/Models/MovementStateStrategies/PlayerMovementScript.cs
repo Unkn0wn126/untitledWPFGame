@@ -24,6 +24,9 @@ namespace Engine.Models.MovementStateStrategies
         private float _baseVelocity;
         private uint _player;
 
+        private float _baseForceX;
+        private float _baseForceY;
+
         private float _forceX;
         private float _forceY;
 
@@ -37,6 +40,9 @@ namespace Engine.Models.MovementStateStrategies
 
             _forceX = 0;
             _forceY = 0;
+
+            _baseForceX = 0;
+            _baseForceY = 0;
         }
 
         public void UpdatePosition(AxisStrategy axisStrategy)
@@ -44,20 +50,20 @@ namespace Engine.Models.MovementStateStrategies
             switch (axisStrategy)
             {
                 case AxisStrategy.UP:
-                    _forceX = 0;
+                    _forceX = _baseForceX;
                     _forceY = -_baseVelocity;
                     break;
                 case AxisStrategy.DOWN:
-                    _forceX = 0;
+                    _forceX = _baseForceX;
                     _forceY = _baseVelocity;
                     break;
                 case AxisStrategy.LEFT:
                     _forceX = -_baseVelocity;
-                    _forceY = 0;
+                    _forceY = _baseForceY;
                     break;
                 case AxisStrategy.RIGHT:
                     _forceX = _baseVelocity;
-                    _forceY = 0;
+                    _forceY = _baseForceY;
                     break;
                 case AxisStrategy.UPLEFT:
                     _forceX = -_baseVelocity;
@@ -76,8 +82,8 @@ namespace Engine.Models.MovementStateStrategies
                     _forceY = _baseVelocity;
                     break;
                 case AxisStrategy.NEUTRAL:
-                    _forceX = 0;
-                    _forceY = 0;
+                    _forceX = _baseForceX;
+                    _forceY = _baseForceY;
                     break;
             }
         }

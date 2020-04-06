@@ -42,8 +42,8 @@ namespace Engine.ViewModels
             int objectSize = 50;
             int numOfObjectsInCell = 5;
             int cellSize = objectSize * numOfObjectsInCell;
-            int numOfObjectsOnX = 1000;
-            int numOfObjectsOnY = 1000;
+            int numOfObjectsOnX = 10;
+            int numOfObjectsOnY = 10;
             int numCellsX = (numOfObjectsOnX * objectSize) / cellSize;
             int numCellsY = (numOfObjectsOnY * objectSize) / cellSize;
 
@@ -57,7 +57,8 @@ namespace Engine.ViewModels
                 for (int j = 0; j < numOfObjectsOnY; j++)
                 {
                     ImgNames currentName;
-                    currentName = i % 2 == 0 ? ImgNames.DIRT : ImgNames.COBBLESTONE;
+                    //currentName = i % 2 == 0 ? ImgNames.DIRT : ImgNames.COBBLESTONE;
+                    currentName = ImgNames.DIRT;
 
                     ITransformComponent currTransform = new TransformComponent(new Vector2(i * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
                     IGraphicsComponent current = new GraphicsComponent(currentName);
@@ -67,22 +68,57 @@ namespace Engine.ViewModels
                 }
             }
 
-            for (int i = 1; i < numOfObjectsOnX / 2 - 1; i+=2)
+            for (int i = 0; i < numOfObjectsOnX; i++)
             {
-                for (int j = 0; j < numOfObjectsOnY / 2; j+=2)
-                {
-                    ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize * 2, j * objectSize * 2), objectSize, objectSize, new Vector2(0, 0));
-                    IGraphicsComponent blockcurrent = new GraphicsComponent(ImgNames.ROCK);
+                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, 0), objectSize, objectSize, new Vector2(0, 0));
+                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgNames.ROCK);
 
-                    uint block = manager.AddEntity(blockTransform);
-                    manager.AddComponentToEntity(block, blockcurrent);
+                uint block = manager.AddEntity(blockTransform);
+                manager.AddComponentToEntity(block, blockcurrent);
 
-                    ICollisionComponent blockCollision = new CollisionComponent(i + 1, false);
-                    manager.AddComponentToEntity(block, blockCollision);
-                }
+                ICollisionComponent blockCollision = new CollisionComponent(i + 1, false);
+                manager.AddComponentToEntity(block, blockCollision);
             }
 
-            ITransformComponent playerTransform = new TransformComponent(new Vector2(0, 0), objectSize, objectSize, new Vector2(0, 0));
+            for (int i = 0; i < numOfObjectsOnX; i++)
+            {
+                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, (numOfObjectsOnY - 1) * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgNames.ROCK);
+
+                uint block = manager.AddEntity(blockTransform);
+                manager.AddComponentToEntity(block, blockcurrent);
+
+                ICollisionComponent blockCollision = new CollisionComponent(i + 1, false);
+                manager.AddComponentToEntity(block, blockCollision);
+            }
+
+            for (int j = 1; j < numOfObjectsOnY; j ++)
+            {
+                ITransformComponent blockTransform = new TransformComponent(new Vector2(0, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgNames.ROCK);
+
+                uint block = manager.AddEntity(blockTransform);
+                manager.AddComponentToEntity(block, blockcurrent);
+
+                ICollisionComponent blockCollision = new CollisionComponent(j + 1, false);
+                manager.AddComponentToEntity(block, blockCollision);
+
+            }
+
+            for (int j = 1; j < numOfObjectsOnY; j ++)
+            {
+                ITransformComponent blockTransform = new TransformComponent(new Vector2((numOfObjectsOnX - 1) * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgNames.ROCK);
+
+                uint block = manager.AddEntity(blockTransform);
+                manager.AddComponentToEntity(block, blockcurrent);
+
+                ICollisionComponent blockCollision = new CollisionComponent(j + 1, false);
+                manager.AddComponentToEntity(block, blockCollision);
+
+            }
+
+            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0));
             IGraphicsComponent test = new GraphicsComponent(ImgNames.PLAYER);
             _playerTransform = playerTransform;
 
