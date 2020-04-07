@@ -5,9 +5,9 @@ namespace Engine.Coordinates
 {
     public interface ISpatialIndex
     {
-        public List<uint>[][] Cells { get; set; }
-        public void Add(uint unit, ITransformComponent position);
-        public List<uint> GetObjectsInRadius(ITransformComponent focus, int cellRadius);
-        public void Move(uint unit, ITransformComponent position, float x, float y);
+        List<uint>[][] Cells { get; set; }
+        void Add(uint unit, ITransformComponent position);
+        List<uint> GetObjectsInRadius(ITransformComponent focus, int cellRadius);
+        void Move(uint unit, ITransformComponent position, float x, float y);
     }
 }

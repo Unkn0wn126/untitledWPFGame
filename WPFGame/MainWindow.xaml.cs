@@ -116,7 +116,7 @@ namespace WPFGame
             DrawSceneObjects(drawingContext);
 
             // focus point always rendered at the center of the scene
-            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), _currentCamera.XOffset, _currentCamera.YOffset, _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, false);
+            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), _currentCamera.XOffset, _currentCamera.YOffset, _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, true);
             //DrawGraphicsComponent(_currentScene.PlayerGraphicsComponent, _currentCamera.XOffset, _currentCamera.YOffset, drawingContext);
 
             drawingContext.Close();
@@ -135,7 +135,7 @@ namespace WPFGame
                 float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
                 float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
 
-                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext, false);
+                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext, true);
                 index++;
             }
         }

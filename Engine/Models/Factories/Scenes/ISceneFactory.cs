@@ -7,6 +7,6 @@ namespace Engine.Models.Factories
 {
     public interface ISceneFactory
     {
-        public IScene CreateScene();
+        IScene CreateScene();
     }
 }

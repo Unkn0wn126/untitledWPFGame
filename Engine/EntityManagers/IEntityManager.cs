@@ -13,41 +13,41 @@ namespace Engine.EntityManagers
     /// </summary>
     public interface IEntityManager
     {
-        public ISpatialIndex Coordinates { get; set; }
-        public List<uint> GetAllEntities();
-        public uint AddEntity();
-        public uint AddEntity(ITransformComponent transform);
-        public void RemoveEntity(uint id);
-        public void AddComponentToEntity(uint entityID, IGameComponent component);
-        public void UpdateActiveEntities(ITransformComponent focusPoint);
+        ISpatialIndex Coordinates { get; set; }
+        List<uint> GetAllEntities();
+        uint AddEntity();
+        uint AddEntity(ITransformComponent transform);
+        void RemoveEntity(uint id);
+        void AddComponentToEntity(uint entityID, IGameComponent component);
+        void UpdateActiveEntities(ITransformComponent focusPoint);
 
         // Transform
-        public ITransformComponent GetTransformComponent(uint entity);
-        public List<ITransformComponent> GetAllTransformComponents();
-        public List<ITransformComponent> GetAllActiveTransformComponents();
+        ITransformComponent GetTransformComponent(uint entity);
+        List<ITransformComponent> GetAllTransformComponents();
+        List<ITransformComponent> GetAllActiveTransformComponents();
         
         // Graphics
-        public IGraphicsComponent GetGraphicsComponent(uint entity);
-        public List<IGraphicsComponent> GetAllGraphicsComponents();
-        public List<IGraphicsComponent> GetAllActiveGraphicsComponents();
+        IGraphicsComponent GetGraphicsComponent(uint entity);
+        List<IGraphicsComponent> GetAllGraphicsComponents();
+        List<IGraphicsComponent> GetAllActiveGraphicsComponents();
         
         // Collision
-        public ICollisionComponent GetCollisionComponent(uint entity);
-        public List<ICollisionComponent> GetAllCollicionComponents();
-        public List<ICollisionComponent> GetAllActiveCollicionComponents();
+        ICollisionComponent GetCollisionComponent(uint entity);
+        List<ICollisionComponent> GetAllCollicionComponents();
+        List<ICollisionComponent> GetAllActiveCollicionComponents();
         
         // Sound
-        public ISoundComponent GetSoundComponent(uint entity);
-        public List<ISoundComponent> GetAllSoundComponents();
-        public List<ISoundComponent> GetAllActiveSoundComponents();
+        ISoundComponent GetSoundComponent(uint entity);
+        List<ISoundComponent> GetAllSoundComponents();
+        List<ISoundComponent> GetAllActiveSoundComponents();
         
         // Rigid Body
-        public IRigidBodyComponent GetRigidBodyComponent(uint entity);
-        public List<IRigidBodyComponent> GetAllRigidBodyComponents();
-        public List<IRigidBodyComponent> GetAllActiveRigidBodyComponents();
+        IRigidBodyComponent GetRigidBodyComponent(uint entity);
+        List<IRigidBodyComponent> GetAllRigidBodyComponents();
+        List<IRigidBodyComponent> GetAllActiveRigidBodyComponents();
 
-        public List<uint> GetAllEntitiesPossessingComponent(Type componentType);
-        public List<uint> GetAllActiveEntities();
-        public bool EntityHasComponent(uint id, Type componentType);
+        List<uint> GetAllEntitiesPossessingComponent(Type componentType);
+        List<uint> GetAllActiveEntities();
+        bool EntityHasComponent(uint id, Type componentType);
     }
 }

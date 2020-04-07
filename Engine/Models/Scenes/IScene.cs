@@ -7,10 +7,10 @@ namespace Engine.Models.Scenes
 {
     public interface IScene
     {
-        public uint PlayerEntity { get; set; }
-        public ISpatialIndex Coordinates { get; set; }
-        public ITransformComponent Transform { get; set; }
-        public IEntityManager EntityManager { get; set; }
-        public ICamera SceneCamera { get; set; }
+        uint PlayerEntity { get; set; }
+        ISpatialIndex Coordinates { get; set; }
+        ITransformComponent Transform { get; set; }
+        IEntityManager EntityManager { get; set; }
+        ICamera SceneCamera { get; set; }
     }
 }

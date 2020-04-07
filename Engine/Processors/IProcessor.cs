@@ -9,6 +9,6 @@ namespace Engine.Processors
     /// </summary>
     public interface IProcessor
     {
-        public void ProcessOnEeGameTick(long lastFrameTime);
+        void ProcessOneGameTick(long lastFrameTime);
     }
 }

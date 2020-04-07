@@ -5,9 +5,13 @@ using System.Text;
 
 namespace Engine.Models
 {
+    /// <summary>
+    /// Not currently used
+    /// Kept for possible future expansion's sake
+    /// </summary>
     public interface IEntity
     {
-        public uint ID { get; set; }
-        public IEntityManager Manager { get; set; }
+        uint ID { get; set; }
+        IEntityManager Manager { get; set; }
     }
 }

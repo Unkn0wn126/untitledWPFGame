@@ -187,14 +187,14 @@ namespace Engine.ViewModels
                 _lastFrame = _stopwatch.ElapsedMilliseconds;
                 
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
-                _collisionProcessor.ProcessOnEeGameTick(deltaTime);
-                _rigidBodyProcessor.ProcessOnEeGameTick(deltaTime);
+                _collisionProcessor.ProcessOneGameTick(deltaTime);
+                _rigidBodyProcessor.ProcessOneGameTick(deltaTime);
             }
         }
 
         public void UpdateGraphics()
         {
-            _graphicsProcessor?.ProcessOnEeGameTick(0);
+            _graphicsProcessor?.ProcessOneGameTick(0);
         }
     }
 }

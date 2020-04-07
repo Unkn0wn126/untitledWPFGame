@@ -6,7 +6,7 @@ namespace Engine.Models.Components.RigidBody
 {
     public interface IRigidBodyComponent : IGameComponent
     {
-        public float ForceX { get; set; }
-        public float ForceY { get; set; }
+        float ForceX { get; set; }
+        float ForceY { get; set; }
     }
 }

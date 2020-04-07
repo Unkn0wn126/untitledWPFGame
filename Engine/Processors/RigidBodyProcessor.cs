@@ -16,7 +16,7 @@ namespace Engine.Processors
         {
             _context = context;
         }
-        public void ProcessOnEeGameTick(long lastFrameTime)
+        public void ProcessOneGameTick(long lastFrameTime)
         {
             IEntityManager manager = _context.EntityManager;
             List<uint> active = manager.GetAllActiveEntities();

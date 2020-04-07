@@ -23,7 +23,7 @@ namespace Engine.Processors
             _graphics = new List<IGraphicsComponent>();
             _pos = new List<ITransformComponent>();
         }
-        public void ProcessOnEeGameTick(long lastFrameTime)
+        public void ProcessOneGameTick(long lastFrameTime)
         {
             _graphics.Clear();
             _pos.Clear();

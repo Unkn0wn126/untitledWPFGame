@@ -6,8 +6,8 @@ namespace Engine.Models.Components
 {
     public interface ICollisionComponent : IGameComponent
     {
-        public List<uint> CollidingWith { get; set; }
-        public bool IsDynamic { get; set; }
-        public bool IsSolid { get; set; }
+        List<uint> CollidingWith { get; set; }
+        bool IsDynamic { get; set; }
+        bool IsSolid { get; set; }
     }
 }

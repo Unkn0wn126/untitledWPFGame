@@ -12,11 +12,11 @@ namespace Engine.ViewModels
 {
     public interface IGame
     {
-        public GameStateMachine State { get; set; }
-        public ImagePaths ImgPaths { get; set; }
-        public IScene CurrentScene { get; set; }
-        public void Update();
-        public void HandleUserInput(AxisStrategy axisStrategy);
-        public void UpdateGraphics();
+        GameStateMachine State { get; set; }
+        ImagePaths ImgPaths { get; set; }
+        IScene CurrentScene { get; set; }
+        void Update();
+        void HandleUserInput(AxisStrategy axisStrategy);
+        void UpdateGraphics();
     }
 }

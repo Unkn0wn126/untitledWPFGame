@@ -4,6 +4,6 @@ namespace Engine.Models.Components
 {
     public interface IGraphicsComponent : IGameComponent
     {
-        public ImgNames CurrentImageName { get; set; }
+        ImgNames CurrentImageName { get; set; }
     }
 }
