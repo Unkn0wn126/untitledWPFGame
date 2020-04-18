@@ -1,7 +1,6 @@
 ﻿#define TRACE
 using Engine.Models.Cameras;
 using Engine.Models.Components;
-using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using ResourceManagers.Images;
 using Engine.ViewModels;

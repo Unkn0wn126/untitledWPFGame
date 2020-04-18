@@ -1,6 +1,5 @@
 ﻿using Engine.Models.Components;
 using Engine.Models.GameStateMachine;
-using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.Processors;
 using ResourceManagers.Images;

@@ -1,5 +1,4 @@
-﻿using Engine.Models.MovementStateStrategies;
-using GameInputHandler;
+﻿using GameInputHandler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

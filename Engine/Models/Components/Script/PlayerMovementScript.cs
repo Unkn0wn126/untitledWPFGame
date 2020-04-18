@@ -8,9 +8,9 @@ using System.Diagnostics;
 using System.Text;
 using TimeUtils;
 
-namespace Engine.Models.MovementStateStrategies
+namespace Engine.Models.Components.Script
 {
-    public class PlayerMovementScript
+    public class PlayerMovementScript : IScriptComponent
     {
         private float _baseVelocity;
         private uint _player;
@@ -36,7 +36,7 @@ namespace Engine.Models.MovementStateStrategies
             _baseForceY = 0;
         }
 
-        public void UpdatePosition()
+        public void Update()
         {
             GameKey currValue = _gameInputHandler.CurrentKeyValue;
             IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);

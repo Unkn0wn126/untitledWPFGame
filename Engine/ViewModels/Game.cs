@@ -5,7 +5,6 @@ using Engine.Models.Components;
 using Engine.Models.Components.Collision;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.GameStateMachine;
-using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.Processors;
 using ResourceManagers.Images;
@@ -16,6 +15,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Text;
 using TimeUtils;
+using Engine.Models.Components.Script;
 
 namespace Engine.ViewModels
 {
@@ -173,7 +173,7 @@ namespace Engine.ViewModels
             {
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
                 _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
-                _movementStrategy.UpdatePosition();
+                _movementStrategy.Update();
 
                 _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
             }

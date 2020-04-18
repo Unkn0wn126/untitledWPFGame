@@ -50,13 +50,7 @@ namespace Engine.Coordinates
             
             int minY = cellY - cellRadius > 0 ? cellY - cellRadius : 0;
             int maxY = cellY + cellRadius < _numOfCellsOnY ? cellY + cellRadius : _numOfCellsOnY;
-            //Parallel.For(minX, maxX, index =>
-            //{
-            //    Parallel.For(minY, maxY, innerIndex =>
-            //    {
-            //        gameObjects.AddRange(Cells[index][innerIndex]);
-            //    });
-            //});
+
             for (int i = minX; i < maxX; i++)
             {
                 for (int j = minY; j < maxY; j++)

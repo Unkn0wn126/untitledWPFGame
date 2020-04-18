@@ -2,6 +2,7 @@
 using Engine.Models;
 using Engine.Models.Components;
 using Engine.Models.Components.RigidBody;
+using Engine.Models.Components.Script;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,13 @@ namespace Engine.EntityManagers
         private Dictionary<uint, ICollisionComponent> _collisionComponents;
         private Dictionary<uint, ISoundComponent> _soundComponents;
         private Dictionary<uint, IRigidBodyComponent> _rigidBodyComponents;
-        private ISpatialIndex _grid;
+        private Dictionary<uint, List<IScriptComponent>> _scriptComponents;
 
-        public ISpatialIndex Coordinates { get => _grid; set => _grid = value; }
+        public ISpatialIndex Coordinates { get; set; }
 
         public EntityManager(ISpatialIndex grid)
         {
-            _grid = grid;
+            Coordinates = grid;
             _maxValue = uint.MinValue;
             _entities = new List<uint>();
             _activeEntities = new List<uint>();
@@ -34,6 +35,7 @@ namespace Engine.EntityManagers
             _collisionComponents = new Dictionary<uint, ICollisionComponent>();
             _soundComponents = new Dictionary<uint, ISoundComponent>();
             _rigidBodyComponents = new Dictionary<uint, IRigidBodyComponent>();
+            _scriptComponents = new Dictionary<uint, List<IScriptComponent>>();
         }
 
         public List<uint> GetAllEntities()
@@ -43,7 +45,7 @@ namespace Engine.EntityManagers
 
         public void UpdateActiveEntities(ITransformComponent focusPoint)
         {
-            _activeEntities = _grid.GetObjectsInRadius(focusPoint, 3);
+            _activeEntities = Coordinates.GetObjectsInRadius(focusPoint, 3);
         }
 
         public void AddComponentToEntity(uint entityID, IGameComponent component)
@@ -65,7 +67,19 @@ namespace Engine.EntityManagers
                 case IRigidBodyComponent r:
                     _rigidBodyComponents.Add(entityID, r);
                     break;
+                case IScriptComponent sc:
+                    AddScriptComponent(entityID, sc);
+                    break;
+
             }
+        }
+
+        private void AddScriptComponent(uint entityID, IScriptComponent sc)
+        {
+            if (!_scriptComponents.ContainsKey(entityID))
+                _scriptComponents.Add(entityID, new List<IScriptComponent>());
+
+            _scriptComponents[entityID].Add(sc);
         }
 
         public uint AddEntity()
@@ -87,7 +101,10 @@ namespace Engine.EntityManagers
                 _soundComponents.Remove(id);  
             
             if (_collisionComponents.ContainsKey(id))
-                _collisionComponents.Remove(id);
+                _collisionComponents.Remove(id);   
+            
+            if (_scriptComponents.ContainsKey(id))
+                _scriptComponents.Remove(id);
         }
 
         public void RemoveEntity(uint id)
@@ -111,6 +128,9 @@ namespace Engine.EntityManagers
             if (componentType is ISoundComponent)
                 return new List<uint>(_soundComponents.Keys);
 
+            if (componentType is IScriptComponent)
+                return new List<uint>(_scriptComponents.Keys);
+
             return new List<uint>();
         }
 
@@ -118,7 +138,7 @@ namespace Engine.EntityManagers
         {
             uint temp = AddEntity();
 
-            _grid.Add(temp, transform);
+            Coordinates.Add(temp, transform);
             AddComponentToEntity(temp, transform);
             return temp;
         }
@@ -208,6 +228,9 @@ namespace Engine.EntityManagers
             if (componentType.Name == typeof(IRigidBodyComponent).Name)
                 return _rigidBodyComponents.ContainsKey(id);
 
+            if (componentType.Name == typeof(IScriptComponent).Name)
+                return _scriptComponents.ContainsKey(id);
+
             return false;
         }
 
@@ -230,6 +253,23 @@ namespace Engine.EntityManagers
         {
             List<IRigidBodyComponent> active = new List<IRigidBodyComponent>();
             _activeEntities.ForEach(x => { if (_transformComponents.ContainsKey(x)) active.Add(_rigidBodyComponents[x]); });
+            return active;
+        }
+
+        public List<IScriptComponent> GetEntityScriptComponents(uint entity)
+        {
+            return _scriptComponents[entity];
+        }
+
+        public List<List<IScriptComponent>> GetAllScriptComponents()
+        {
+            return new List<List<IScriptComponent>>(_scriptComponents.Values);
+        }
+
+        public List<List<IScriptComponent>> GetAllActiveScriptComponents()
+        {
+            List<List<IScriptComponent>> active = new List<List<IScriptComponent>>();
+            _activeEntities.ForEach(x => { if (_transformComponents.ContainsKey(x)) active.Add(_scriptComponents[x]); });
             return active;
         }
     }

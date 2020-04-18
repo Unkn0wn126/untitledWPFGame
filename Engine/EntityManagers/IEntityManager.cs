@@ -2,6 +2,7 @@
 using Engine.Models;
 using Engine.Models.Components;
 using Engine.Models.Components.RigidBody;
+using Engine.Models.Components.Script;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,6 +46,10 @@ namespace Engine.EntityManagers
         IRigidBodyComponent GetRigidBodyComponent(uint entity);
         List<IRigidBodyComponent> GetAllRigidBodyComponents();
         List<IRigidBodyComponent> GetAllActiveRigidBodyComponents();
+
+        List<IScriptComponent> GetEntityScriptComponents(uint entity);
+        List<List<IScriptComponent>> GetAllScriptComponents();
+        List<List<IScriptComponent>> GetAllActiveScriptComponents();
 
         List<uint> GetAllEntitiesPossessingComponent(Type componentType);
         List<uint> GetAllActiveEntities();
