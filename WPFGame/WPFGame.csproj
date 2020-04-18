@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.csproj" />
     <ProjectReference Include="..\GameInputHandler\GameInputHandler.csproj" />
+    <ProjectReference Include="..\ResourceManagers\ResourceManagers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

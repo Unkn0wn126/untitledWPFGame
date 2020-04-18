@@ -8,7 +8,7 @@ using Engine.Models.GameStateMachine;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.Processors;
-using Engine.ResourceConstants.Images;
+using ResourceManagers.Images;
 using GameInputHandler;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace Engine.ViewModels
 
         public List<IGraphicsComponent> GraphicsComponents { get; set; }
         public GameStateMachine State { get; set; }
-        public ImagePaths ImgPaths { get; set; }
+        private ImagePaths _imgPaths;
         private IProcessor _graphicsProcessor;
         private IProcessor _collisionProcessor;
         private IProcessor _rigidBodyProcessor;
@@ -145,11 +145,11 @@ namespace Engine.ViewModels
             return scene;
         }
 
-        public Game(GameInput gameInputHandler, float xRes, float yRes)
+        public Game(ImagePaths imgPaths, GameInput gameInputHandler, float xRes, float yRes)
         {
             _gameInputHandler = gameInputHandler;
             GraphicsComponents = new List<IGraphicsComponent>();
-            ImgPaths = new ImagePaths();
+            _imgPaths = imgPaths;
             _scenes = new List<IScene>();
 
             State = new GameStateMachine

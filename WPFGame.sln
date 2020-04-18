@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "Engine\Engine.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInputHandler", "GameInputHandler\GameInputHandler.csproj", "{3FDA6037-4E37-41BE-8D55-C433952B7340}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceManagers", "ResourceManagers\ResourceManagers.csproj", "{925379F6-E0BA-41EF-811B-EF678ACCBEDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

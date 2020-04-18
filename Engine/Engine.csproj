@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameInputHandler\GameInputHandler.csproj" />
+    <ProjectReference Include="..\ResourceManagers\ResourceManagers.csproj" />
   </ItemGroup>
 
 </Project>

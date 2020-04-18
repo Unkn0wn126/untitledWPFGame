@@ -1,4 +1,4 @@
-﻿using Engine.ResourceConstants.Images;
+﻿using ResourceManagers.Images;
 
 namespace Engine.Models.Components
 {

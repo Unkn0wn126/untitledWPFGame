@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.ResourceConstants.Images
+namespace ResourceManagers.Images
 {
     public enum ImgName
     {

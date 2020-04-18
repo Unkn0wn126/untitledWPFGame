@@ -3,7 +3,7 @@ using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
-using Engine.ResourceConstants.Images;
+using ResourceManagers.Images;
 using Engine.ViewModels;
 using GameInputHandler;
 using System;
@@ -38,6 +38,8 @@ namespace WPFGame
         // get the sprites and images from here
         private ImageResourceManager _imageResourceManager;
 
+        private ImagePaths _imagePaths;
+
         private bool _isTextureModeOn;
 
         private IScene _currentScene;
@@ -48,8 +50,9 @@ namespace WPFGame
         private int _xRes;
         private int _yRes;
 
-        public MainWindow(GameInput gameInputHandler, IGame session, int xRes, int yRes)
+        public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session, int xRes, int yRes)
         {
+            _imagePaths = imagePaths;
             _isTextureModeOn = true;
 
             _xRes = xRes;
@@ -81,7 +84,7 @@ namespace WPFGame
 
         private void InitializeImages()
         {
-            _imageResourceManager = new ImageResourceManager(_session.ImgPaths);
+            _imageResourceManager = new ImageResourceManager(_imagePaths);
 
             _rectangle = new Rect();
         }
