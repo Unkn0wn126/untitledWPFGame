@@ -35,11 +35,10 @@ namespace WPFGame
         // needed for rendering
         private DrawingVisual _drawingVisual = new DrawingVisual();
 
-        //private BitmapImage _groundImage;
-        //private BitmapImage _cobbleImage;
-        //private BitmapImage _rockImage;
-        //private BitmapImage _playerAvatar;
+        // get the sprites and images from here
         private ImageResourceManager _imageResourceManager;
+
+        private bool _isTextureModeOn;
 
         private IScene _currentScene;
         private ICamera _currentCamera;
@@ -51,6 +50,8 @@ namespace WPFGame
 
         public MainWindow(GameInput gameInputHandler, IGame session, int xRes, int yRes)
         {
+            _isTextureModeOn = true;
+
             _xRes = xRes;
             _yRes = yRes;
 
@@ -81,23 +82,6 @@ namespace WPFGame
         private void InitializeImages()
         {
             _imageResourceManager = new ImageResourceManager(_session.ImgPaths);
-            // placeholder images
-            // I intend to load them all at launch and assign them to a string constant
-            // to give objects information of their "avatar" while keeping it independent
-            //_groundImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Dirt]);
-            //_cobbleImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Cobblestone]);
-            //_playerAvatar = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Player]);
-            //_rockImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Rock]);
-
-            //_sprites.Add(ImgName.Dirt, _groundImage);
-            //_sprites.Add(ImgName.Cobblestone, _cobbleImage);
-            //_sprites.Add(ImgName.Player, _playerAvatar);
-            //_sprites.Add(ImgName.Rock, _rockImage);
-
-            //_colors.Add(ImgName.Dirt, Brushes.Brown);
-            //_colors.Add(ImgName.Cobblestone, Brushes.LightGray);
-            //_colors.Add(ImgName.Player, Brushes.Green);
-            //_colors.Add(ImgName.Rock, Brushes.DarkGray);
 
             _rectangle = new Rect();
         }
@@ -116,8 +100,9 @@ namespace WPFGame
             DrawSceneObjects(drawingContext);
 
             // focus point always rendered at the center of the scene
-            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), _currentCamera.XOffset, _currentCamera.YOffset, _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, true);
-            //DrawGraphicsComponent(_currentScene.PlayerGraphicsComponent, _currentCamera.XOffset, _currentCamera.YOffset, drawingContext);
+            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), 
+                _currentCamera.XOffset, _currentCamera.YOffset, 
+                _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, _isTextureModeOn);
 
             drawingContext.Close();
             bitmap.Render(_drawingVisual);
@@ -135,7 +120,7 @@ namespace WPFGame
                 float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
                 float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
 
-                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext, true);
+                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext, _isTextureModeOn);
                 index++;
             }
         }
@@ -182,6 +167,11 @@ namespace WPFGame
                     GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
                     GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
                 }
+            }
+
+            if (e.Key == Key.F)
+            {
+                _isTextureModeOn = !_isTextureModeOn;
             }
 
             _inputHandler.HandleKeyPressed(e.Key);
