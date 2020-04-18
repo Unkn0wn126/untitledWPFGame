@@ -147,7 +147,28 @@ namespace Engine.ViewModels
 
             manager.AddComponentToEntity(player, _movementStrategy);
 
+            SetupCharacter(scene, manager, objectSize);
+
             return scene;
+        }
+
+        private void SetupCharacter(IScene scene, IEntityManager manager, float objectSize) 
+        {
+            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize * 2, objectSize * 2), objectSize, objectSize, new Vector2(0, 0));
+            IGraphicsComponent test = new GraphicsComponent(ImgName.Player);
+
+            uint player = manager.AddEntity(playerTransform);
+            manager.AddComponentToEntity(player, test);
+
+            ICollisionComponent collision = new CollisionComponent(3, true);
+            manager.AddComponentToEntity(player, collision);
+
+            IRigidBodyComponent rigidBody = new RigidBodyComponent();
+            manager.AddComponentToEntity(player, rigidBody);
+
+            IScriptComponent movementStrategy = new PlayerMovementScript(_gameTime, _gameInputHandler, scene, player, -50f);
+
+            manager.AddComponentToEntity(player, movementStrategy);
         }
 
         public Game(ImagePaths imgPaths, GameInput gameInputHandler, float xRes, float yRes)
