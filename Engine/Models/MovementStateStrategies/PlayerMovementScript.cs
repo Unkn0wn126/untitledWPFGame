@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using TimeUtils;
 
 namespace Engine.Models.MovementStateStrategies
 {
@@ -17,22 +18,19 @@ namespace Engine.Models.MovementStateStrategies
         private float _baseForceX;
         private float _baseForceY;
 
-        private float _forceX;
-        private float _forceY;
-
         private IScene _context;
 
         private GameInput _gameInputHandler;
 
-        public PlayerMovementScript(GameInput gameInputHandler, IScene context, uint player, float baseVelocity)
+        private GameTime _gameTime;
+
+        public PlayerMovementScript(GameTime gameTime, GameInput gameInputHandler, IScene context, uint player, float baseVelocity)
         {
+            _gameTime = gameTime;
             _gameInputHandler = gameInputHandler;
             _baseVelocity = baseVelocity;
             _player = player;
             _context = context;
-
-            _forceX = 0;
-            _forceY = 0;
 
             _baseForceX = 0;
             _baseForceY = 0;
@@ -41,27 +39,20 @@ namespace Engine.Models.MovementStateStrategies
         public void UpdatePosition()
         {
             GameKey currValue = _gameInputHandler.CurrentKeyValue;
+            IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);
+
             if ((currValue & GameKey.Up) == GameKey.Up)
-                _forceY = -_baseVelocity;
+                rigidBody.ForceY = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
             if ((currValue & GameKey.Down) == GameKey.Down)
-                _forceY = +_baseVelocity;            
+                rigidBody.ForceY = +_baseVelocity * _gameTime.DeltaTimeInSeconds;            
             if ((currValue & GameKey.Left) == GameKey.Left)
-                _forceX = -_baseVelocity;
+                rigidBody.ForceX = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
             if ((currValue & GameKey.Right) == GameKey.Right)
-                _forceX = +_baseVelocity;
+                rigidBody.ForceX = +_baseVelocity * _gameTime.DeltaTimeInSeconds;
             if ((currValue & GameKey.Up) != GameKey.Up && (currValue & GameKey.Down) != GameKey.Down)
-                _forceY = _baseForceY;
+                rigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
             if ((currValue & GameKey.Left) != GameKey.Left && (currValue & GameKey.Right) != GameKey.Right)
-                _forceX = _baseForceX;
-        }
-
-        public void ApplyForce()
-        {
-                IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);
-                rigidBody.ForceX = _forceX;
-                rigidBody.ForceY = _forceY;
-
-            //Trace.WriteLine($"X: {rigidBody.ForceX}; Y: {rigidBody.ForceY = _forceY}");
+                rigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
         }
     }
 }

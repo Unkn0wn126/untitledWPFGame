@@ -141,7 +141,7 @@ namespace Engine.ViewModels
             _collisionProcessor = new CollisionProcessor(scene);
             _rigidBodyProcessor = new RigidBodyProcessor(scene);
 
-            _movementStrategy = new PlayerMovementScript(_gameInputHandler, scene, player, 50f);
+            _movementStrategy = new PlayerMovementScript(_gameTime, _gameInputHandler, scene, player, 50f);
 
             return scene;
         }
@@ -163,34 +163,25 @@ namespace Engine.ViewModels
             CurrentScene = _scenes[0];
         }
 
-        public void HandleUserInput()
-        {
-            if (State.IsRunning())
-            {
-                _movementStrategy.UpdatePosition();
-                _movementStrategy.ApplyForce();
-            }
-
-        }
-
         private GameTime _gameTime;
+        //private float milliSecondsPassed = 0;
         // Create objects here? Through factories...
         public void Update()
         {
-            // TODO: Change this to a state class resolved system
+            _gameTime.UpdateDeltaTime();
             if (State.IsRunning())
             {
-                _gameTime.UpdateDeltaTime();
-                
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
-                _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInTicks);
-                _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInTicks);
+                _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                _movementStrategy.UpdatePosition();
+
+                _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
             }
         }
 
         public void UpdateGraphics()
         {
-            _graphicsProcessor?.ProcessOneGameTick(0);
+            _graphicsProcessor?.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
         }
     }
 }

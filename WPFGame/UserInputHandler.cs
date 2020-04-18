@@ -46,7 +46,7 @@ namespace WPFGame
             if (_keyCodes.ContainsKey(e))
             {
                 _gameInputHandler.CurrentKeyValue |= _keyCodes[e];
-                Trace.WriteLine($"Pressing, value is: {_gameInputHandler.CurrentKeyValue}");
+                //Trace.WriteLine($"Pressing, value is: {_gameInputHandler.CurrentKeyValue}");
             }
         }
 
@@ -55,7 +55,7 @@ namespace WPFGame
             if (_keyCodes.ContainsKey(e))
             {
                 _gameInputHandler.CurrentKeyValue &= ~_keyCodes[e];
-                Trace.WriteLine($"Releasing, value is: {_gameInputHandler.CurrentKeyValue}");
+                //Trace.WriteLine($"Releasing, value is: {_gameInputHandler.CurrentKeyValue}");
             }
         }
     }

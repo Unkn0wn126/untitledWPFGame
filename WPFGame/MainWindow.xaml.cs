@@ -178,7 +178,7 @@ namespace WPFGame
             }
 
             _inputHandler.HandleKeyPressed(e.Key);
-            _session.HandleUserInput();
+            //_session.HandleUserInput();
         }
         
         private void ShowPauseOverlay()
@@ -209,7 +209,7 @@ namespace WPFGame
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             _inputHandler.HandleKeyReleased(e.Key);
-            _session.HandleUserInput();
+            //_session.HandleUserInput();
         }
     }
 }

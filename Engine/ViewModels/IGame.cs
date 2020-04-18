@@ -15,7 +15,6 @@ namespace Engine.ViewModels
         GameStateMachine State { get; set; }
         IScene CurrentScene { get; set; }
         void Update();
-        void HandleUserInput();
         void UpdateGraphics();
     }
 }

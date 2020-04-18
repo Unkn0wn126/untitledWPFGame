@@ -4,6 +4,7 @@ using Engine.Models.Components.RigidBody;
 using Engine.Models.Scenes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Text;
 
@@ -16,7 +17,7 @@ namespace Engine.Processors
         {
             _context = context;
         }
-        public void ProcessOneGameTick(long lastFrameTime)
+        public void ProcessOneGameTick(float lastFrameTime)
         {
             IEntityManager manager = _context.EntityManager;
             List<uint> active = manager.GetAllActiveEntities();
@@ -65,9 +66,7 @@ namespace Engine.Processors
                         int secondStartY = (int)Math.Round(transform.Position.Y);
                         int secondEndY = (int)Math.Round(transform.Position.Y + transform.ScaleY);
 
-                        float deltaTime = GetDeltaTime(lastFrameTime);
-
-                        //// going in the direction of the collision
+                        // going in the direction of the collision
                         if ((originDiffX < 0 && rigidBodies[i].ForceX > 0 || originDiffX > 0 && rigidBodies[i].ForceX < 0)
                         && (firstStartY < secondEndY && firstEndY > secondStartY))
                         {
@@ -84,17 +83,17 @@ namespace Engine.Processors
             }
         }
 
-        private float GetDeltaTime(long lastFrameTime)
+        private float GetDeltaTime(float lastFrameTime)
         {
-            return (lastFrameTime / 10000000f);
+            return (lastFrameTime / 1000f);
         }
 
-        private Vector2 UpdatePos(IRigidBodyComponent force, ITransformComponent transform, long lastFrameTime)
+        private Vector2 UpdatePos(IRigidBodyComponent force, ITransformComponent transform, float lastFrameTime)
         {
             Vector2 newPos = transform.Position;
-            float deltaTime = GetDeltaTime(lastFrameTime);
-            newPos.X += force.ForceX * deltaTime;
-            newPos.Y += force.ForceY * deltaTime;
+            //float deltaTime = GetDeltaTime(lastFrameTime);
+            newPos.X += force.ForceX /** deltaTime*/;
+            newPos.Y += force.ForceY /** deltaTime*/;
 
             return newPos;
         }

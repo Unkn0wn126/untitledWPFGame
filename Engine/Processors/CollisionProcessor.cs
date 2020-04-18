@@ -18,7 +18,7 @@ namespace Engine.Processors
             _context = context;
         }
 
-        public void ProcessOneGameTick(long lastFrameTime)
+        public void ProcessOneGameTick(float lastFrameTime)
         {
             List<ICollisionComponent> collisions = new List<ICollisionComponent>();
             List<ITransformComponent> transforms = new List<ITransformComponent>();

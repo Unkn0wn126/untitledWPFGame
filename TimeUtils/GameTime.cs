@@ -1,30 +1,29 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace TimeUtils
 {
     public class GameTime
     {
-        private DateTime _prevFrame;
-        private DateTime _currFrame;
+        private long _prevFrame;
+        private long _currFrame;
 
-        public long DeltaTimeInMilliseconds { 
-            get { return DeltaTimeInTicks != 0 ? DeltaTimeInTicks / TimeSpan.TicksPerMillisecond : 0; } 
-            private set { DeltaTimeInTicks = value; } }
-        public long DeltaTimeInSeconds { 
-            get { return DeltaTimeInTicks != 0 ? DeltaTimeInTicks / TimeSpan.TicksPerSecond : 0; } 
-            private set { DeltaTimeInTicks = value; } }
-        public long DeltaTimeInTicks { get; private set; }
+        //private Stopwatch _stopwatch;
+
+        public float DeltaTimeInMilliseconds { get; private set; }
+        public float DeltaTimeInSeconds { get; private set; }
 
         public GameTime()
         {
-            _prevFrame = DateTime.Now;
-            _currFrame = DateTime.Now;
+            _prevFrame = Environment.TickCount;
+            _currFrame = Environment.TickCount;
         }
 
         public void UpdateDeltaTime()
         {
-            _currFrame = DateTime.Now;
-            DeltaTimeInTicks = (_currFrame.Ticks - _prevFrame.Ticks) /*/ 10000000f*/;
+            _currFrame = Environment.TickCount;
+            DeltaTimeInMilliseconds = (_currFrame - _prevFrame);
+            DeltaTimeInSeconds = DeltaTimeInMilliseconds / 1000.0f;
             _prevFrame = _currFrame;
         }
     }
