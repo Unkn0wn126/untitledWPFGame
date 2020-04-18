@@ -4,25 +4,25 @@ using System.Text;
 
 namespace Engine.ResourceConstants.Images
 {
-    public enum ImgNames
+    public enum ImgName
     {
-        DIRT,
-        COBBLESTONE,
-        ROCK,
-        PLAYER
+        Dirt,
+        Cobblestone,
+        Rock,
+        Player
     }
 
     public class ImagePaths
     {
-        public Dictionary<ImgNames, Uri> ImageSprites { get; set; }
+        public Dictionary<ImgName, Uri> ImageSprites { get; set; }
 
         public ImagePaths()
         {
-            ImageSprites = new Dictionary<ImgNames, Uri>();
-            ImageSprites.Add(ImgNames.DIRT, new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
-            ImageSprites.Add(ImgNames.COBBLESTONE, new Uri(@"./Resources/Images/ground_test.png", UriKind.Relative));
-            ImageSprites.Add(ImgNames.ROCK, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
-            ImageSprites.Add(ImgNames.PLAYER, new Uri(@"./Resources/Images/player.png", UriKind.Relative));
+            ImageSprites = new Dictionary<ImgName, Uri>();
+            ImageSprites.Add(ImgName.Dirt, new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
+            ImageSprites.Add(ImgName.Cobblestone, new Uri(@"./Resources/Images/ground_test.png", UriKind.Relative));
+            ImageSprites.Add(ImgName.Rock, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
+            ImageSprites.Add(ImgName.Player, new Uri(@"./Resources/Images/player.png", UriKind.Relative));
         }
     }
 }

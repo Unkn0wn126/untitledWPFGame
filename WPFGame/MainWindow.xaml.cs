@@ -32,8 +32,8 @@ namespace WPFGame
         private RenderTargetBitmap bitmap;
 
         // Possibly better in another class
-        private readonly Dictionary<ImgNames, BitmapImage> _sprites = new Dictionary<ImgNames, BitmapImage>();
-        private readonly Dictionary<ImgNames, Brush> _colors = new Dictionary<ImgNames, Brush>();
+        private readonly Dictionary<ImgName, BitmapImage> _sprites = new Dictionary<ImgName, BitmapImage>();
+        private readonly Dictionary<ImgName, Brush> _colors = new Dictionary<ImgName, Brush>();
 
         // needed for rendering
         private DrawingVisual _drawingVisual = new DrawingVisual();
@@ -85,20 +85,20 @@ namespace WPFGame
             // placeholder images
             // I intend to load them all at launch and assign them to a string constant
             // to give objects information of their "avatar" while keeping it independent
-            _groundImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.DIRT]);
-            _cobbleImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.COBBLESTONE]);
-            _playerAvatar = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.PLAYER]);
-            _rockImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgNames.ROCK]);
+            _groundImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Dirt]);
+            _cobbleImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Cobblestone]);
+            _playerAvatar = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Player]);
+            _rockImage = new BitmapImage(_session.ImgPaths.ImageSprites[ImgName.Rock]);
 
-            _sprites.Add(ImgNames.DIRT, _groundImage);
-            _sprites.Add(ImgNames.COBBLESTONE, _cobbleImage);
-            _sprites.Add(ImgNames.PLAYER, _playerAvatar);
-            _sprites.Add(ImgNames.ROCK, _rockImage);
+            _sprites.Add(ImgName.Dirt, _groundImage);
+            _sprites.Add(ImgName.Cobblestone, _cobbleImage);
+            _sprites.Add(ImgName.Player, _playerAvatar);
+            _sprites.Add(ImgName.Rock, _rockImage);
 
-            _colors.Add(ImgNames.DIRT, Brushes.Brown);
-            _colors.Add(ImgNames.COBBLESTONE, Brushes.LightGray);
-            _colors.Add(ImgNames.PLAYER, Brushes.Green);
-            _colors.Add(ImgNames.ROCK, Brushes.DarkGray);
+            _colors.Add(ImgName.Dirt, Brushes.Brown);
+            _colors.Add(ImgName.Cobblestone, Brushes.LightGray);
+            _colors.Add(ImgName.Player, Brushes.Green);
+            _colors.Add(ImgName.Rock, Brushes.DarkGray);
 
             _rectangle = new Rect();
         }

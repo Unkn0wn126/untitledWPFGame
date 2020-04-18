@@ -4,9 +4,9 @@ namespace Engine.Models.Components
 {
     public class GraphicsComponent : IGraphicsComponent
     {
-        public ImgNames CurrentImageName { get; set; }
+        public ImgName CurrentImageName { get; set; }
 
-        public GraphicsComponent(ImgNames imgName)
+        public GraphicsComponent(ImgName imgName)
         {
             CurrentImageName = imgName;
         }
