@@ -28,7 +28,9 @@ namespace Engine.Processors
 
             active.ForEach(x =>
             {
-                if (manager.EntityHasComponent(x, typeof(IRigidBodyComponent)) && manager.EntityHasComponent(x, typeof(ITransformComponent)) && manager.EntityHasComponent(x, typeof(ICollisionComponent)))
+                if (manager.EntityHasComponent(x, typeof(IRigidBodyComponent)) && 
+                manager.EntityHasComponent(x, typeof(ITransformComponent)) && 
+                manager.EntityHasComponent(x, typeof(ICollisionComponent)))
                 {
                     rigidBodies.Add(manager.GetRigidBodyComponent(x));
                     transforms.Add(manager.GetTransformComponent(x));

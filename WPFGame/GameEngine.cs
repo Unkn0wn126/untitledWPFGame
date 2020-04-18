@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace WPFGame
 {
@@ -14,11 +16,9 @@ namespace WPFGame
     {
         private IGame _logicEngine;
         private MainWindow _graphicsEngine;
-        System.Timers.Timer _logicTimer;
         private App _app;
-
-        private DateTime _time1 = DateTime.Now;
-        private DateTime _time2 = DateTime.Now;
+        private bool _isRunning = false;
+        private Thread _logicThread;
 
         public GameEngine(int xRes, int yRes)
         {
@@ -26,47 +26,26 @@ namespace WPFGame
 
             _graphicsEngine = new MainWindow(_logicEngine, xRes, yRes);
             CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
-
-            // another timer to allow for independent non-graphics update
-            //_logicTimer = new System.Timers.Timer(16);
-            //_logicTimer.Elapsed += Update;
-            //_logicTimer.AutoReset = true;
-            //_logicTimer.Enabled = true;
+            _logicThread = new Thread(Update);
         }
 
         public void StartRun()
         {
             _app = new App();
+            _isRunning = true;
 
-            Thread t = new Thread(Update);
-            isRunning = true;
-            t.Start();
+            _logicThread.Start();
             _app.Run(_graphicsEngine);
-            _logicEngine.State.CurrentState = GameState.RUNNING;
-            isRunning = false;
-        }
 
-        private float timer = 0;
-        private float timeout = 1/60;
-        bool isRunning = false;
+            _logicEngine.State.CurrentState = GameState.RUNNING;
+            _isRunning = false;
+        }
 
         private void Update()
         {
-            while (isRunning)
+            while (_isRunning)
             {
-                _time2 = DateTime.Now;
-                float deltaTime = (_time2.Ticks - _time1.Ticks) / 10000000f; // in seconds (one tick = 1 / 10 000 000 of a second
-                _time1 = _time2;
-
-                timer += deltaTime;
-
-                //Trace.WriteLine($"Timer: {timer}");
-
-                if (timer >= timeout)
-                {
-                    timer = 0;
                     _logicEngine.Update();
-                }
             }
 
         }
