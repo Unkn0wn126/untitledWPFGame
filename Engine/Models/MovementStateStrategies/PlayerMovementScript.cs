@@ -9,18 +9,6 @@ using System.Text;
 
 namespace Engine.Models.MovementStateStrategies
 {
-    //public enum AxisStrategy
-    //{
-    //    UP,
-    //    DOWN,
-    //    LEFT,
-    //    RIGHT,
-    //    UPLEFT,
-    //    UPRIGHT,
-    //    DOWNLEFT,
-    //    DOWNRIGHT,
-    //    NEUTRAL
-    //}
     public class PlayerMovementScript
     {
         private float _baseVelocity;
@@ -52,45 +40,19 @@ namespace Engine.Models.MovementStateStrategies
 
         public void UpdatePosition()
         {
-            switch (_gameInputHandler.CurrentKeyValue)
-            {
-                case GameKey.Up:
-                    _forceX = _baseForceX;
-                    _forceY = -_baseVelocity;
-                    break;
-                case GameKey.Down:
-                    _forceX = _baseForceX;
-                    _forceY = _baseVelocity;
-                    break;
-                case GameKey.Left:
-                    _forceX = -_baseVelocity;
-                    _forceY = _baseForceY;
-                    break;
-                case GameKey.Right:
-                    _forceX = _baseVelocity;
-                    _forceY = _baseForceY;
-                    break;
-                case GameKey.Up | GameKey.Left:
-                    _forceX = -_baseVelocity;
-                    _forceY = -_baseVelocity;
-                    break;
-                case GameKey.Up | GameKey.Right:
-                    _forceX = _baseVelocity;
-                    _forceY = -_baseVelocity;
-                    break;
-                case GameKey.Down | GameKey.Left:
-                    _forceX = -_baseVelocity;
-                    _forceY = _baseVelocity;
-                    break;
-                case GameKey.Down | GameKey.Right:
-                    _forceX = _baseVelocity;
-                    _forceY = _baseVelocity;
-                    break;
-                case GameKey.None:
-                    _forceX = _baseForceX;
-                    _forceY = _baseForceY;
-                    break;
-            }
+            GameKey currValue = _gameInputHandler.CurrentKeyValue;
+            if ((currValue & GameKey.Up) == GameKey.Up)
+                _forceY = -_baseVelocity;
+            if ((currValue & GameKey.Down) == GameKey.Down)
+                _forceY = +_baseVelocity;            
+            if ((currValue & GameKey.Left) == GameKey.Left)
+                _forceX = -_baseVelocity;
+            if ((currValue & GameKey.Right) == GameKey.Right)
+                _forceX = +_baseVelocity;
+            if ((currValue & GameKey.Up) != GameKey.Up && (currValue & GameKey.Down) != GameKey.Down)
+                _forceY = _baseForceY;
+            if ((currValue & GameKey.Left) != GameKey.Left && (currValue & GameKey.Right) != GameKey.Right)
+                _forceX = _baseForceX;
         }
 
         public void ApplyForce()
