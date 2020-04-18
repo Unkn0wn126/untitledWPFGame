@@ -9,7 +9,8 @@ namespace ResourceManagers.Images
         Dirt,
         Cobblestone,
         Rock,
-        Player
+        Player,
+        Enemy
     }
 
     public class ImagePaths
@@ -23,6 +24,7 @@ namespace ResourceManagers.Images
             ImageSprites.Add(ImgName.Cobblestone, new Uri(@"./Resources/Images/ground_test.png", UriKind.Relative));
             ImageSprites.Add(ImgName.Rock, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
             ImageSprites.Add(ImgName.Player, new Uri(@"./Resources/Images/player.png", UriKind.Relative));
+            ImageSprites.Add(ImgName.Enemy, new Uri(@"./Resources/Images/enemy.png", UriKind.Relative));
         }
     }
 }

@@ -128,6 +128,7 @@ namespace Engine.ViewModels
             _playerTransform = playerTransform;
 
             uint player = manager.AddEntity(playerTransform);
+            _player = player;
             manager.AddComponentToEntity(player, test);
 
             ICollisionComponent collision = new CollisionComponent(3, true);
@@ -152,10 +153,12 @@ namespace Engine.ViewModels
             return scene;
         }
 
+        private uint _player;
+
         private void SetupCharacter(IScene scene, IEntityManager manager, float objectSize) 
         {
             ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize * 2, objectSize * 2), objectSize, objectSize, new Vector2(0, 0));
-            IGraphicsComponent test = new GraphicsComponent(ImgName.Player);
+            IGraphicsComponent test = new GraphicsComponent(ImgName.Enemy);
 
             uint player = manager.AddEntity(playerTransform);
             manager.AddComponentToEntity(player, test);
@@ -166,7 +169,7 @@ namespace Engine.ViewModels
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
             manager.AddComponentToEntity(player, rigidBody);
 
-            IScriptComponent movementStrategy = new PlayerMovementScript(_gameTime, _gameInputHandler, scene, player, -50f);
+            IScriptComponent movementStrategy = new FollowPlayerScript(_gameTime, scene, player, _player, 50f);
 
             manager.AddComponentToEntity(player, movementStrategy);
         }
