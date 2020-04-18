@@ -35,6 +35,7 @@ namespace Engine.ViewModels
         private IProcessor _graphicsProcessor;
         private IProcessor _collisionProcessor;
         private IProcessor _rigidBodyProcessor;
+        private IProcessor _scriptProcessor;
         private ITransformComponent _playerTransform;
 
         private GameInput _gameInputHandler;
@@ -140,8 +141,11 @@ namespace Engine.ViewModels
             _graphicsProcessor = new GraphicsProcessor(scene, playerTransform);
             _collisionProcessor = new CollisionProcessor(scene);
             _rigidBodyProcessor = new RigidBodyProcessor(scene);
+            _scriptProcessor = new ScriptProcessor(scene);
 
             _movementStrategy = new PlayerMovementScript(_gameTime, _gameInputHandler, scene, player, 50f);
+
+            manager.AddComponentToEntity(player, _movementStrategy);
 
             return scene;
         }
@@ -173,9 +177,9 @@ namespace Engine.ViewModels
             {
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
                 _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
-                _movementStrategy.Update();
-
                 _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                _scriptProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                //_movementStrategy.Update();
             }
         }
 
