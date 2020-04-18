@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFGame", "WPFGame\WPFGame.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "Engine\Engine.csproj", "{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInputHandler", "GameInputHandler\GameInputHandler.csproj", "{3FDA6037-4E37-41BE-8D55-C433952B7340}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
