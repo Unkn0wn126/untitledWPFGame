@@ -17,5 +17,6 @@ namespace GameInputHandler
     }
     public class GameInput
     {
+        public GameKey CurrentKeyValue { get; set; }
     }
 }

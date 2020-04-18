@@ -16,7 +16,7 @@ namespace Engine.ViewModels
         ImagePaths ImgPaths { get; set; }
         IScene CurrentScene { get; set; }
         void Update();
-        void HandleUserInput(AxisStrategy axisStrategy);
+        void HandleUserInput();
         void UpdateGraphics();
     }
 }

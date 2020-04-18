@@ -1,5 +1,7 @@
 ﻿using Engine.Models.Components.RigidBody;
 using Engine.Models.Scenes;
+using Engine.ViewModels;
+using GameInputHandler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,18 +9,18 @@ using System.Text;
 
 namespace Engine.Models.MovementStateStrategies
 {
-    public enum AxisStrategy
-    {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        UPLEFT,
-        UPRIGHT,
-        DOWNLEFT,
-        DOWNRIGHT,
-        NEUTRAL
-    }
+    //public enum AxisStrategy
+    //{
+    //    UP,
+    //    DOWN,
+    //    LEFT,
+    //    RIGHT,
+    //    UPLEFT,
+    //    UPRIGHT,
+    //    DOWNLEFT,
+    //    DOWNRIGHT,
+    //    NEUTRAL
+    //}
     public class PlayerMovementScript
     {
         private float _baseVelocity;
@@ -32,8 +34,11 @@ namespace Engine.Models.MovementStateStrategies
 
         private IScene _context;
 
-        public PlayerMovementScript(IScene context, uint player, float baseVelocity)
+        private GameInput _gameInputHandler;
+
+        public PlayerMovementScript(GameInput gameInputHandler, IScene context, uint player, float baseVelocity)
         {
+            _gameInputHandler = gameInputHandler;
             _baseVelocity = baseVelocity;
             _player = player;
             _context = context;
@@ -45,43 +50,43 @@ namespace Engine.Models.MovementStateStrategies
             _baseForceY = 0;
         }
 
-        public void UpdatePosition(AxisStrategy axisStrategy)
+        public void UpdatePosition()
         {
-            switch (axisStrategy)
+            switch (_gameInputHandler.CurrentKeyValue)
             {
-                case AxisStrategy.UP:
+                case GameKey.Up:
                     _forceX = _baseForceX;
                     _forceY = -_baseVelocity;
                     break;
-                case AxisStrategy.DOWN:
+                case GameKey.Down:
                     _forceX = _baseForceX;
                     _forceY = _baseVelocity;
                     break;
-                case AxisStrategy.LEFT:
+                case GameKey.Left:
                     _forceX = -_baseVelocity;
                     _forceY = _baseForceY;
                     break;
-                case AxisStrategy.RIGHT:
+                case GameKey.Right:
                     _forceX = _baseVelocity;
                     _forceY = _baseForceY;
                     break;
-                case AxisStrategy.UPLEFT:
+                case GameKey.Up | GameKey.Left:
                     _forceX = -_baseVelocity;
                     _forceY = -_baseVelocity;
                     break;
-                case AxisStrategy.UPRIGHT:
+                case GameKey.Up | GameKey.Right:
                     _forceX = _baseVelocity;
                     _forceY = -_baseVelocity;
                     break;
-                case AxisStrategy.DOWNLEFT:
+                case GameKey.Down | GameKey.Left:
                     _forceX = -_baseVelocity;
                     _forceY = _baseVelocity;
                     break;
-                case AxisStrategy.DOWNRIGHT:
+                case GameKey.Down | GameKey.Right:
                     _forceX = _baseVelocity;
                     _forceY = _baseVelocity;
                     break;
-                case AxisStrategy.NEUTRAL:
+                case GameKey.None:
                     _forceX = _baseForceX;
                     _forceY = _baseForceY;
                     break;

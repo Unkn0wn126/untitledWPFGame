@@ -9,6 +9,7 @@ using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.Processors;
 using Engine.ResourceConstants.Images;
+using GameInputHandler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +35,8 @@ namespace Engine.ViewModels
         private IProcessor _collisionProcessor;
         private IProcessor _rigidBodyProcessor;
         private ITransformComponent _playerTransform;
+
+        private GameInput _gameInputHandler;
 
         private PlayerMovementScript _movementStrategy;
 
@@ -137,13 +140,14 @@ namespace Engine.ViewModels
             _collisionProcessor = new CollisionProcessor(scene);
             _rigidBodyProcessor = new RigidBodyProcessor(scene);
 
-            _movementStrategy = new PlayerMovementScript(scene, player, 50f);
+            _movementStrategy = new PlayerMovementScript(_gameInputHandler, scene, player, 50f);
 
             return scene;
         }
 
-        public Game(float xRes, float yRes)
+        public Game(GameInput gameInputHandler, float xRes, float yRes)
         {
+            _gameInputHandler = gameInputHandler;
             GraphicsComponents = new List<IGraphicsComponent>();
             ImgPaths = new ImagePaths();
             _scenes = new List<IScene>();
@@ -156,20 +160,24 @@ namespace Engine.ViewModels
             _scenes.Add(GenerateScene(xRes, yRes));
             CurrentScene = _scenes[0];
 
-            _stopwatch = new Stopwatch();
-            _stopwatch.Start();
+            //_stopwatch = new Stopwatch();
+            //_stopwatch.Start();
 
             //State.CurrentState = GameState.RUNNING;
         }
 
-        public void HandleUserInput(AxisStrategy axisStrategy)
+        public void HandleUserInput()
         {
-            _movementStrategy.UpdatePosition(axisStrategy);
-            _movementStrategy.ApplyForce();
+            if (State.IsRunning())
+            {
+                _movementStrategy.UpdatePosition();
+                _movementStrategy.ApplyForce();
+            }
+
         }
 
         private long _lastFrame = 0;
-        private Stopwatch _stopwatch;
+        //private Stopwatch _stopwatch;
         private DateTime time1 = DateTime.Now;
         private DateTime time2 = DateTime.Now;
         // Create objects here? Through factories...
@@ -183,8 +191,8 @@ namespace Engine.ViewModels
                 //Trace.WriteLine($"Elapsed: {_stopwatch.ElapsedMilliseconds}; Difference: {_stopwatch.ElapsedMilliseconds - _lastFrame}");
                 //Trace.WriteLine($"Elapsed: {time2.Ticks - time1.Ticks}; Difference: {deltaTime / 10000000f}");
                 time1 = time2;
-                long diff = _stopwatch.ElapsedMilliseconds - _lastFrame;
-                _lastFrame = _stopwatch.ElapsedMilliseconds;
+                //long diff = _stopwatch.ElapsedMilliseconds - _lastFrame;
+                //_lastFrame = _stopwatch.ElapsedMilliseconds;
                 
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
                 _collisionProcessor.ProcessOneGameTick(deltaTime);

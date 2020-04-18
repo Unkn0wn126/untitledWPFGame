@@ -5,6 +5,7 @@ using Engine.Models.MovementStateStrategies;
 using Engine.Models.Scenes;
 using Engine.ResourceConstants.Images;
 using Engine.ViewModels;
+using GameInputHandler;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -50,7 +51,7 @@ namespace WPFGame
         private int _xRes;
         private int _yRes;
 
-        public MainWindow(IGame session, int xRes, int yRes)
+        public MainWindow(GameInput gameInputHandler, IGame session, int xRes, int yRes)
         {
             _xRes = xRes;
             _yRes = yRes;
@@ -60,7 +61,7 @@ namespace WPFGame
             InitializeImages();
             //InitializeCaching();
 
-            _inputHandler = new UserInputHandler();
+            _inputHandler = new UserInputHandler(gameInputHandler);
 
             // this is what everything renders to
             bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
@@ -184,8 +185,8 @@ namespace WPFGame
                 }
             }
 
-            AxisStrategy movementStrategy = _inputHandler.HandleKeyPressed(e.Key);
-            _session.HandleUserInput(movementStrategy);
+            _inputHandler.HandleKeyPressed(e.Key);
+            _session.HandleUserInput();
         }
         
         private void ShowPauseOverlay()
@@ -215,8 +216,8 @@ namespace WPFGame
         
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            AxisStrategy movementStrategy = _inputHandler.HandleKeyReleased(e.Key);
-            _session.HandleUserInput(movementStrategy);
+            _inputHandler.HandleKeyReleased(e.Key);
+            _session.HandleUserInput();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Engine.Models.GameStateMachine;
 using Engine.ViewModels;
+using GameInputHandler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,9 +23,10 @@ namespace WPFGame
 
         public GameEngine(int xRes, int yRes)
         {
-            _logicEngine = new Game(xRes, yRes);
+            GameInput gameInputHandler = new GameInput();
+            _logicEngine = new Game(gameInputHandler, xRes, yRes);
 
-            _graphicsEngine = new MainWindow(_logicEngine, xRes, yRes);
+            _graphicsEngine = new MainWindow(gameInputHandler, _logicEngine, xRes, yRes);
             CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
             _logicThread = new Thread(Update);
         }
