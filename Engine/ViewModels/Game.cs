@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Text;
+using TimeUtils;
 
 namespace Engine.ViewModels
 {
@@ -147,6 +148,7 @@ namespace Engine.ViewModels
 
         public Game(ImagePaths imgPaths, GameInput gameInputHandler, float xRes, float yRes)
         {
+            _gameTime = new GameTime();
             _gameInputHandler = gameInputHandler;
             GraphicsComponents = new List<IGraphicsComponent>();
             _imgPaths = imgPaths;
@@ -159,11 +161,6 @@ namespace Engine.ViewModels
 
             _scenes.Add(GenerateScene(xRes, yRes));
             CurrentScene = _scenes[0];
-
-            //_stopwatch = new Stopwatch();
-            //_stopwatch.Start();
-
-            //State.CurrentState = GameState.RUNNING;
         }
 
         public void HandleUserInput()
@@ -176,27 +173,18 @@ namespace Engine.ViewModels
 
         }
 
-        private long _lastFrame = 0;
-        //private Stopwatch _stopwatch;
-        private DateTime time1 = DateTime.Now;
-        private DateTime time2 = DateTime.Now;
+        private GameTime _gameTime;
         // Create objects here? Through factories...
         public void Update()
         {
             // TODO: Change this to a state class resolved system
             if (State.IsRunning())
             {
-                time2 = DateTime.Now;
-                long deltaTime = (time2.Ticks - time1.Ticks) /*/ 10000000f*/;
-                //Trace.WriteLine($"Elapsed: {_stopwatch.ElapsedMilliseconds}; Difference: {_stopwatch.ElapsedMilliseconds - _lastFrame}");
-                //Trace.WriteLine($"Elapsed: {time2.Ticks - time1.Ticks}; Difference: {deltaTime / 10000000f}");
-                time1 = time2;
-                //long diff = _stopwatch.ElapsedMilliseconds - _lastFrame;
-                //_lastFrame = _stopwatch.ElapsedMilliseconds;
+                _gameTime.UpdateDeltaTime();
                 
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
-                _collisionProcessor.ProcessOneGameTick(deltaTime);
-                _rigidBodyProcessor.ProcessOneGameTick(deltaTime);
+                _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInTicks);
+                _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInTicks);
             }
         }
 

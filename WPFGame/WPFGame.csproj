@@ -12,6 +12,7 @@
     <ProjectReference Include="..\Engine\Engine.csproj" />
     <ProjectReference Include="..\GameInputHandler\GameInputHandler.csproj" />
     <ProjectReference Include="..\ResourceManagers\ResourceManagers.csproj" />
+    <ProjectReference Include="..\TimeUtils\TimeUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

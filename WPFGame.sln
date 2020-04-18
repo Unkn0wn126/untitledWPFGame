@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInputHandler", "GameInp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceManagers", "ResourceManagers\ResourceManagers.csproj", "{925379F6-E0BA-41EF-811B-EF678ACCBEDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeUtils", "TimeUtils\TimeUtils.csproj", "{B879344A-B98F-4998-8849-9ADFBE3D476A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
