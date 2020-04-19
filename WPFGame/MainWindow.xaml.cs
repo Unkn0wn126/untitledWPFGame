@@ -102,9 +102,9 @@ namespace WPFGame
             DrawSceneObjects(drawingContext);
 
             // focus point always rendered at the center of the scene
-            DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), 
-                _currentCamera.XOffset, _currentCamera.YOffset, 
-                _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, _isTextureModeOn);
+            //DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), 
+            //    _currentCamera.XOffset, _currentCamera.YOffset, 
+            //    _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, _isTextureModeOn);
 
             drawingContext.Close();
             bitmap.Render(_drawingVisual);

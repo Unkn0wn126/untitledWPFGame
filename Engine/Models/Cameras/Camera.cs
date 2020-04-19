@@ -1,6 +1,7 @@
 ﻿using Engine.EntityManagers;
 using Engine.Models.Components;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Engine.Models.Cameras
 {
@@ -33,10 +34,17 @@ namespace Engine.Models.Cameras
         /// </summary>
         /// <param name="focusPoint"></param>
         /// <param name="context"></param>
-        public void UpdatePosition(ITransformComponent focusPoint, List<IGraphicsComponent> graphicsComponents, List<ITransformComponent> transformComponents)
+        public void UpdatePosition(ITransformComponent focusPoint, Dictionary<ITransformComponent, IGraphicsComponent> renderables)
         {
-            VisibleObjects = graphicsComponents;
-            VisibleTransforms = transformComponents;
+            //VisibleObjects = graphicsComponents;
+            //VisibleTransforms = transformComponents;
+
+            Dictionary<ITransformComponent, IGraphicsComponent> keyValuePairs = renderables.OrderBy(x => x.Key.ZIndex).ToDictionary(x => x.Key, x => x.Value);
+
+            //keyValuePairs.OrderBy(x => x.Key.ZIndex);
+
+            VisibleObjects = keyValuePairs.Values.ToList();
+            VisibleTransforms = keyValuePairs.Keys.ToList();
 
             XOffset = _halfWidth - focusPoint.ScaleX;
             YOffset = _halfHeight - focusPoint.ScaleY;

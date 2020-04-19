@@ -10,8 +10,7 @@ namespace Engine.Processors
 {
     public class GraphicsProcessor : IProcessor
     {
-        private List<IGraphicsComponent> _graphics;
-        private List<ITransformComponent> _pos;
+        private Dictionary<ITransformComponent, IGraphicsComponent> _renderables;
 
         private IScene _context;
         private ITransformComponent _focusPoint;
@@ -20,25 +19,25 @@ namespace Engine.Processors
         {
             _context = context;
             _focusPoint = focusPoint;
-            _graphics = new List<IGraphicsComponent>();
-            _pos = new List<ITransformComponent>();
+            _renderables = new Dictionary<ITransformComponent, IGraphicsComponent>();
         }
         public void ProcessOneGameTick(float lastFrameTime)
         {
-            _graphics.Clear();
-            _pos.Clear();
-            //_context.EntityManager.UpdateActiveEntities(_focusPoint);
+            _renderables.Clear();
+
             List<uint> activeEntites = _context.EntityManager.GetAllActiveEntities();
             activeEntites.ForEach(x => 
             {
-                if (x != _context.PlayerEntity && _context.EntityManager.EntityHasComponent(x, typeof(IGraphicsComponent)))
+                if (_context.EntityManager.EntityHasComponent(x, typeof(IGraphicsComponent)))
                 {
-                    _graphics.Add(_context.EntityManager.GetGraphicsComponent(x));
-                    _pos.Add(_context.EntityManager.GetTransformComponent(x));
+                    if (!_renderables.ContainsKey(_context.EntityManager.GetTransformComponent(x)))
+                    {
+                        _renderables.Add(_context.EntityManager.GetTransformComponent(x), _context.EntityManager.GetGraphicsComponent(x));
+                    }
                 }
             });
 
-            _context.SceneCamera.UpdatePosition(_focusPoint, _graphics, _pos);
+            _context.SceneCamera.UpdatePosition(_focusPoint, _renderables);
         }
     }
 }

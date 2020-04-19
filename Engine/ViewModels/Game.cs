@@ -65,7 +65,7 @@ namespace Engine.ViewModels
                     //currentName = i % 2 == 0 ? ImgNames.DIRT : ImgNames.COBBLESTONE;
                     currentName = ImgName.Dirt;
 
-                    ITransformComponent currTransform = new TransformComponent(new Vector2(i * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                    ITransformComponent currTransform = new TransformComponent(new Vector2(i * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0), 0);
                     IGraphicsComponent current = new GraphicsComponent(currentName);
 
                     uint currEntity = manager.AddEntity(currTransform);
@@ -75,7 +75,7 @@ namespace Engine.ViewModels
 
             for (int i = 0; i < numOfObjectsOnX; i++)
             {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, 0), objectSize, objectSize, new Vector2(0, 0));
+                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, 0), objectSize, objectSize, new Vector2(0, 0), 1);
                 IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
 
                 uint block = manager.AddEntity(blockTransform);
@@ -87,7 +87,7 @@ namespace Engine.ViewModels
 
             for (int i = 0; i < numOfObjectsOnX; i++)
             {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, (numOfObjectsOnY - 1) * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, (numOfObjectsOnY - 1) * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
                 IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
 
                 uint block = manager.AddEntity(blockTransform);
@@ -99,7 +99,7 @@ namespace Engine.ViewModels
 
             for (int j = 1; j < numOfObjectsOnY; j ++)
             {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2(0, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                ITransformComponent blockTransform = new TransformComponent(new Vector2(0, j * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
                 IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
 
                 uint block = manager.AddEntity(blockTransform);
@@ -112,7 +112,7 @@ namespace Engine.ViewModels
 
             for (int j = 1; j < numOfObjectsOnY; j ++)
             {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2((numOfObjectsOnX - 1) * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0));
+                ITransformComponent blockTransform = new TransformComponent(new Vector2((numOfObjectsOnX - 1) * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
                 IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
 
                 uint block = manager.AddEntity(blockTransform);
@@ -123,7 +123,7 @@ namespace Engine.ViewModels
 
             }
 
-            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0));
+            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
             IGraphicsComponent test = new GraphicsComponent(ImgName.Player);
             _playerTransform = playerTransform;
 
@@ -150,6 +150,8 @@ namespace Engine.ViewModels
 
             SetupCharacter(scene, manager, objectSize);
 
+            Test(scene, manager, objectSize);
+
             return scene;
         }
 
@@ -157,7 +159,7 @@ namespace Engine.ViewModels
 
         private void SetupCharacter(IScene scene, IEntityManager manager, float objectSize) 
         {
-            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize * 2, objectSize * 2), objectSize, objectSize, new Vector2(0, 0));
+            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize * 2, objectSize * 2), objectSize, objectSize, new Vector2(0, 0), 2);
             IGraphicsComponent test = new GraphicsComponent(ImgName.Enemy);
 
             uint player = manager.AddEntity(playerTransform);
@@ -172,6 +174,15 @@ namespace Engine.ViewModels
             IScriptComponent movementStrategy = new FollowPlayerScript(_gameTime, scene, player, _player, 50f);
 
             manager.AddComponentToEntity(player, movementStrategy);
+        }
+
+        private void Test(IScene scene, IEntityManager manager, float objectSize)
+        {
+            ITransformComponent blockTransform = new TransformComponent(new Vector2(200, 200), objectSize, objectSize, new Vector2(0, 0), 3);
+            IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
+
+            uint block = manager.AddEntity(blockTransform);
+            manager.AddComponentToEntity(block, blockcurrent);
         }
 
         public Game(ImagePaths imgPaths, GameInput gameInputHandler, float xRes, float yRes)

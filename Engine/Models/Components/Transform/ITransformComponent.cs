@@ -7,6 +7,7 @@ namespace Engine.Models.Components
 {
     public interface ITransformComponent : IGameComponent
     {
+        int ZIndex { get; set; }
         float ScaleX { get; set; }
         float ScaleY { get; set; }
         Vector2 Position { get; set; }
