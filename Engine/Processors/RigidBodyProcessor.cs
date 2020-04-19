@@ -48,7 +48,8 @@ namespace Engine.Processors
 
             for (int i = 0; i < rigidBodies.Count; i++)
             {
-                Vector2 newPos = UpdatePos(rigidBodies[i], transforms[i], lastFrameTime);
+                Vector2 oldPos = transforms[i].Position;
+                Vector2 newPos = UpdatePos(rigidBodies[i], oldPos, lastFrameTime);
                 collisions[i].CollidingWith.ForEach(x =>
                 {
                     ICollisionComponent collision = manager.GetCollisionComponent(x);
@@ -56,15 +57,15 @@ namespace Engine.Processors
                     {
                         ITransformComponent transform = manager.GetTransformComponent(x);
                         // difference betveen origins on x
-                        float originDiffX = transforms[i].Position.X - transform.Position.X;
+                        float originDiffX = oldPos.X - transform.Position.X;
                         // difference between origins on y
-                        float originDiffY = transforms[i].Position.Y - transform.Position.Y;
+                        float originDiffY = oldPos.Y - transform.Position.Y;
 
-                        int firstStartX = (int)Math.Round(transforms[i].Position.X);
-                        int firstEndX = (int)Math.Round(transforms[i].Position.X + transforms[i].ScaleX);
+                        int firstStartX = (int)Math.Round(oldPos.X);
+                        int firstEndX = (int)Math.Round(oldPos.X + transforms[i].ScaleX);
 
-                        int firstStartY = (int)Math.Round(transforms[i].Position.Y);
-                        int firstEndY = (int)Math.Round(transforms[i].Position.Y + transforms[i].ScaleY);
+                        int firstStartY = (int)Math.Round(oldPos.Y);
+                        int firstEndY = (int)Math.Round(oldPos.Y + transforms[i].ScaleY);
 
                         int secondStartX = (int)Math.Round(transform.Position.X);
                         int secondEndX = (int)Math.Round(transform.Position.X + transform.ScaleX);
@@ -86,13 +87,15 @@ namespace Engine.Processors
                     }
                 });
 
-                manager.Coordinates.Move(useful[i], transforms[i], newPos.X, newPos.Y);
+                transforms[i].Position = newPos;
+
+                manager.Coordinates.Move(useful[i], oldPos, newPos);
             }
         }
 
-        private Vector2 UpdatePos(IRigidBodyComponent force, ITransformComponent transform, float lastFrameTime)
+        private Vector2 UpdatePos(IRigidBodyComponent force, Vector2 transform, float lastFrameTime)
         {
-            Vector2 newPos = transform.Position;
+            Vector2 newPos = transform;
             //float deltaTime = GetDeltaTime(lastFrameTime);
             newPos.X += force.ForceX /** deltaTime*/;
             newPos.Y += force.ForceY /** deltaTime*/;

@@ -148,7 +148,7 @@ namespace Engine.Models.Factories
 
 
 
-            manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 50f));
+            manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 200f));
 
             if (generateTheGuy)
             {

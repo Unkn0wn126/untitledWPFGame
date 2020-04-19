@@ -138,7 +138,7 @@ namespace Engine.EntityManagers
         {
             uint temp = AddEntity();
 
-            Coordinates.Add(temp, transform);
+            Coordinates.Add(temp, transform.Position);
             AddComponentToEntity(temp, transform);
             return temp;
         }

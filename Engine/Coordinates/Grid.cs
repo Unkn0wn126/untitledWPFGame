@@ -33,10 +33,10 @@ namespace Engine.Coordinates
             }
         }
 
-        public void Add(uint unit, ITransformComponent position)
+        public void Add(uint unit, Vector2 position)
         {
-            int cellX = (int)(position.Position.X / _cellSize);
-            int cellY = (int)(position.Position.Y / _cellSize);
+            int cellX = (int)(position.X / _cellSize);
+            int cellY = (int)(position.Y / _cellSize);
             Cells[cellX][cellY].Add(unit);
         }
 
@@ -63,27 +63,24 @@ namespace Engine.Coordinates
             return gameObjects;
         }
 
-        public void Move(uint unit, ITransformComponent position, float x, float y)
+        public void Move(uint unit, Vector2 oldPos, Vector2 newPos)
         {
-            int oldCellX = (int)(position.Position.X / _cellSize);
-            int oldCellY = (int)(position.Position.Y / _cellSize);
+            int oldCellX = (int)(oldPos.X / _cellSize);
+            int oldCellY = (int)(oldPos.Y / _cellSize);
 
-            int cellX = (int)(x / _cellSize);
-            int cellY = (int)(y / _cellSize);
-
-            Vector2 newPos = new Vector2(x, y);
-            position.Position = newPos;
+            int cellX = (int)(newPos.X / _cellSize);
+            int cellY = (int)(newPos.Y / _cellSize);
 
             // If it didn't change cells, we're done.
             if (oldCellX == cellX && oldCellY == cellY) return;
 
-            // Unlink it from the list of its old cell.
+            //// Unlink it from the list of its old cell.
             if (cellX < Cells.Length && cellX >= 0 && cellY < Cells[0].Length && cellY >= 0)
             {
-                Cells[cellX][cellY].Remove(unit);
+                Cells[oldCellX][oldCellY].Remove(unit);
 
                 // Add it back to the grid at its new cell.
-                Add(unit, position);
+                Add(unit, newPos);
             }
 
         }
