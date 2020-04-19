@@ -14,7 +14,7 @@ namespace Engine.Models.Scenes
         public IEntityManager EntityManager { get; set; }
         public ICamera SceneCamera { get; set; }
         public uint PlayerEntity { get; set; }
-        public ITransformComponent Transform { get; set; }
+        public ITransformComponent PlayerTransform { get; set; }
         public ISpatialIndex Coordinates { get; set; }
 
         public GeneralScene(ICamera camera, IEntityManager entityManager, uint playerEntity, ITransformComponent playerTransform, ISpatialIndex coordinates)
@@ -23,7 +23,7 @@ namespace Engine.Models.Scenes
             SceneCamera = camera;
             Coordinates = coordinates;
             PlayerEntity = playerEntity;
-            Transform = playerTransform;
+            PlayerTransform = playerTransform;
         }
     }
 }

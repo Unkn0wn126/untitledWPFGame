@@ -15,10 +15,10 @@ namespace Engine.Processors
         private IScene _context;
         private ITransformComponent _focusPoint;
 
-        public GraphicsProcessor(IScene context, ITransformComponent focusPoint)
+        public GraphicsProcessor(IScene context)
         {
             _context = context;
-            _focusPoint = focusPoint;
+            _focusPoint = context.PlayerTransform;
             _renderables = new Dictionary<ITransformComponent, IGraphicsComponent>();
         }
 

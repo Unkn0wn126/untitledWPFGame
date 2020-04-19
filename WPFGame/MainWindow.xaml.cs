@@ -115,7 +115,7 @@ namespace WPFGame
 
         private void DrawSceneObjects(DrawingContext drawingContext)
         {
-            Vector2 focusPos = _currentScene.Transform.Position;
+            Vector2 focusPos = _currentScene.PlayerTransform.Position;
             int index = 0;
             List<ITransformComponent> transformComponents = _currentCamera.VisibleTransforms;
 

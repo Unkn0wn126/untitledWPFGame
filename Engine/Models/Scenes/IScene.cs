@@ -9,7 +9,7 @@ namespace Engine.Models.Scenes
     {
         uint PlayerEntity { get; set; }
         ISpatialIndex Coordinates { get; set; }
-        ITransformComponent Transform { get; set; }
+        ITransformComponent PlayerTransform { get; set; }
         IEntityManager EntityManager { get; set; }
         ICamera SceneCamera { get; set; }
     }
