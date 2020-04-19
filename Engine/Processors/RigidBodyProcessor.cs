@@ -85,6 +85,7 @@ namespace Engine.Processors
                         }
                     }
                 });
+
                 manager.Coordinates.Move(useful[i], transforms[i], newPos.X, newPos.Y);
             }
         }
