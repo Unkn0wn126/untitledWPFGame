@@ -90,19 +90,27 @@ namespace WPFGame
 
         public void UpdateGraphics(object sender, EventArgs e)
         {
-            // redrawing a bitmap image should be faster
-            bitmap.Clear();
-            var drawingContext = _drawingVisual.RenderOpen();
+            if (_session.State.CurrentState == Engine.Models.GameStateMachine.GameState.LOADING)
+            {
+                ShowLoadingOverlay();
+            }
+            else if (_session.State.IsRunning())
+            {
+                // redrawing a bitmap image should be faster
+                bitmap.Clear();
+                var drawingContext = _drawingVisual.RenderOpen();
 
-            DrawBackground(drawingContext);
+                DrawBackground(drawingContext);
 
-            // need to update the camera to know what is visible
-            _session.UpdateGraphics();
+                // need to update the camera to know what is visible
+                _session.UpdateGraphics();
 
-            DrawSceneObjects(drawingContext);
+                DrawSceneObjects(drawingContext);
 
-            drawingContext.Close();
-            bitmap.Render(_drawingVisual);
+                drawingContext.Close();
+                bitmap.Render(_drawingVisual);
+            }
+
         }
 
         private void DrawSceneObjects(DrawingContext drawingContext)
@@ -155,9 +163,9 @@ namespace WPFGame
             if (e.Key == Key.Escape)
             {
                 _session.State.TogglePause();
-                if (!_session.State.IsRunning())
+                if (_session.State.IsPaused())
                 {
-                    ShowPauseOverlay();
+                        ShowPauseOverlay();
                 }
                 else
                 {
@@ -187,6 +195,31 @@ namespace WPFGame
             TextBlock textBlock = new TextBlock();
 
             textBlock.Text = "PAUSED";
+
+            textBlock.FontSize = 60;
+
+            textBlock.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+
+            Canvas.SetLeft(textBlock, 350);
+
+            Canvas.SetTop(textBlock, 250);
+
+            GameCanvas.Children.Add(textBlock);
+        }      
+        
+        private void ShowLoadingOverlay()
+        {
+            // show "Pause" overlay
+            Rectangle overlay = new Rectangle();
+            Color testColor = Color.FromArgb(255, 0, 0, 0);
+            overlay.Width = _xRes;
+            overlay.Height = _yRes;
+            overlay.Fill = new SolidColorBrush(testColor);
+            GameCanvas.Children.Add(overlay);
+
+            TextBlock textBlock = new TextBlock();
+
+            textBlock.Text = "LOADING";
 
             textBlock.FontSize = 60;
 

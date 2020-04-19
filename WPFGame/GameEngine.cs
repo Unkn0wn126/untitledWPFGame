@@ -39,9 +39,10 @@ namespace WPFGame
             _isRunning = true;
 
             _logicThread.Start();
+            _logicEngine.State.CurrentState = GameState.RUNNING;
+
             _app.Run(_graphicsEngine);
 
-            _logicEngine.State.CurrentState = GameState.RUNNING;
             _isRunning = false;
         }
 

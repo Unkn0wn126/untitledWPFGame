@@ -203,7 +203,6 @@ namespace Engine.ViewModels
         }
 
         private GameTime _gameTime;
-        //private float milliSecondsPassed = 0;
         // Create objects here? Through factories...
         public void Update()
         {
@@ -211,10 +210,10 @@ namespace Engine.ViewModels
             if (State.IsRunning())
             {
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
+
                 _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
                 _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
                 _scriptProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
-                //_movementStrategy.Update();
             }
         }
 

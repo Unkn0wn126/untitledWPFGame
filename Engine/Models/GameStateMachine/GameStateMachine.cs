@@ -40,7 +40,17 @@ namespace Engine.Models.GameStateMachine
 
         public bool IsRunning()
         {
-            return CurrentState != GameState.PAUSED;
+            return CurrentState != GameState.PAUSED && CurrentState != GameState.LOADING;
+        }
+
+        public bool IsPaused()
+        {
+            return CurrentState == GameState.PAUSED;
+        }
+
+        public bool IsLoading()
+        {
+            return CurrentState == GameState.LOADING;
         }
     }
 }
