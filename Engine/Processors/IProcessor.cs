@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Engine.Models.Scenes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,5 +11,6 @@ namespace Engine.Processors
     public interface IProcessor
     {
         void ProcessOneGameTick(float lastFrameTime);
+        void ChangeContext(IScene context);
     }
 }

@@ -45,7 +45,6 @@ namespace Engine.Processors
             {
                 for (int j = 0; j < collisions.Count; j++)
                 {
-                    //Trace.WriteLine($"j: {j}; i: {i}; count: {collisions.Count}");
                     if (IsPairColliding(transforms[i], transforms[j]) && transforms[i] != transforms[j])
                     {
                         if (!collisions[i].CollidingWith.Contains(useful[j]) && collisions[i].IsDynamic)
@@ -73,18 +72,6 @@ namespace Engine.Processors
                     }
                 }
             }
-
-            //foreach (var item in collisions)
-            //{
-            //    if (item.IsDynamic && item.CollidingWith.Count > 0)
-            //    {
-            //        Trace.WriteLine("Colliding!");
-            //    }
-            //    else if (item.IsDynamic && item.CollidingWith.Count == 0)
-            //    {
-            //        Trace.WriteLine("Not Colliding!");
-            //    }
-            //}
         }
 
         private bool IsPairColliding(ITransformComponent firstItem, ITransformComponent secondItem)
@@ -107,6 +94,11 @@ namespace Engine.Processors
         private bool IsBetween(int minBound, int maxBound, int tested)
         {
             return tested >= minBound && tested <= maxBound;
+        }
+
+        public void ChangeContext(IScene context)
+        {
+            _context = context;
         }
     }
 }

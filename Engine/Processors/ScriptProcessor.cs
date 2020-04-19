@@ -15,6 +15,12 @@ namespace Engine.Processors
         {
             _context = context;
         }
+
+        public void ChangeContext(IScene context)
+        {
+            _context = context;
+        }
+
         public void ProcessOneGameTick(float lastFrameTime)
         {
             IEntityManager manager = _context.EntityManager;

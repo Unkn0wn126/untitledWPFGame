@@ -101,11 +101,6 @@ namespace WPFGame
 
             DrawSceneObjects(drawingContext);
 
-            // focus point always rendered at the center of the scene
-            //DrawGraphicsComponent(_currentScene.EntityManager.GetGraphicsComponent(_currentScene.PlayerEntity), 
-            //    _currentCamera.XOffset, _currentCamera.YOffset, 
-            //    _currentScene.Transform.ScaleX, _currentScene.Transform.ScaleY, drawingContext, _isTextureModeOn);
-
             drawingContext.Close();
             bitmap.Render(_drawingVisual);
         }
@@ -177,7 +172,6 @@ namespace WPFGame
             }
 
             _inputHandler.HandleKeyPressed(e.Key);
-            //_session.HandleUserInput();
         }
         
         private void ShowPauseOverlay()
@@ -208,7 +202,6 @@ namespace WPFGame
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             _inputHandler.HandleKeyReleased(e.Key);
-            //_session.HandleUserInput();
         }
     }
 }

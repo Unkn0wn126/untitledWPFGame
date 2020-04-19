@@ -21,6 +21,12 @@ namespace Engine.Processors
             _focusPoint = focusPoint;
             _renderables = new Dictionary<ITransformComponent, IGraphicsComponent>();
         }
+
+        public void ChangeContext(IScene context)
+        {
+            _context = context;
+        }
+
         public void ProcessOneGameTick(float lastFrameTime)
         {
             _renderables.Clear();

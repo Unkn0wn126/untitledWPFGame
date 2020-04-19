@@ -17,6 +17,12 @@ namespace Engine.Processors
         {
             _context = context;
         }
+
+        public void ChangeContext(IScene context)
+        {
+            _context = context;
+        }
+
         public void ProcessOneGameTick(float lastFrameTime)
         {
             IEntityManager manager = _context.EntityManager;
@@ -81,11 +87,6 @@ namespace Engine.Processors
                 });
                 manager.Coordinates.Move(useful[i], transforms[i], newPos.X, newPos.Y);
             }
-        }
-
-        private float GetDeltaTime(float lastFrameTime)
-        {
-            return (lastFrameTime / 1000f);
         }
 
         private Vector2 UpdatePos(IRigidBodyComponent force, ITransformComponent transform, float lastFrameTime)
