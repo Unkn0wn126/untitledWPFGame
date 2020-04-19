@@ -18,6 +18,37 @@ namespace Engine.Models.Factories
 {
     public class SceneFactory : ISceneFactory
     {
+        public IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
+        {
+            int objectSize = 200;
+            int numOfObjectsInCell = 3;
+            int cellSize = objectSize * numOfObjectsInCell;
+            float baseCellXValue = (2 * objectSize) / (float)cellSize;
+            float baseCellYValue = (2 * objectSize) / (float)cellSize;
+            int numCellsX = (int)Math.Ceiling(baseCellXValue);
+            int numCellsY = (int)Math.Ceiling(baseCellYValue);
+
+            ISpatialIndex grid = new Grid(numCellsX, numCellsY, cellSize);
+
+            IEntityManager manager = new EntityManager(grid);
+
+            ITransformComponent currTransform = new TransformComponent(new Vector2(1 * objectSize, 1 * objectSize), objectSize, objectSize, new Vector2(0, 0), 0);
+            IGraphicsComponent current = new GraphicsComponent(ImgName.Player);
+
+            uint currEntity = manager.AddEntity(currTransform);
+            manager.AddComponentToEntity(currEntity, current);            
+            
+            ITransformComponent currTransform2 = new TransformComponent(new Vector2(2 * objectSize, 1 * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
+            IGraphicsComponent current2 = new GraphicsComponent(ImgName.Enemy);
+
+            uint currEntity2 = manager.AddEntity(currTransform2);
+            manager.AddComponentToEntity(currEntity2, current2);
+
+            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, currEntity, currTransform, grid);
+
+            return scene;
+        }
+
         public IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
         {
             int objectSize = 50;

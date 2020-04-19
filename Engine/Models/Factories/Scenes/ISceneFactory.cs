@@ -10,5 +10,6 @@ namespace Engine.Models.Factories
     public interface ISceneFactory
     {
         IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY);
+        IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler);
     }
 }
