@@ -16,6 +16,7 @@ using System.Numerics;
 using System.Text;
 using TimeUtils;
 using Engine.Models.Components.Script;
+using System.Threading.Tasks;
 
 namespace Engine.ViewModels
 {
@@ -33,6 +34,7 @@ namespace Engine.ViewModels
         public GameStateMachine State { get; set; }
         private ImagePaths _imgPaths;
         private IProcessor _graphicsProcessor;
+        private List<IProcessor> _processors;
         private IProcessor _collisionProcessor;
         private IProcessor _rigidBodyProcessor;
         private IProcessor _scriptProcessor;
@@ -144,6 +146,10 @@ namespace Engine.ViewModels
             _rigidBodyProcessor = new RigidBodyProcessor(scene);
             _scriptProcessor = new ScriptProcessor(scene);
 
+            _processors.Add(_collisionProcessor);
+            _processors.Add(_rigidBodyProcessor);
+            _processors.Add(_scriptProcessor);
+
             _movementStrategy = new PlayerMovementScript(_gameTime, _gameInputHandler, scene, player, 50f);
 
             manager.AddComponentToEntity(player, _movementStrategy);
@@ -192,6 +198,7 @@ namespace Engine.ViewModels
             GraphicsComponents = new List<IGraphicsComponent>();
             _imgPaths = imgPaths;
             _scenes = new List<IScene>();
+            _processors = new List<IProcessor>();
 
             State = new GameStateMachine
             {
@@ -211,9 +218,14 @@ namespace Engine.ViewModels
             {
                 CurrentScene.EntityManager.UpdateActiveEntities(_playerTransform);
 
-                _collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
-                _rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
-                _scriptProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                _processors.ForEach(x =>
+                {
+                    x.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                });
+
+                //_collisionProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                //_rigidBodyProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                //_scriptProcessor.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
             }
         }
 
