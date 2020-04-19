@@ -22,11 +22,20 @@ namespace Engine.Processors
             _renderables = new Dictionary<ITransformComponent, IGraphicsComponent>();
         }
 
+        /// <summary>
+        /// Updates the context to a new scene
+        /// </summary>
+        /// <param name="context"></param>
         public void ChangeContext(IScene context)
         {
             _context = context;
+            _focusPoint = context.PlayerTransform;
         }
 
+        /// <summary>
+        /// Handles the update of visible entities
+        /// </summary>
+        /// <param name="lastFrameTime"></param>
         public void ProcessOneGameTick(float lastFrameTime)
         {
             _renderables.Clear();

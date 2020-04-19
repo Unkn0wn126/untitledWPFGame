@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WPFGame.ResourceManagers;
+using System.Diagnostics;
 
 namespace WPFGame
 {
@@ -90,12 +91,19 @@ namespace WPFGame
 
         public void UpdateGraphics(object sender, EventArgs e)
         {
-            if (_session.State.CurrentState == Engine.Models.GameStateMachine.GameState.LOADING)
+            if (_session.State.IsLoading() && !loadingOverlayActive)
             {
                 ShowLoadingOverlay();
             }
             else if (_session.State.IsRunning())
             {
+                if (loadingOverlayActive)
+                {
+                    RemoveLoadingOverlay();
+                    loadingOverlayActive = false;
+                }
+                _currentCamera = _session.CurrentScene.SceneCamera;
+                _currentScene = _session.CurrentScene;
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();
@@ -113,6 +121,10 @@ namespace WPFGame
 
         }
 
+        /// <summary>
+        /// Renders all visible entities in a scene
+        /// </summary>
+        /// <param name="drawingContext"></param>
         private void DrawSceneObjects(DrawingContext drawingContext)
         {
             Vector2 focusPos = _currentScene.PlayerTransform.Position;
@@ -130,6 +142,13 @@ namespace WPFGame
             }
         }
 
+        /// <summary>
+        /// Computes graphics coordinates based on the real ones
+        /// </summary>
+        /// <param name="logicalPosition"></param>
+        /// <param name="offset"></param>
+        /// <param name="focusPos"></param>
+        /// <returns></returns>
         private float CalculateGraphicsCoordinate(float logicalPosition, float offset, float focusPos)
         {
             return logicalPosition < focusPos ? offset - (focusPos - logicalPosition) : offset + (logicalPosition - focusPos);
@@ -205,7 +224,15 @@ namespace WPFGame
             Canvas.SetTop(textBlock, 250);
 
             GameCanvas.Children.Add(textBlock);
-        }      
+        }
+
+        private bool loadingOverlayActive = false;
+
+        private void RemoveLoadingOverlay()
+        {
+            GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
+            GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
+        }
         
         private void ShowLoadingOverlay()
         {
@@ -230,6 +257,7 @@ namespace WPFGame
             Canvas.SetTop(textBlock, 250);
 
             GameCanvas.Children.Add(textBlock);
+            loadingOverlayActive = true;
         }
         
         private void Window_KeyUp(object sender, KeyEventArgs e)

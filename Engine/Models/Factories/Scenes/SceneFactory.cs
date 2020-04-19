@@ -18,15 +18,15 @@ namespace Engine.Models.Factories
 {
     public class SceneFactory : ISceneFactory
     {
-        public IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
+        public IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
         {
             int objectSize = 50;
             int numOfObjectsInCell = 5;
             int cellSize = objectSize * numOfObjectsInCell;
-            int numOfObjectsOnX = 10;
-            int numOfObjectsOnY = 10;
-            int numCellsX = (numOfObjectsOnX * objectSize) / cellSize;
-            int numCellsY = (numOfObjectsOnY * objectSize) / cellSize;
+            float baseCellXValue = (numOfObjectsOnX * objectSize) / (float)cellSize;
+            float baseCellYValue = (numOfObjectsOnY * objectSize) / (float)cellSize;
+            int numCellsX = (int)Math.Ceiling(baseCellXValue);
+            int numCellsY = (int)Math.Ceiling(baseCellYValue);
 
             ISpatialIndex grid = new Grid(numCellsX, numCellsY, cellSize);
 
@@ -119,7 +119,11 @@ namespace Engine.Models.Factories
 
             manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 50f));
 
-            SetupCharacter(scene, manager, objectSize, gameTime);
+            if (generateTheGuy)
+            {
+                SetupCharacter(scene, manager, objectSize, gameTime);
+            }
+            
 
             return scene;
         }

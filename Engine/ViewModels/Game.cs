@@ -36,25 +36,35 @@ namespace Engine.ViewModels
         private GameTime _gameTime;
         private GameInput _gameInputHandler;
 
+        private float _xRes;
+        private float _yRes;
+
+        private Random _rnd;
+
         /*
          * does not need: imgPaths, xRes, yRes
-         * may need: gameInputHandler, player context
+         * may need: gameInputHandler, player context, gameTime from parameter
          * will need scene manager
          */
         public Game(ImagePaths imgPaths, GameInput gameInputHandler, float xRes, float yRes)
         {
+            _xRes = xRes;
+            _yRes = yRes;
             _gameTime = new GameTime();
             _gameInputHandler = gameInputHandler;
             _imgPaths = imgPaths;
             _processors = new List<IProcessor>();
 
+            _rnd = new Random();
+
             State = new GameStateMachine
             {
-                CurrentState = GameState.LOADING
+                CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
             ISceneFactory sceneFactory = new SceneFactory();
-            CurrentScene = sceneFactory.CreateScene(xRes, yRes, _gameTime, gameInputHandler);
+            int val = _rnd.Next(4, 8);
+            CurrentScene = sceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);
 
@@ -63,10 +73,46 @@ namespace Engine.ViewModels
             _processors.Add(new ScriptProcessor(CurrentScene));
         }
 
-
+        private float secondsElapsed = 0;
+        private float loadingTime = 0;
+        private bool generateTheGuy = false;
+        /// <summary>
+        /// Updates the game logic
+        /// </summary>
         public void Update()
         {
-            _gameTime.UpdateDeltaTime();
+            _gameTime.UpdateDeltaTime(); // keep track of elapsed time
+
+            secondsElapsed += _gameTime.DeltaTimeInSeconds;
+
+            if (State.IsLoading())
+            {
+                loadingTime += _gameTime.DeltaTimeInSeconds;
+            }
+
+            if (loadingTime >= 3)
+            {
+                State.CurrentState = GameState.RUNNING;
+                secondsElapsed = 0;
+                loadingTime = 0;
+            }
+            
+            if (secondsElapsed >= 4 && State.IsRunning())
+            {
+                int val = _rnd.Next(100, 200);
+                State.CurrentState = GameState.LOADING;
+                ISceneFactory sceneFactory = new SceneFactory();
+                CurrentScene = sceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
+                _graphicsProcessor.ChangeContext(CurrentScene);
+                _processors.ForEach(x =>
+                {
+                    x.ChangeContext(CurrentScene);
+                });
+                generateTheGuy = !generateTheGuy;
+                
+                secondsElapsed = 0;
+            }
+
             if (State.IsRunning())
             {
                 CurrentScene.EntityManager.UpdateActiveEntities(CurrentScene.PlayerTransform);
@@ -78,6 +124,9 @@ namespace Engine.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates which entities should be visible
+        /// </summary>
         public void UpdateGraphics()
         {
             _graphicsProcessor?.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
