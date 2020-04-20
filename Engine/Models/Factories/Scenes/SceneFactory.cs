@@ -5,6 +5,7 @@ using Engine.Models.Components;
 using Engine.Models.Components.Collision;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
+using Engine.Models.Factories.Entities;
 using Engine.Models.Scenes;
 using GameInputHandler;
 using ResourceManagers.Images;
@@ -44,7 +45,7 @@ namespace Engine.Models.Factories
             uint currEntity2 = manager.AddEntity(currTransform2);
             manager.AddComponentToEntity(currEntity2, current2);
 
-            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, currEntity, currTransform, grid);
+            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
 
             return scene;
         }
@@ -63,71 +64,30 @@ namespace Engine.Models.Factories
 
             IEntityManager manager = new EntityManager(grid);
 
+            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
+
+            ComponentState req = ComponentState.GraphicsComponent | ComponentState.TransformComponent;
+            ComponentState req2 = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
+
             // This is gonna be in a factory...
             for (int i = 0; i < numOfObjectsOnX; i++)
             {
                 for (int j = 0; j < numOfObjectsOnY; j++)
                 {
                     ImgName currentName;
-                    //currentName = i % 2 == 0 ? ImgNames.DIRT : ImgNames.COBBLESTONE;
                     currentName = ImgName.Dirt;
 
-                    ITransformComponent currTransform = new TransformComponent(new Vector2(i * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0), 0);
-                    IGraphicsComponent current = new GraphicsComponent(currentName);
-
-                    uint currEntity = manager.AddEntity(currTransform);
-                    manager.AddComponentToEntity(currEntity, current);
+                    EntityFactory.GenerateEntity(manager, req, objectSize, objectSize, objectSize * i, objectSize * j, 0, currentName, gameTime);
                 }
-            }
 
-            for (int i = 0; i < numOfObjectsOnX; i++)
-            {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, 0), objectSize, objectSize, new Vector2(0, 0), 1);
-                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
-
-                uint block = manager.AddEntity(blockTransform);
-                manager.AddComponentToEntity(block, blockcurrent);
-
-                ICollisionComponent blockCollision = new CollisionComponent(i + 1, false);
-                manager.AddComponentToEntity(block, blockCollision);
-            }
-
-            for (int i = 0; i < numOfObjectsOnX; i++)
-            {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2(i * objectSize, (numOfObjectsOnY - 1) * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
-                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
-
-                uint block = manager.AddEntity(blockTransform);
-                manager.AddComponentToEntity(block, blockcurrent);
-
-                ICollisionComponent blockCollision = new CollisionComponent(i + 1, false);
-                manager.AddComponentToEntity(block, blockCollision);
+                EntityFactory.GenerateEntity(manager, req2, objectSize, objectSize, objectSize * i, 0, 0, ImgName.Rock, gameTime);
+                EntityFactory.GenerateEntity(manager, req2, objectSize, objectSize, objectSize * i, (numOfObjectsOnY - 1) * objectSize, 0, ImgName.Rock, gameTime);
             }
 
             for (int j = 1; j < numOfObjectsOnY; j++)
             {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2(0, j * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
-                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
-
-                uint block = manager.AddEntity(blockTransform);
-                manager.AddComponentToEntity(block, blockcurrent);
-
-                ICollisionComponent blockCollision = new CollisionComponent(j + 1, false);
-                manager.AddComponentToEntity(block, blockCollision);
-
-            }
-
-            for (int j = 1; j < numOfObjectsOnY; j++)
-            {
-                ITransformComponent blockTransform = new TransformComponent(new Vector2((numOfObjectsOnX - 1) * objectSize, j * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
-                IGraphicsComponent blockcurrent = new GraphicsComponent(ImgName.Rock);
-
-                uint block = manager.AddEntity(blockTransform);
-                manager.AddComponentToEntity(block, blockcurrent);
-
-                ICollisionComponent blockCollision = new CollisionComponent(j + 1, false);
-                manager.AddComponentToEntity(block, blockCollision);
-
+                EntityFactory.GenerateEntity(manager, req2, objectSize, objectSize, 0, j * objectSize, 0, ImgName.Rock, gameTime);
+                EntityFactory.GenerateEntity(manager, req2, objectSize, objectSize, (numOfObjectsOnX - 1) * objectSize, j * objectSize, 0, ImgName.Rock, gameTime);
             }
 
             ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
@@ -138,15 +98,16 @@ namespace Engine.Models.Factories
             //_player = player;
             manager.AddComponentToEntity(player, test);
 
-            ICollisionComponent collision = new CollisionComponent(3, true);
+            ICollisionComponent collision = new CollisionComponent(true);
             manager.AddComponentToEntity(player, collision);
 
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
             manager.AddComponentToEntity(player, rigidBody);
 
-            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, player, playerTransform, grid);
 
 
+            scene.PlayerEntity = player;
+            scene.PlayerTransform = playerTransform;
 
             manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
 
@@ -167,7 +128,7 @@ namespace Engine.Models.Factories
             uint player = manager.AddEntity(playerTransform);
             manager.AddComponentToEntity(player, test);
 
-            ICollisionComponent collision = new CollisionComponent(3, true);
+            ICollisionComponent collision = new CollisionComponent(true);
             manager.AddComponentToEntity(player, collision);
 
             IRigidBodyComponent rigidBody = new RigidBodyComponent();

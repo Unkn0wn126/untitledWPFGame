@@ -17,13 +17,11 @@ namespace Engine.Models.Scenes
         public ITransformComponent PlayerTransform { get; set; }
         public ISpatialIndex Coordinates { get; set; }
 
-        public GeneralScene(ICamera camera, IEntityManager entityManager, uint playerEntity, ITransformComponent playerTransform, ISpatialIndex coordinates)
+        public GeneralScene(ICamera camera, IEntityManager entityManager, ISpatialIndex coordinates)
         {
             EntityManager = entityManager;
             SceneCamera = camera;
             Coordinates = coordinates;
-            PlayerEntity = playerEntity;
-            PlayerTransform = playerTransform;
         }
     }
 }
