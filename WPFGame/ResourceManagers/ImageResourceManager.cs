@@ -38,7 +38,9 @@ namespace WPFGame.ResourceManagers
             var paths = Enum.GetValues(typeof(ImgName));
             foreach (var item in paths)
             {
-                _colors.Add((ImgName)item, new SolidColorBrush(Color.FromRgb((byte)_rnd.Next(256), (byte)_rnd.Next(256), (byte)_rnd.Next(256))));
+                //_colors.Add((ImgName)item, new SolidColorBrush(Color.FromRgb((byte)_rnd.Next(256), (byte)_rnd.Next(256), (byte)_rnd.Next(256))));
+                byte[] currColor = imagePaths.ColorSprites[(ImgName)item];
+                _colors.Add((ImgName)item, new SolidColorBrush(Color.FromRgb(currColor[0], currColor[1], currColor[2])));
             }
         }
         public BitmapImage GetImage(ImgName image)

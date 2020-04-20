@@ -36,23 +36,54 @@ namespace Engine.Models.Components.Script
             _baseForceY = 0;
         }
 
+        private void ChangeAvatar(IGraphicsComponent graphics, GameKey currValue)
+        {
+            if ((currValue & GameKey.Left) == GameKey.Left)
+            {
+                graphics.CurrentImageName = ResourceManagers.Images.ImgName.PlayerLeft;
+            }
+            else if ((currValue & GameKey.Right) == GameKey.Right)
+            {
+                graphics.CurrentImageName = ResourceManagers.Images.ImgName.PlayerRight;
+            }
+            else
+            {
+                graphics.CurrentImageName = ResourceManagers.Images.ImgName.Player;
+            }
+        }
+
         public void Update()
         {
             GameKey currValue = _gameInputHandler.CurrentKeyValue;
             IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);
+            IGraphicsComponent graphics = _context.EntityManager.GetGraphicsComponent(_player);
+
+            ChangeAvatar(graphics, currValue);
 
             if ((currValue & GameKey.Up) == GameKey.Up)
+            {
                 rigidBody.ForceY = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
+            }
             if ((currValue & GameKey.Down) == GameKey.Down)
-                rigidBody.ForceY = +_baseVelocity * _gameTime.DeltaTimeInSeconds;            
+            {
+                rigidBody.ForceY = +_baseVelocity * _gameTime.DeltaTimeInSeconds;
+            }
             if ((currValue & GameKey.Left) == GameKey.Left)
+            {
                 rigidBody.ForceX = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
+            }
             if ((currValue & GameKey.Right) == GameKey.Right)
+            {
                 rigidBody.ForceX = +_baseVelocity * _gameTime.DeltaTimeInSeconds;
+            }
             if ((currValue & GameKey.Up) != GameKey.Up && (currValue & GameKey.Down) != GameKey.Down)
+            {
                 rigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
+            }
             if ((currValue & GameKey.Left) != GameKey.Left && (currValue & GameKey.Right) != GameKey.Right)
+            {
                 rigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
+            }
         }
     }
 }

@@ -148,7 +148,7 @@ namespace Engine.Models.Factories
 
 
 
-            manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 200f));
+            manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
 
             if (generateTheGuy)
             {
@@ -173,7 +173,7 @@ namespace Engine.Models.Factories
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
             manager.AddComponentToEntity(player, rigidBody);
 
-            IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 50f);
+            IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 4 * objectSize);
 
             manager.AddComponentToEntity(player, movementStrategy);
         }

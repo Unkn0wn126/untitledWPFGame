@@ -33,6 +33,12 @@
     <None Update="Resources\Images\player.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\Images\player_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Images\player_right.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\Images\rock.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

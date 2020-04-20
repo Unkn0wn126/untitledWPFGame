@@ -2,6 +2,10 @@
 
 namespace GameInputHandler
 {
+    /// <summary>
+    /// Keeps track of all the
+    /// registered virtual keys
+    /// </summary>
     [Flags]
     public enum GameKey
     {

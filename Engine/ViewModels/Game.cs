@@ -64,7 +64,7 @@ namespace Engine.ViewModels
 
             ISceneFactory sceneFactory = new SceneFactory();
             int val = _rnd.Next(10, 20);
-            CurrentScene = sceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, false, val, val);
+            CurrentScene = sceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);
 

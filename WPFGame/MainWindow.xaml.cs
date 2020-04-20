@@ -47,6 +47,7 @@ namespace WPFGame
 
         Rect _rectangle;
 
+        // for the context of window size
         private int _xRes;
         private int _yRes;
 
@@ -82,6 +83,9 @@ namespace WPFGame
             _drawingVisual.CacheMode = cache;
         }
 
+        /// <summary>
+        /// Loads image resources
+        /// </summary>
         private void InitializeImages()
         {
             _imageResourceManager = new ImageResourceManager(_imagePaths);
@@ -89,6 +93,11 @@ namespace WPFGame
             _rectangle = new Rect();
         }
 
+        /// <summary>
+        /// Redraws the scene
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void UpdateGraphics(object sender, EventArgs e)
         {
             if (_session.State.IsLoading() && !loadingOverlayActive)
@@ -154,6 +163,16 @@ namespace WPFGame
             return logicalPosition < focusPos ? offset - (focusPos - logicalPosition) : offset + (logicalPosition - focusPos);
         }
 
+        /// <summary>
+        /// Draws a graphics component on the given position
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="graphicX"></param>
+        /// <param name="graphicY"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="drawingContext"></param>
+        /// <param name="textureMode"></param>
         private void DrawGraphicsComponent(IGraphicsComponent item, float graphicX, float graphicY, float width, float height, DrawingContext drawingContext, bool textureMode)
         {
             _rectangle.X = graphicX;
@@ -167,6 +186,10 @@ namespace WPFGame
 
         }
 
+        /// <summary>
+        /// Draws a black background on the "scene"
+        /// </summary>
+        /// <param name="drawingContext"></param>
         private void DrawBackground(DrawingContext drawingContext)
         {
             // to have a black background as a default
@@ -179,6 +202,7 @@ namespace WPFGame
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            // Temporairly here to show pause menu
             if (e.Key == Key.Escape)
             {
                 _session.State.TogglePause();
@@ -203,6 +227,7 @@ namespace WPFGame
         
         private void ShowPauseOverlay()
         {
+            // hopefully a separate XML component in the future
             // show "Pause" overlay
             Rectangle overlay = new Rectangle();
             Color testColor = Color.FromArgb(172, 172, 172, 255);
@@ -236,7 +261,8 @@ namespace WPFGame
         
         private void ShowLoadingOverlay()
         {
-            // show "Pause" overlay
+            // Hopefully a separate XML component in the future
+            // show "Loading" overlay
             Rectangle overlay = new Rectangle();
             Color testColor = Color.FromArgb(255, 0, 0, 0);
             overlay.Width = _xRes;

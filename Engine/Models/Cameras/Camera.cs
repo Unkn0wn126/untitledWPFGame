@@ -1,5 +1,6 @@
 ﻿using Engine.EntityManagers;
 using Engine.Models.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -46,8 +47,8 @@ namespace Engine.Models.Cameras
             VisibleObjects = keyValuePairs.Values.ToList();
             VisibleTransforms = keyValuePairs.Keys.ToList();
 
-            XOffset = _halfWidth - focusPoint.ScaleX;
-            YOffset = _halfHeight - focusPoint.ScaleY;
+            XOffset = Math.Abs(_halfWidth - (focusPoint.ScaleX / 2));
+            YOffset = Math.Abs(_halfHeight - (focusPoint.ScaleY / 2));
         }
     }
 }
