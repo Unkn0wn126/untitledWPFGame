@@ -57,6 +57,7 @@ namespace Engine.EntityManagers
                     break;
                 case ITransformComponent t:
                     _transformComponents.Add(entityID, t);
+                    Coordinates.Add(entityID, t.Position);
                     break;
                 case ICollisionComponent c:
                     _collisionComponents.Add(entityID, c);
@@ -138,7 +139,6 @@ namespace Engine.EntityManagers
         {
             uint temp = AddEntity();
 
-            Coordinates.Add(temp, transform.Position);
             AddComponentToEntity(temp, transform);
             return temp;
         }

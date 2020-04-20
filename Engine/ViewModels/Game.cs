@@ -62,9 +62,8 @@ namespace Engine.ViewModels
                 CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
-            ISceneFactory sceneFactory = new SceneFactory();
             int val = _rnd.Next(10, 20);
-            CurrentScene = sceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
+            CurrentScene = SceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);
 
@@ -96,21 +95,20 @@ namespace Engine.ViewModels
             //    secondsElapsed = 0;
             //    loadingTime = 0;
             //}
-            
+
             //if (secondsElapsed >= 8 && State.IsRunning())
             //{
             //    int val = _rnd.Next(100, 200);
             //    State.CurrentState = GameState.LOADING;
-            //    ISceneFactory sceneFactory = new SceneFactory();
-            //    //CurrentScene = sceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
-            //    CurrentScene = sceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
+            //    //CurrentScene = SceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
+            //    CurrentScene = SceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
             //    _graphicsProcessor.ChangeContext(CurrentScene);
             //    _processors.ForEach(x =>
             //    {
             //        x.ChangeContext(CurrentScene);
             //    });
             //    generateTheGuy = !generateTheGuy;
-                
+
             //    secondsElapsed = 0;
             //}
 

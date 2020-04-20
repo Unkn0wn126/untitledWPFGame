@@ -16,9 +16,9 @@ using TimeUtils;
 
 namespace Engine.Models.Factories
 {
-    public class SceneFactory : ISceneFactory
+    public class SceneFactory
     {
-        public IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
+        public static IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
         {
             int objectSize = 200;
             int numOfObjectsInCell = 3;
@@ -49,9 +49,9 @@ namespace Engine.Models.Factories
             return scene;
         }
 
-        public IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
+        public static IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
         {
-            int objectSize = 50;
+            int objectSize = 1;
             int numOfObjectsInCell = 5;
             int cellSize = objectSize * numOfObjectsInCell;
             float baseCellXValue = (numOfObjectsOnX * objectSize) / (float)cellSize;
@@ -159,7 +159,7 @@ namespace Engine.Models.Factories
             return scene;
         }
 
-        private void SetupCharacter(IScene scene, IEntityManager manager, float objectSize, GameTime gameTime)
+        private static void SetupCharacter(IScene scene, IEntityManager manager, float objectSize, GameTime gameTime)
         {
             ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize * 2, objectSize * 2), objectSize, objectSize, new Vector2(0, 0), 2);
             IGraphicsComponent test = new GraphicsComponent(ImgName.Enemy);
