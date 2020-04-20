@@ -9,6 +9,7 @@ namespace ResourceManagers.Images
     /// </summary>
     public enum ImgName
     {
+        None,
         Dirt,
         Cobblestone,
         Rock,
@@ -38,6 +39,7 @@ namespace ResourceManagers.Images
         private void InitImages()
         {
             ImageSprites = new Dictionary<ImgName, Uri>();
+            ImageSprites.Add(ImgName.None, new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
             ImageSprites.Add(ImgName.Dirt, new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
             ImageSprites.Add(ImgName.Cobblestone, new Uri(@"./Resources/Images/ground_test.png", UriKind.Relative));
             ImageSprites.Add(ImgName.Rock, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
@@ -50,6 +52,7 @@ namespace ResourceManagers.Images
         private void InitColors()
         {
             ColorSprites = new Dictionary<ImgName, byte[]>();
+            ColorSprites.Add(ImgName.None, new byte[3] { 255, 255, 255});
             ColorSprites.Add(ImgName.Dirt, new byte[3] { 51, 34, 23});
             ColorSprites.Add(ImgName.Cobblestone, new byte[3] { 23, 43, 40 });
             ColorSprites.Add(ImgName.Rock, new byte[3] { 28, 28, 28 });

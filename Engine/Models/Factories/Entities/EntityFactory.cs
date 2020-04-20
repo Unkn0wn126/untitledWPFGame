@@ -21,21 +21,21 @@ namespace Engine.Models.Factories.Entities
         RigidBodyComponent = 1 << 3,
         SoundComponent = 1 << 4,
         NavMeshComponent = 1 << 5,
-        LifeComponent = 1 << 6,
-        ScriptComponent = 1 << 7
+        SolidCollision = 1 << 6,
+        DynamicCollision = 1 << 7
     }
     public static class EntityFactory
     {
-        public static uint GenerateEntity(IEntityManager manager, ComponentState requiredComponents, float sizeX, float sizeY, float posX, float posY, int zIndex, ImgName imgName, GameTime gameTime)
+        public static uint GenerateEntity(IEntityManager manager, ComponentState requiredComponents, ImgName imgName, Vector2 size, Vector2 pos, int zIndex)
         {
             uint entity = manager.AddEntity();
             if (IsComponentRequired(requiredComponents, ComponentState.TransformComponent))
             {
-                manager.AddComponentToEntity(entity, new TransformComponent(new Vector2(posX, posY), sizeX, sizeY, new Vector2(0, 0), zIndex));
+                manager.AddComponentToEntity(entity, new TransformComponent(pos, size.X, size.Y, new Vector2(0, 0), zIndex));
             }
             if (IsComponentRequired(requiredComponents, ComponentState.CollisionComponent))
             {
-                manager.AddComponentToEntity(entity, new CollisionComponent(false));
+                manager.AddComponentToEntity(entity, new CollisionComponent(IsComponentRequired(requiredComponents, ComponentState.SolidCollision), IsComponentRequired(requiredComponents, ComponentState.DynamicCollision)));
             }            
             if (IsComponentRequired(requiredComponents, ComponentState.GraphicsComponent))
             {
@@ -52,15 +52,7 @@ namespace Engine.Models.Factories.Entities
             if (IsComponentRequired(requiredComponents, ComponentState.NavMeshComponent))
             {
 
-            }            
-            if (IsComponentRequired(requiredComponents, ComponentState.LifeComponent))
-            {
-
-            }            
-            if (IsComponentRequired(requiredComponents, ComponentState.ScriptComponent))
-            {
-
-            }
+            }           
 
             return entity;
         }

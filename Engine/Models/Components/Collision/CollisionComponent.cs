@@ -10,8 +10,9 @@ namespace Engine.Models.Components.Collision
         public List<uint> CollidingWith { get; set; }
         public bool IsDynamic { get; set; }
 
-        public CollisionComponent(bool dynamic)
+        public CollisionComponent(bool solid, bool dynamic)
         {
+            IsSolid = solid;
             IsDynamic = dynamic;
             CollidingWith = new List<uint>();
         }

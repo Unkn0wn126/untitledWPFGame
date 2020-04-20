@@ -53,7 +53,7 @@ namespace Engine.Processors
                 collisions[i].CollidingWith.ForEach(x =>
                 {
                     ICollisionComponent collision = manager.GetCollisionComponent(x);
-                    if (!collision.IsDynamic && !collision.IsSolid)
+                    if (!collision.IsDynamic && collision.IsSolid)
                     {
                         ITransformComponent transform = manager.GetTransformComponent(x);
                         // difference betveen origins on x
