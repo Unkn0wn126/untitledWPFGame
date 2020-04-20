@@ -21,12 +21,10 @@ namespace Engine.Models.Factories.Entities
         RigidBodyComponent = 1 << 3,
         SoundComponent = 1 << 4,
         NavMeshComponent = 1 << 5,
-        SolidCollision = 1 << 6,
-        DynamicCollision = 1 << 7
     }
     public static class EntityFactory
     {
-        public static uint GenerateEntity(IEntityManager manager, ComponentState requiredComponents, ImgName imgName, Vector2 size, Vector2 pos, int zIndex)
+        public static uint GenerateEntity(IEntityManager manager, ComponentState requiredComponents, ImgName imgName, CollisionType collisionType, Vector2 size, Vector2 pos, int zIndex)
         {
             uint entity = manager.AddEntity();
             if (IsComponentRequired(requiredComponents, ComponentState.TransformComponent))
@@ -35,7 +33,7 @@ namespace Engine.Models.Factories.Entities
             }
             if (IsComponentRequired(requiredComponents, ComponentState.CollisionComponent))
             {
-                manager.AddComponentToEntity(entity, new CollisionComponent(IsComponentRequired(requiredComponents, ComponentState.SolidCollision), IsComponentRequired(requiredComponents, ComponentState.DynamicCollision)));
+                manager.AddComponentToEntity(entity, new CollisionComponent(IsCollisionType(collisionType, CollisionType.Solid), IsCollisionType(collisionType, CollisionType.Dynamic)));
             }            
             if (IsComponentRequired(requiredComponents, ComponentState.GraphicsComponent))
             {
@@ -55,6 +53,11 @@ namespace Engine.Models.Factories.Entities
             }           
 
             return entity;
+        }
+
+        private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
+        {
+            return (requiredValue & askedValue) == askedValue;
         }
 
         private static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)

@@ -6,6 +6,7 @@ using Engine.Models.Components.Collision;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
+using Engine.Models.Factories.Scenes;
 using Engine.Models.Scenes;
 using GameInputHandler;
 using ResourceManagers.Images;
@@ -50,20 +51,26 @@ namespace Engine.Models.Factories
             return scene;
         }
 
-        private static ComponentState[,] GenerateMetaMap(int numOfObjectsOnX, int numOfObjectsOnY)
+        private static MetaMapEntity[,] GenerateMetaMap(int numOfObjectsOnX, int numOfObjectsOnY)
         {
-            ComponentState[,] metaMap = new ComponentState[numOfObjectsOnX, numOfObjectsOnY];
+            MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
             ComponentState current;
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
                 for (int j = 0; j < metaMap.GetLength(1); j++)
                 {
-                    if ((i == 0 || i == metaMap.GetLength(0) - 1) || (j == 0 || j == metaMap.GetLength(1) - 1))
-                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.SolidCollision;
+                    if ((i == 0 || i == metaMap.GetLength(0) - 1) || (j == 0 || j == metaMap.GetLength(1) - 1))  // generate edges of the map
+                    {
+                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
+                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Rock, Components = current, ZIndex = 1};
+                    }
                     else
+                    {
                         current = ComponentState.GraphicsComponent | ComponentState.TransformComponent;
+                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.None, Graphics = ImgName.Dirt, Components = current, ZIndex = 0 };
+                    }
 
-                    metaMap[i, j] = current;
+                    
                 }
             }
 
@@ -86,27 +93,14 @@ namespace Engine.Models.Factories
 
             IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
 
-            ComponentState[,] metaMap = GenerateMetaMap(numOfObjectsOnX, numOfObjectsOnY);
+            MetaMapEntity[,] metaMap = GenerateMetaMap(numOfObjectsOnX, numOfObjectsOnY);
 
-            // This is gonna be in a factory...
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
                 for (int j = 0; j < metaMap.GetLength(1); j++)
                 {
-                    ImgName currentName;
-                    currentName = ImgName.Dirt;
-
-                    EntityFactory.GenerateEntity(manager, metaMap[i, j], currentName, new Vector2(objectSize, objectSize), new Vector2(objectSize * i, objectSize * j), 0);
+                    EntityFactory.GenerateEntity(manager, metaMap[i, j].Components, metaMap[i, j].Graphics, metaMap[i, j].CollisionType, new Vector2(objectSize, objectSize), new Vector2(objectSize * i, objectSize * j), metaMap[i, j].ZIndex);
                 }
-
-                EntityFactory.GenerateEntity(manager, metaMap[i, 0], ImgName.Rock, new Vector2(objectSize, objectSize), new Vector2(objectSize * i, 0), 0);
-                EntityFactory.GenerateEntity(manager, metaMap[i, numOfObjectsOnY - 1], ImgName.Rock, new Vector2(objectSize, objectSize), new Vector2(objectSize * i, (numOfObjectsOnY - 1) * objectSize), 0);
-            }
-
-            for (int j = 1; j < numOfObjectsOnY; j++)
-            {
-                EntityFactory.GenerateEntity(manager, metaMap[0, j], ImgName.Rock, new Vector2(objectSize, objectSize), new Vector2(0, objectSize * j), 0);
-                EntityFactory.GenerateEntity(manager, metaMap[numOfObjectsOnX - 1, j], ImgName.Rock, new Vector2(objectSize, objectSize), new Vector2((numOfObjectsOnX - 1) * objectSize, objectSize * j), 0);
             }
 
             ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
@@ -123,8 +117,6 @@ namespace Engine.Models.Factories
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
             manager.AddComponentToEntity(player, rigidBody);
 
-
-
             scene.PlayerEntity = player;
             scene.PlayerTransform = playerTransform;
 
@@ -134,7 +126,6 @@ namespace Engine.Models.Factories
             {
                 SetupCharacter(scene, manager, objectSize, gameTime);
             }
-            
 
             return scene;
         }
