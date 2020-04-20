@@ -47,8 +47,8 @@ namespace Engine.Models.Cameras
             VisibleObjects = keyValuePairs.Values.ToList();
             VisibleTransforms = keyValuePairs.Keys.ToList();
 
-            XOffset = Math.Abs(_halfWidth - (focusPoint.ScaleX / 2));
-            YOffset = Math.Abs(_halfHeight - (focusPoint.ScaleY / 2));
+            XOffset = Math.Abs(_halfWidth - (focusPoint.ScaleX / 2f));
+            YOffset = Math.Abs(_halfHeight - (focusPoint.ScaleY / 2f));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Engine.Models.Factories.Entities
         LifeComponent = 1 << 6,
         ScriptComponent = 1 << 7
     }
-    public class EntityFactory
+    public static class EntityFactory
     {
         public static uint GenerateEntity(IEntityManager manager, ComponentState requiredComponents)
         {

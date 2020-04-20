@@ -51,6 +51,8 @@ namespace WPFGame
         private int _xRes;
         private int _yRes;
 
+        private int _sizeMultiplier;
+
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session, int xRes, int yRes)
         {
             _imagePaths = imagePaths;
@@ -58,6 +60,8 @@ namespace WPFGame
 
             _xRes = xRes;
             _yRes = yRes;
+
+            _sizeMultiplier = (int)Math.Ceiling(_xRes / 16f);
 
             InitializeComponent();
             _session = session;
@@ -143,10 +147,10 @@ namespace WPFGame
             foreach (var item in _currentCamera.VisibleObjects)
             {
                 // conversion of logical coordinates to graphical ones
-                float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
-                float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
+                float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X * _sizeMultiplier, _currentCamera.XOffset, focusPos.X * _sizeMultiplier);
+                float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y * _sizeMultiplier, _currentCamera.YOffset, focusPos.Y * _sizeMultiplier);
 
-                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX, transformComponents[index].ScaleY, drawingContext, _isTextureModeOn);
+                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX * _sizeMultiplier, transformComponents[index].ScaleY * _sizeMultiplier, drawingContext, _isTextureModeOn);
                 index++;
             }
         }

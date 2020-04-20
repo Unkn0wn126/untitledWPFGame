@@ -16,11 +16,11 @@ using TimeUtils;
 
 namespace Engine.Models.Factories
 {
-    public class SceneFactory
+    public static class SceneFactory
     {
         public static IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
         {
-            int objectSize = 200;
+            int objectSize = 2;
             int numOfObjectsInCell = 3;
             int cellSize = objectSize * numOfObjectsInCell;
             float baseCellXValue = (2 * objectSize) / (float)cellSize;
@@ -52,7 +52,7 @@ namespace Engine.Models.Factories
         public static IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
         {
             int objectSize = 1;
-            int numOfObjectsInCell = 5;
+            int numOfObjectsInCell = 4;
             int cellSize = objectSize * numOfObjectsInCell;
             float baseCellXValue = (numOfObjectsOnX * objectSize) / (float)cellSize;
             float baseCellYValue = (numOfObjectsOnY * objectSize) / (float)cellSize;
