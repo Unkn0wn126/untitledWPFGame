@@ -82,6 +82,75 @@ namespace Engine.Models.Factories
             return metaMap;
         }
 
+        private static List<MetaMapEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        {
+            MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
+            ComponentState current;
+            for (int i = 0; i < metaMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < metaMap.GetLength(1); j++)
+                {
+                    ImgName currImg = (ImgName)_rnd.Next(1, 4);
+                    current = ComponentState.GraphicsComponent | ComponentState.TransformComponent;
+                    metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.None, Graphics = currImg, Components = current, ZIndex = 0, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
+                }
+            }
+
+            List<MetaMapEntity> output = new List<MetaMapEntity>();
+            foreach (var item in metaMap)
+            {
+                if (item != null)
+                {
+                    output.Add(item);
+                }
+
+            }
+
+            return output;
+        }
+
+        private static List<MetaMapEntity> GenerateStaticBlocks(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        {
+            MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
+            ComponentState current;
+            for (int i = 0; i < metaMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < metaMap.GetLength(1); j++)
+                {
+                    if ((i == 0 || i == metaMap.GetLength(0) - 1) || (j == 0 || j == metaMap.GetLength(1) - 1))  // generate edges of the map
+                    {
+                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
+                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Rock, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
+                    }
+                }
+            }
+
+            List<MetaMapEntity> output = new List<MetaMapEntity>();
+            foreach (var item in metaMap)
+            {
+                if (item != null)
+                {
+                    output.Add(item);
+                }
+                
+            }
+
+            return output;
+        }
+
+        public static MetaScene CreateMetaScene(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int numOfObjectsInCell)
+        {
+            MetaScene metaScene = new MetaScene(SceneType.General);
+            metaScene.NumOfEntitiesOnX = numOfObjectsOnX;
+            metaScene.NumOfEntitiesOnY = numOfObjectsOnY;
+            metaScene.BaseObjectSize = baseObjectSize;
+            metaScene.NumOfObjectsInCell = numOfObjectsInCell;
+            metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
+            metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
+
+            return metaScene;
+        }
+
         public static IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
         {
             int objectSize = 1;

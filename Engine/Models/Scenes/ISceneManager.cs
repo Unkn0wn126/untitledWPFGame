@@ -7,7 +7,7 @@ namespace Engine.Models.Scenes
     public interface ISceneManager
     {
         IScene CurrentScene { get; set; }
-        void LoadBattleScene();
-        void LoadNextScene();
+        IScene LoadBattleScene();
+        IScene LoadNextScene();
     }
 }

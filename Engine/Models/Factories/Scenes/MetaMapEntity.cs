@@ -12,6 +12,10 @@ namespace Engine.Models.Factories.Scenes
         public ComponentState Components { get; set; }
         public ImgName Graphics { get; set; }
         public CollisionType CollisionType { get; set; }
+        public float PosX { get; set; }
+        public float PosY { get; set; }
+        public float SizeX { get; set; }
+        public float SizeY { get; set; }
         public int ZIndex { get; set; }
     }
 }

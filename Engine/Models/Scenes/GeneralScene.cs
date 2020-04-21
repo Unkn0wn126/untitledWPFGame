@@ -2,6 +2,7 @@
 using Engine.EntityManagers;
 using Engine.Models.Cameras;
 using Engine.Models.Components;
+using System;
 
 namespace Engine.Models.Scenes
 {
@@ -16,6 +17,8 @@ namespace Engine.Models.Scenes
         public uint PlayerEntity { get; set; }
         public ITransformComponent PlayerTransform { get; set; }
         public ISpatialIndex Coordinates { get; set; }
+        public Guid SceneID { get; set; }
+        public Guid NextScene { get; set; }
 
         public GeneralScene(ICamera camera, IEntityManager entityManager, ISpatialIndex coordinates)
         {

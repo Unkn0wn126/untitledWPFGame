@@ -18,6 +18,7 @@ using TimeUtils;
 using Engine.Models.Components.Script;
 using System.Threading.Tasks;
 using Engine.Models.Factories;
+using Engine.Models.Factories.Scenes;
 
 namespace Engine.ViewModels
 {
@@ -63,7 +64,12 @@ namespace Engine.ViewModels
             };
 
             int val = _rnd.Next(100, 1000);
-            CurrentScene = SceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
+            List<MetaScene> metaScenes = new List<MetaScene>();
+            metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 4));
+            ISceneManager sceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
+            
+            //CurrentScene = SceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
+            CurrentScene = sceneManager.LoadNextScene();
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);
 
