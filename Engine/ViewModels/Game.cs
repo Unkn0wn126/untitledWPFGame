@@ -42,6 +42,8 @@ namespace Engine.ViewModels
 
         private Random _rnd;
 
+        private ISceneManager _sceneManager;
+
         /*
          * does not need: imgPaths, xRes, yRes
          * may need: gameInputHandler, player context, gameTime from parameter
@@ -65,11 +67,19 @@ namespace Engine.ViewModels
 
             int val = _rnd.Next(100, 1000);
             List<MetaScene> metaScenes = new List<MetaScene>();
-            metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 4));
-            ISceneManager sceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
+            for (int i = 0; i < 3; i++)
+            {
+                metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 4));
+            }
+            for (int i = 0; i < metaScenes.Count - 1; i++)
+            {
+                metaScenes[i].NextScene = metaScenes[i + 1].ID;
+            }
+
+            _sceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
             
             //CurrentScene = SceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
-            CurrentScene = sceneManager.LoadNextScene();
+            CurrentScene = _sceneManager.LoadNextScene();
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);
 
@@ -88,35 +98,36 @@ namespace Engine.ViewModels
         {
             _gameTime.UpdateDeltaTime(); // keep track of elapsed time
 
-            //secondsElapsed += _gameTime.DeltaTimeInSeconds;
+            secondsElapsed += _gameTime.DeltaTimeInSeconds;
 
-            //if (State.IsLoading())
-            //{
-            //    loadingTime += _gameTime.DeltaTimeInSeconds;
-            //}
+            if (State.IsLoading())
+            {
+                loadingTime += _gameTime.DeltaTimeInSeconds;
+            }
 
-            //if (loadingTime >= 3)
-            //{
-            //    State.CurrentState = GameState.RUNNING;
-            //    secondsElapsed = 0;
-            //    loadingTime = 0;
-            //}
+            if (loadingTime >= 3)
+            {
+                State.CurrentState = GameState.RUNNING;
+                secondsElapsed = 0;
+                loadingTime = 0;
+            }
 
-            //if (secondsElapsed >= 8 && State.IsRunning())
-            //{
-            //    int val = _rnd.Next(100, 200);
-            //    State.CurrentState = GameState.LOADING;
-            //    //CurrentScene = SceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
-            //    CurrentScene = SceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
-            //    _graphicsProcessor.ChangeContext(CurrentScene);
-            //    _processors.ForEach(x =>
-            //    {
-            //        x.ChangeContext(CurrentScene);
-            //    });
-            //    generateTheGuy = !generateTheGuy;
+            if (secondsElapsed >= 8 && State.IsRunning())
+            {
+                int val = _rnd.Next(100, 200);
+                State.CurrentState = GameState.LOADING;
+                //CurrentScene = SceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
+                //CurrentScene = SceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
+                CurrentScene = _sceneManager.LoadNextScene();
+                _graphicsProcessor.ChangeContext(CurrentScene);
+                _processors.ForEach(x =>
+                {
+                    x.ChangeContext(CurrentScene);
+                });
+                generateTheGuy = !generateTheGuy;
 
-            //    secondsElapsed = 0;
-            //}
+                secondsElapsed = 0;
+            }
 
             if (State.IsRunning())
             {

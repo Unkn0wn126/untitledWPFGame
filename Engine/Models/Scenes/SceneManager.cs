@@ -50,7 +50,17 @@ namespace Engine.Models.Scenes
                 return GenerateSceneFromMeta(_metaScenes[0]);
             }
 
-            return GenerateSceneFromMeta(_metaScenes.Find(x => x.ID == CurrentScene.NextScene));
+            MetaScene searched = _metaScenes[0];
+
+            foreach (var item in _metaScenes)
+            {
+                if (item.ID.CompareTo(CurrentScene.NextScene) == 0)
+                {
+                    searched = item;
+                }
+            }
+
+            return GenerateSceneFromMeta(searched);
         }
 
         private IScene GenerateSceneFromMeta(MetaScene metaScene)
@@ -73,6 +83,9 @@ namespace Engine.Models.Scenes
             }
 
             GeneratePlayer(scene.EntityManager, scene, metaScene.BaseObjectSize, _gameTime, _gameInput);
+
+            CurrentScene = scene;
+            CurrentScene.NextScene = metaScene.NextScene;
 
             return scene;
         }

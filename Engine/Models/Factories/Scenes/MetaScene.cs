@@ -24,7 +24,7 @@ namespace Engine.Models.Factories.Scenes
 
         public MetaScene(SceneType type)
         {
-            ID = new Guid();
+            ID = Guid.NewGuid();
             NextScene = Guid.Empty;
             Type = type;
             GroundEntities = new List<MetaMapEntity>();
