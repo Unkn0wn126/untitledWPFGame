@@ -66,15 +66,15 @@ namespace WPFGame
 
             _inputHandler = new UserInputHandler(gameInputHandler);
 
-            // this is what everything renders to
-            bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
-            GameImage.Source = bitmap;
-
             // to get shorter routes to frequently used objects
             _currentScene = _session.CurrentScene;
             _currentCamera = _currentScene.SceneCamera;
 
             SetWindowSize(xRes, yRes);
+
+            // this is what everything renders to
+            bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
+            GameImage.Source = bitmap;
         }
 
         private void SetWindowSize(int xRes, int yRes)
@@ -91,6 +91,9 @@ namespace WPFGame
             GameCanvas.Height = _yRes;
             GameImage.Width = _xRes;
             GameImage.Height = _yRes;
+
+            bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
+            GameImage.Source = bitmap;
 
             _currentCamera.UpdateSize(_xRes, _yRes);
         }
@@ -147,7 +150,6 @@ namespace WPFGame
                 drawingContext.Close();
                 bitmap.Render(_drawingVisual);
             }
-
         }
 
         /// <summary>
