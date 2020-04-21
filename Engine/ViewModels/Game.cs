@@ -62,7 +62,7 @@ namespace Engine.ViewModels
                 CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
-            int val = _rnd.Next(10, 20);
+            int val = _rnd.Next(100, 1000);
             CurrentScene = SceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);

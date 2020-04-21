@@ -124,17 +124,25 @@ namespace Engine.Models.Factories
 
             manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
 
+            int numOfEnemies = (int)((numOfObjectsOnX / 2f) * (numOfObjectsOnY / 2f));
+
             if (generateTheGuy)
             {
-                SetupCharacter(scene, manager, objectSize, gameTime);
+                for (int i = 0; i < numOfEnemies; i++)
+                {
+                    int x = _rnd.Next(10, numOfObjectsOnX - 10);
+                    int y = _rnd.Next(10, numOfObjectsOnY - 10);
+
+                    SetupCharacter(scene, manager, objectSize, gameTime, new Vector2(x, y));
+                }
             }
 
             return scene;
         }
 
-        private static void SetupCharacter(IScene scene, IEntityManager manager, float objectSize, GameTime gameTime)
+        private static void SetupCharacter(IScene scene, IEntityManager manager, float objectSize, GameTime gameTime, Vector2 position)
         {
-            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize * 2, objectSize * 2), objectSize, objectSize, new Vector2(0, 0), 2);
+            ITransformComponent playerTransform = new TransformComponent(position, objectSize, objectSize, new Vector2(0, 0), 2);
             IGraphicsComponent test = new GraphicsComponent(ImgName.Enemy);
 
             uint player = manager.AddEntity(playerTransform);
@@ -146,7 +154,8 @@ namespace Engine.Models.Factories
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
             manager.AddComponentToEntity(player, rigidBody);
 
-            IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 4 * objectSize);
+            IScriptComponent movementStrategy = new AiMovementScript(gameTime, scene, player, 4 * objectSize);
+            //IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 4 * objectSize);
 
             manager.AddComponentToEntity(player, movementStrategy);
         }
