@@ -1,6 +1,7 @@
 ﻿using Engine.Coordinates;
 using Engine.Models;
 using Engine.Models.Components;
+using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using System;
@@ -20,6 +21,7 @@ namespace Engine.EntityManagers
         private Dictionary<uint, ICollisionComponent> _collisionComponents;
         private Dictionary<uint, ISoundComponent> _soundComponents;
         private Dictionary<uint, IRigidBodyComponent> _rigidBodyComponents;
+        private Dictionary<uint, INavmeshComponent> _navmeshComponents;
         private Dictionary<uint, List<IScriptComponent>> _scriptComponents;
 
         public ISpatialIndex Coordinates { get; set; }
@@ -35,6 +37,7 @@ namespace Engine.EntityManagers
             _collisionComponents = new Dictionary<uint, ICollisionComponent>();
             _soundComponents = new Dictionary<uint, ISoundComponent>();
             _rigidBodyComponents = new Dictionary<uint, IRigidBodyComponent>();
+            _navmeshComponents = new Dictionary<uint, INavmeshComponent>();
             _scriptComponents = new Dictionary<uint, List<IScriptComponent>>();
         }
 
@@ -67,6 +70,9 @@ namespace Engine.EntityManagers
                     break;
                 case IRigidBodyComponent r:
                     _rigidBodyComponents.Add(entityID, r);
+                    break;
+                case INavmeshComponent n:
+                    _navmeshComponents.Add(entityID, n);
                     break;
                 case IScriptComponent sc:
                     AddScriptComponent(entityID, sc);
@@ -104,8 +110,11 @@ namespace Engine.EntityManagers
             if (_collisionComponents.ContainsKey(id))
                 _collisionComponents.Remove(id);   
             
-            if (_scriptComponents.ContainsKey(id))
+            if (_navmeshComponents.ContainsKey(id))
                 _scriptComponents.Remove(id);
+            
+            if (_scriptComponents.ContainsKey(id))
+                _scriptComponents.Remove(id); 
         }
 
         public void RemoveEntity(uint id)
@@ -128,6 +137,9 @@ namespace Engine.EntityManagers
 
             if (componentType is ISoundComponent)
                 return new List<uint>(_soundComponents.Keys);
+
+            if (componentType is INavmeshComponent)
+                return new List<uint>(_navmeshComponents.Keys);
 
             if (componentType is IScriptComponent)
                 return new List<uint>(_scriptComponents.Keys);
@@ -228,6 +240,9 @@ namespace Engine.EntityManagers
             if (componentType.Name == typeof(IRigidBodyComponent).Name)
                 return _rigidBodyComponents.ContainsKey(id);
 
+            if (componentType.Name == typeof(INavmeshComponent).Name)
+                return _navmeshComponents.ContainsKey(id);
+
             if (componentType.Name == typeof(IScriptComponent).Name)
                 return _scriptComponents.ContainsKey(id);
 
@@ -270,6 +285,23 @@ namespace Engine.EntityManagers
         {
             List<List<IScriptComponent>> active = new List<List<IScriptComponent>>();
             _activeEntities.ForEach(x => { if (_transformComponents.ContainsKey(x)) active.Add(_scriptComponents[x]); });
+            return active;
+        }
+
+        public INavmeshComponent GetNavmeshComponent(uint entity)
+        {
+            return _navmeshComponents[entity];
+        }
+
+        public List<INavmeshComponent> GetAllNavmeshComponents()
+        {
+            return new List<INavmeshComponent>(_navmeshComponents.Values);
+        }
+
+        public List<INavmeshComponent> GetAllActiveNavmeshComponents()
+        {
+            List<INavmeshComponent> active = new List<INavmeshComponent>();
+            _activeEntities.ForEach(x => { if (_transformComponents.ContainsKey(x)) active.Add(_navmeshComponents[x]); });
             return active;
         }
     }

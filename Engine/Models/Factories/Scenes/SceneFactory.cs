@@ -20,6 +20,7 @@ namespace Engine.Models.Factories
 {
     public static class SceneFactory
     {
+        private static Random _rnd = new Random();
         public static IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
         {
             int objectSize = 2;
@@ -66,8 +67,9 @@ namespace Engine.Models.Factories
                     }
                     else
                     {
+                        ImgName currImg = (ImgName)_rnd.Next(1, 4);
                         current = ComponentState.GraphicsComponent | ComponentState.TransformComponent;
-                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.None, Graphics = ImgName.Dirt, Components = current, ZIndex = 0 };
+                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.None, Graphics = currImg, Components = current, ZIndex = 0 };
                     }
 
                     
@@ -111,7 +113,7 @@ namespace Engine.Models.Factories
             //_player = player;
             manager.AddComponentToEntity(player, test);
 
-            ICollisionComponent collision = new CollisionComponent(false, true);
+            ICollisionComponent collision = new CollisionComponent(true, true);
             manager.AddComponentToEntity(player, collision);
 
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
@@ -138,7 +140,7 @@ namespace Engine.Models.Factories
             uint player = manager.AddEntity(playerTransform);
             manager.AddComponentToEntity(player, test);
 
-            ICollisionComponent collision = new CollisionComponent(false, true);
+            ICollisionComponent collision = new CollisionComponent(true, true);
             manager.AddComponentToEntity(player, collision);
 
             IRigidBodyComponent rigidBody = new RigidBodyComponent();

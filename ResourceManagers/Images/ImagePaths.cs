@@ -11,6 +11,7 @@ namespace ResourceManagers.Images
     {
         None,
         Dirt,
+        Grass,
         Cobblestone,
         Rock,
         Player,
@@ -41,7 +42,8 @@ namespace ResourceManagers.Images
             ImageSprites = new Dictionary<ImgName, Uri>();
             ImageSprites.Add(ImgName.None, new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
             ImageSprites.Add(ImgName.Dirt, new Uri(@"./Resources/Images/ground.jpg", UriKind.Relative));
-            ImageSprites.Add(ImgName.Cobblestone, new Uri(@"./Resources/Images/ground_test.png", UriKind.Relative));
+            ImageSprites.Add(ImgName.Grass, new Uri(@"./Resources/Images/grass.png", UriKind.Relative));
+            ImageSprites.Add(ImgName.Cobblestone, new Uri(@"./Resources/Images/cobblestone.png", UriKind.Relative));
             ImageSprites.Add(ImgName.Rock, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
             ImageSprites.Add(ImgName.Player, new Uri(@"./Resources/Images/player.png", UriKind.Relative));
             ImageSprites.Add(ImgName.Enemy, new Uri(@"./Resources/Images/enemy.png", UriKind.Relative));
@@ -54,6 +56,7 @@ namespace ResourceManagers.Images
             ColorSprites = new Dictionary<ImgName, byte[]>();
             ColorSprites.Add(ImgName.None, new byte[3] { 255, 255, 255});
             ColorSprites.Add(ImgName.Dirt, new byte[3] { 51, 34, 23});
+            ColorSprites.Add(ImgName.Grass, new byte[3] { 34, 51, 23});
             ColorSprites.Add(ImgName.Cobblestone, new byte[3] { 23, 43, 40 });
             ColorSprites.Add(ImgName.Rock, new byte[3] { 28, 28, 28 });
             ColorSprites.Add(ImgName.Player, new byte[3] { 78, 71, 255});

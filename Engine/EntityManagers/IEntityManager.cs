@@ -1,6 +1,7 @@
 ﻿using Engine.Coordinates;
 using Engine.Models;
 using Engine.Models.Components;
+using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using System;
@@ -47,9 +48,15 @@ namespace Engine.EntityManagers
         List<IRigidBodyComponent> GetAllRigidBodyComponents();
         List<IRigidBodyComponent> GetAllActiveRigidBodyComponents();
 
+        // Scripts
         List<IScriptComponent> GetEntityScriptComponents(uint entity);
         List<List<IScriptComponent>> GetAllScriptComponents();
         List<List<IScriptComponent>> GetAllActiveScriptComponents();
+
+        // Navmesh
+        INavmeshComponent GetNavmeshComponent(uint entity);
+        List<INavmeshComponent> GetAllNavmeshComponents();
+        List<INavmeshComponent> GetAllActiveNavmeshComponents();
 
         List<uint> GetAllEntitiesPossessingComponent(Type componentType);
         List<uint> GetAllActiveEntities();
