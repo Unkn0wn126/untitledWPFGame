@@ -23,7 +23,7 @@ namespace Engine.Models.Factories
         private static Random _rnd = new Random();
         public static IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
         {
-            int objectSize = 2;
+            int objectSize = 5;
             int numOfObjectsInCell = 3;
             int cellSize = objectSize * numOfObjectsInCell;
             float baseCellXValue = (2 * objectSize) / (float)cellSize;
@@ -48,6 +48,9 @@ namespace Engine.Models.Factories
             manager.AddComponentToEntity(currEntity2, current2);
 
             IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
+
+            scene.PlayerEntity = currEntity;
+            scene.PlayerTransform = currTransform;
 
             return scene;
         }

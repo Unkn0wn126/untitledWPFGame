@@ -49,6 +49,12 @@ namespace Engine.EntityManagers
         public void UpdateActiveEntities(ITransformComponent focusPoint)
         {
             _activeEntities = Coordinates.GetObjectsInRadius(focusPoint, 3);
+            foreach (var item in _entities)
+            {
+                // assuming they have no transform for this reason
+                if (!EntityHasComponent(item, typeof(ITransformComponent)))
+                    _activeEntities.Add(item);
+            }
         }
 
         public void AddComponentToEntity(uint entityID, IGameComponent component)
