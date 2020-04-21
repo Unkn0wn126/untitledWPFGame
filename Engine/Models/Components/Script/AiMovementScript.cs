@@ -48,7 +48,7 @@ namespace Engine.Models.Components.Script
         {
             _timer += _gameTime.DeltaTimeInSeconds;
 
-            IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);
+            IRigidBodyComponent rigidBody = _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player);
 
             if (_timer >= 2)
             {

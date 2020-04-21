@@ -20,46 +20,20 @@ namespace Engine.EntityManagers
         uint AddEntity();
         uint AddEntity(ITransformComponent transform);
         void RemoveEntity(uint id);
-        void AddComponentToEntity(uint entityID, IGameComponent component);
+        void AddComponentToEntity<T>(uint entityID, T component) where T : IGameComponent;
         void UpdateActiveEntities(ITransformComponent focusPoint);
 
-        // Transform
-        ITransformComponent GetTransformComponent(uint entity);
-        List<ITransformComponent> GetAllTransformComponents();
-        List<ITransformComponent> GetAllActiveTransformComponents();
-        
-        // Graphics
-        IGraphicsComponent GetGraphicsComponent(uint entity);
-        List<IGraphicsComponent> GetAllGraphicsComponents();
-        List<IGraphicsComponent> GetAllActiveGraphicsComponents();
-        
-        // Collision
-        ICollisionComponent GetCollisionComponent(uint entity);
-        List<ICollisionComponent> GetAllCollicionComponents();
-        List<ICollisionComponent> GetAllActiveCollicionComponents();
-        
-        // Sound
-        ISoundComponent GetSoundComponent(uint entity);
-        List<ISoundComponent> GetAllSoundComponents();
-        List<ISoundComponent> GetAllActiveSoundComponents();
-        
-        // Rigid Body
-        IRigidBodyComponent GetRigidBodyComponent(uint entity);
-        List<IRigidBodyComponent> GetAllRigidBodyComponents();
-        List<IRigidBodyComponent> GetAllActiveRigidBodyComponents();
+        T GetComponentOfType<T>(uint entity) where T : IGameComponent;
+        List<T> GetAllComponentsOfType<T>() where T : IGameComponent;
+        List<T> GetAllActiveComponentsOfType<T>() where T : IGameComponent;
 
         // Scripts
         List<IScriptComponent> GetEntityScriptComponents(uint entity);
         List<List<IScriptComponent>> GetAllScriptComponents();
         List<List<IScriptComponent>> GetAllActiveScriptComponents();
 
-        // Navmesh
-        INavmeshComponent GetNavmeshComponent(uint entity);
-        List<INavmeshComponent> GetAllNavmeshComponents();
-        List<INavmeshComponent> GetAllActiveNavmeshComponents();
-
         List<uint> GetAllEntitiesPossessingComponent(Type componentType);
         List<uint> GetAllActiveEntities();
-        bool EntityHasComponent(uint id, Type componentType);
+        bool EntityHasComponent<T>(uint id) where T : IGameComponent;
     }
 }

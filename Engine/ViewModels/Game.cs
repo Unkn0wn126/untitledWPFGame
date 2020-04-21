@@ -116,10 +116,10 @@ namespace Engine.ViewModels
             {
                 CurrentScene.EntityManager.UpdateActiveEntities(CurrentScene.PlayerTransform);
 
-                _processors.ForEach(x =>
+                foreach (var x in _processors)
                 {
                     x.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
-                });
+                }
             }
         }
 

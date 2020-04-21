@@ -43,11 +43,11 @@ namespace Engine.Processors
             List<uint> activeEntites = _context.EntityManager.GetAllActiveEntities();
             activeEntites.ForEach(x => 
             {
-                if (_context.EntityManager.EntityHasComponent(x, typeof(IGraphicsComponent)))
+                if (_context.EntityManager.EntityHasComponent<IGraphicsComponent>(x) && _context.EntityManager.EntityHasComponent<ITransformComponent>(x))
                 {
-                    if (!_renderables.ContainsKey(_context.EntityManager.GetTransformComponent(x)))
+                    if (!_renderables.ContainsKey(_context.EntityManager.GetComponentOfType<ITransformComponent>(x)))
                     {
-                        _renderables.Add(_context.EntityManager.GetTransformComponent(x), _context.EntityManager.GetGraphicsComponent(x));
+                        _renderables.Add(_context.EntityManager.GetComponentOfType<ITransformComponent>(x), _context.EntityManager.GetComponentOfType<IGraphicsComponent>(x));
                     }
                 }
             });

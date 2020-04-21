@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using Engine.Models.Components;
 
 namespace Engine.Coordinates
 {
+    [Serializable]
     public class Grid : ISpatialIndex
     {
         private int _numOfCellsOnX;

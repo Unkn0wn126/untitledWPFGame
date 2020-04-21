@@ -1,7 +1,9 @@
 ﻿using Engine.EntityManagers;
 using Engine.Models.Components;
 using Engine.Models.Components.Collision;
+using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
+using Engine.Models.Components.Sound;
 using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
@@ -29,27 +31,27 @@ namespace Engine.Models.Factories.Entities
             uint entity = manager.AddEntity();
             if (IsComponentRequired(requiredComponents, ComponentState.TransformComponent))
             {
-                manager.AddComponentToEntity(entity, new TransformComponent(pos, size.X, size.Y, new Vector2(0, 0), zIndex));
+                manager.AddComponentToEntity<ITransformComponent>(entity, new TransformComponent(pos, size.X, size.Y, new Vector2(0, 0), zIndex));
             }
             if (IsComponentRequired(requiredComponents, ComponentState.CollisionComponent))
             {
-                manager.AddComponentToEntity(entity, new CollisionComponent(IsCollisionType(collisionType, CollisionType.Solid), IsCollisionType(collisionType, CollisionType.Dynamic)));
+                manager.AddComponentToEntity<ICollisionComponent>(entity, new CollisionComponent(IsCollisionType(collisionType, CollisionType.Solid), IsCollisionType(collisionType, CollisionType.Dynamic)));
             }            
             if (IsComponentRequired(requiredComponents, ComponentState.GraphicsComponent))
             {
-                manager.AddComponentToEntity(entity, new GraphicsComponent(imgName));
+                manager.AddComponentToEntity<IGraphicsComponent>(entity, new GraphicsComponent(imgName));
             }            
             if (IsComponentRequired(requiredComponents, ComponentState.RigidBodyComponent))
             {
-                manager.AddComponentToEntity(entity, new RigidBodyComponent());
+                manager.AddComponentToEntity<IRigidBodyComponent>(entity, new RigidBodyComponent());
             }            
             if (IsComponentRequired(requiredComponents, ComponentState.SoundComponent))
             {
-
+                manager.AddComponentToEntity<ISoundComponent>(entity, new SoundComponent());
             }            
             if (IsComponentRequired(requiredComponents, ComponentState.NavMeshComponent))
             {
-
+                manager.AddComponentToEntity<INavmeshComponent>(entity, new NavmeshComponent());
             }           
 
             return entity;

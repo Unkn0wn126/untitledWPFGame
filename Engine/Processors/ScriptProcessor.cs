@@ -30,7 +30,7 @@ namespace Engine.Processors
 
             active.ForEach(x =>
             {
-                if (manager.EntityHasComponent(x, typeof(IScriptComponent)))
+                if (manager.EntityHasComponent<IScriptComponent>(x))
                 {
                     scripts.Add(manager.GetEntityScriptComponents(x));
                 }

@@ -39,13 +39,13 @@ namespace Engine.Models.Factories
             IGraphicsComponent current = new GraphicsComponent(ImgName.Player);
 
             uint currEntity = manager.AddEntity(currTransform);
-            manager.AddComponentToEntity(currEntity, current);            
+            manager.AddComponentToEntity<IGraphicsComponent>(currEntity, current);            
             
             ITransformComponent currTransform2 = new TransformComponent(new Vector2(2 * objectSize, 1 * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
             IGraphicsComponent current2 = new GraphicsComponent(ImgName.Enemy);
 
             uint currEntity2 = manager.AddEntity(currTransform2);
-            manager.AddComponentToEntity(currEntity2, current2);
+            manager.AddComponentToEntity<IGraphicsComponent>(currEntity2, current2);
 
             IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
 
@@ -114,18 +114,18 @@ namespace Engine.Models.Factories
 
             uint player = manager.AddEntity(playerTransform);
             //_player = player;
-            manager.AddComponentToEntity(player, test);
+            manager.AddComponentToEntity<IGraphicsComponent>(player, test);
 
             ICollisionComponent collision = new CollisionComponent(true, true);
-            manager.AddComponentToEntity(player, collision);
+            manager.AddComponentToEntity<ICollisionComponent>(player, collision);
 
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
-            manager.AddComponentToEntity(player, rigidBody);
+            manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
 
             scene.PlayerEntity = player;
             scene.PlayerTransform = playerTransform;
 
-            manager.AddComponentToEntity(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
+            manager.AddComponentToEntity<IScriptComponent>(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
 
             int numOfEnemies = (int)((numOfObjectsOnX / 2f) * (numOfObjectsOnY / 2f));
 
@@ -149,18 +149,18 @@ namespace Engine.Models.Factories
             IGraphicsComponent test = new GraphicsComponent(ImgName.Enemy);
 
             uint player = manager.AddEntity(playerTransform);
-            manager.AddComponentToEntity(player, test);
+            manager.AddComponentToEntity<IGraphicsComponent>(player, test);
 
             ICollisionComponent collision = new CollisionComponent(true, true);
-            manager.AddComponentToEntity(player, collision);
+            manager.AddComponentToEntity<ICollisionComponent>(player, collision);
 
             IRigidBodyComponent rigidBody = new RigidBodyComponent();
-            manager.AddComponentToEntity(player, rigidBody);
+            manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
 
             IScriptComponent movementStrategy = new AiMovementScript(gameTime, scene, player, 4 * objectSize);
             //IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 4 * objectSize);
 
-            manager.AddComponentToEntity(player, movementStrategy);
+            manager.AddComponentToEntity<IScriptComponent>(player, movementStrategy);
         }
     }
 }

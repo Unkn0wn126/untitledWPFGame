@@ -37,9 +37,9 @@ namespace Engine.Models.Components.Script
 
         public void Update()
         {
-            IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);
-            ITransformComponent currPos = _context.EntityManager.GetTransformComponent(_player);
-            ITransformComponent targetPos = _context.EntityManager.GetTransformComponent(_target);
+            IRigidBodyComponent rigidBody = _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player);
+            ITransformComponent currPos = _context.EntityManager.GetComponentOfType<ITransformComponent>(_player);
+            ITransformComponent targetPos = _context.EntityManager.GetComponentOfType<ITransformComponent>(_target);
 
             float diffX = currPos.Position.X - targetPos.Position.X;
             float diffY = currPos.Position.Y - targetPos.Position.Y;

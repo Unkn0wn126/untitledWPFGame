@@ -24,12 +24,12 @@ namespace Engine.Processors
             List<ITransformComponent> transforms = new List<ITransformComponent>();
             List<uint> active = _context.EntityManager.GetAllActiveEntities();
             List<uint> useful = new List<uint>();
-            active.ForEach(x =>
+            foreach (var x in active)
             {
-                if (_context.EntityManager.EntityHasComponent(x, typeof(ICollisionComponent)) && _context.EntityManager.EntityHasComponent(x, typeof(ITransformComponent)))
+                if (_context.EntityManager.EntityHasComponent<ICollisionComponent>(x) && _context.EntityManager.EntityHasComponent<ITransformComponent>(x))
                 {
-                    var a = _context.EntityManager.GetCollisionComponent(x);
-                    var b = _context.EntityManager.GetTransformComponent(x);
+                    var a = _context.EntityManager.GetComponentOfType<ICollisionComponent>(x);
+                    var b = _context.EntityManager.GetComponentOfType<ITransformComponent>(x);
 
                     if (!collisions.Contains(a) && !transforms.Contains(b))
                     {
@@ -37,9 +37,9 @@ namespace Engine.Processors
                         transforms.Add(b);
                         useful.Add(x);
                     }
-                        
+
                 }
-            });
+            }
 
             for (int i = 0; i < collisions.Count; i++)
             {

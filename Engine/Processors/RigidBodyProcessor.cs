@@ -35,13 +35,13 @@ namespace Engine.Processors
 
             active.ForEach(x =>
             {
-                if (manager.EntityHasComponent(x, typeof(IRigidBodyComponent)) && 
-                manager.EntityHasComponent(x, typeof(ITransformComponent)) && 
-                manager.EntityHasComponent(x, typeof(ICollisionComponent)))
+                if (manager.EntityHasComponent<IRigidBodyComponent>(x) && 
+                manager.EntityHasComponent<ITransformComponent>(x) && 
+                manager.EntityHasComponent<ICollisionComponent>(x))
                 {
-                    rigidBodies.Add(manager.GetRigidBodyComponent(x));
-                    transforms.Add(manager.GetTransformComponent(x));
-                    collisions.Add(manager.GetCollisionComponent(x));
+                    rigidBodies.Add(manager.GetComponentOfType<IRigidBodyComponent>(x));
+                    transforms.Add(manager.GetComponentOfType<ITransformComponent>(x));
+                    collisions.Add(manager.GetComponentOfType<ICollisionComponent>(x));
                     useful.Add(x);
                 }
             });
@@ -52,10 +52,10 @@ namespace Engine.Processors
                 Vector2 newPos = UpdatePos(rigidBodies[i], oldPos, lastFrameTime);
                 collisions[i].CollidingWith.ForEach(x =>
                 {
-                    ICollisionComponent collision = manager.GetCollisionComponent(x);
+                    ICollisionComponent collision = manager.GetComponentOfType<ICollisionComponent>(x);
                     if (!collision.IsDynamic && collision.IsSolid)
                     {
-                        ITransformComponent transform = manager.GetTransformComponent(x);
+                        ITransformComponent transform = manager.GetComponentOfType<ITransformComponent>(x);
                         // difference betveen origins on x
                         int originDiffX = (int)Math.Round(oldPos.X - transform.Position.X);
                         // difference between origins on y

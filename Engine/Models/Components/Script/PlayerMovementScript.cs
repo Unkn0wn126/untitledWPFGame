@@ -55,8 +55,8 @@ namespace Engine.Models.Components.Script
         public void Update()
         {
             GameKey currValue = _gameInputHandler.CurrentKeyValue;
-            IRigidBodyComponent rigidBody = _context.EntityManager.GetRigidBodyComponent(_player);
-            IGraphicsComponent graphics = _context.EntityManager.GetGraphicsComponent(_player);
+            IRigidBodyComponent rigidBody = _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player);
+            IGraphicsComponent graphics = _context.EntityManager.GetComponentOfType<IGraphicsComponent>(_player);
 
             ChangeAvatar(graphics, currValue);
 
