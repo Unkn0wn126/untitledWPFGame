@@ -9,6 +9,7 @@ namespace Engine.Models.Factories.Scenes
         General,
         Battle
     }
+    [Serializable]
     public class MetaScene
     {
         public SceneType Type { get; set; }

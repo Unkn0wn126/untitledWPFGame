@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Engine.Models.Factories.Scenes
 {
+    [Serializable]
     public class MetaMapEntity
     {
         public ComponentState Components { get; set; }
