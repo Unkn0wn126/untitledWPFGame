@@ -56,6 +56,9 @@ namespace Engine.Models.Components.Script
                 _timer = 0;
             }
 
+            rigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
+            rigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
+
             if (_direction == 1)
                 rigidBody.ForceY = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
             else if (_direction == 2)
@@ -64,11 +67,6 @@ namespace Engine.Models.Components.Script
                 rigidBody.ForceX = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
             else if (_direction == 4)
                 rigidBody.ForceX = +_baseVelocity * _gameTime.DeltaTimeInSeconds; 
-            else if (_direction == 0)
-            {
-                rigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
-                rigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
-            }
         }
     }
 }

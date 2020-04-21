@@ -58,12 +58,8 @@ namespace WPFGame
             _imagePaths = imagePaths;
             _isTextureModeOn = true;
 
-            _xRes = xRes;
-            _yRes = yRes;
-
-            _sizeMultiplier = (int)Math.Ceiling(_xRes / 16f);
-
             InitializeComponent();
+
             _session = session;
             InitializeImages();
             //InitializeCaching();
@@ -77,6 +73,26 @@ namespace WPFGame
             // to get shorter routes to frequently used objects
             _currentScene = _session.CurrentScene;
             _currentCamera = _currentScene.SceneCamera;
+
+            SetWindowSize(xRes, yRes);
+        }
+
+        private void SetWindowSize(int xRes, int yRes)
+        {
+            _xRes = xRes;
+            _yRes = yRes;
+
+            _sizeMultiplier = (int)Math.Ceiling(_xRes / 16f);
+
+            Width = _xRes;
+            Height = _yRes;
+
+            GameCanvas.Width = _xRes;
+            GameCanvas.Height = _yRes;
+            GameImage.Width = _xRes;
+            GameImage.Height = _yRes;
+
+            _currentCamera.UpdateSize(_xRes, _yRes);
         }
 
         private void InitializeCaching()

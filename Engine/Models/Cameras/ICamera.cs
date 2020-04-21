@@ -12,6 +12,7 @@ namespace Engine.Models.Cameras
         public float YOffset { get; set; }
         public List<IGraphicsComponent> VisibleObjects { get; set; }
         public List<ITransformComponent> VisibleTransforms { get; set; }
+        void UpdateSize(float width, float height);
         public void UpdatePosition(ITransformComponent focusPoint, Dictionary<ITransformComponent, IGraphicsComponent> renderables);
     }
 }

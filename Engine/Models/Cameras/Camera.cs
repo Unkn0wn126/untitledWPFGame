@@ -22,8 +22,12 @@ namespace Engine.Models.Cameras
         {
             VisibleObjects = new List<IGraphicsComponent>();
             VisibleTransforms = new List<ITransformComponent>();
-            // This should be passed as a value in the future
-            // gonna be based on the size of the window
+
+            UpdateSize(width, height);
+        }
+
+        public void UpdateSize(float width, float height)
+        {
             Width = width;
             Height = height;
             _halfWidth = Width / 2;

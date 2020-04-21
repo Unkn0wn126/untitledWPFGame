@@ -12,7 +12,6 @@ using System.Text;
 
 namespace Engine.EntityManagers
 {
-    [Serializable]
     public class EntityManager : IEntityManager
     {
         private uint _maxValue;
