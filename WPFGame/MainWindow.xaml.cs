@@ -280,10 +280,10 @@ namespace WPFGame
                     SetWindowSize();
                     _inputHandler.UpdateConfiguration(_gameConfiguration);
                     break;
-                case Key.NumPad1:
+                case Key.D2:
                     ShowSaveDialog();
                     break;                
-                case Key.NumPad2:
+                case Key.D3:
                     ShowLoadDialog();
                     break;
             }
