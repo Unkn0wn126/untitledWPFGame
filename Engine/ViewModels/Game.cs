@@ -19,6 +19,8 @@ using Engine.Models.Components.Script;
 using System.Threading.Tasks;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Engine.ViewModels
 {
@@ -59,18 +61,28 @@ namespace Engine.ViewModels
                 CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
-            int val = _rnd.Next(1000, 2000);
+            int val = _rnd.Next(100, 200);
 
             // Scene generation should take place elsewhere
-            List<MetaScene> metaScenes = new List<MetaScene>();
-            for (int i = 0; i < 10; i++)
+            List<byte[]> metaScenes = new List<byte[]>();
+            using (MemoryStream stream = new MemoryStream())
             {
-                metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 5));
+                byte[] current;
+                var binaryFormatter = new BinaryFormatter();
+                for (int i = 0; i < 10; i++)
+                {
+                    MetaScene metaScene = SceneFactory.CreateMetaScene(val, val, 1, 5);
+                    binaryFormatter.Serialize(stream, metaScene);
+                    current = stream.ToArray();
+                    metaScenes.Add(current);
+                    stream.SetLength(0);
+                }
             }
-            for (int i = 0; i < metaScenes.Count - 1; i++)
-            {
-                metaScenes[i].NextScene = metaScenes[i + 1].ID;
-            }
+
+            //for (int i = 0; i < metaScenes.Count - 1; i++)
+            //{
+            //    metaScenes[i].NextScene = metaScenes[i + 1].ID;
+            //}
 
             SceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
             
@@ -87,6 +99,16 @@ namespace Engine.ViewModels
         private float secondsElapsed = 0;
         private float loadingTime = 0;
         private bool generateTheGuy = false;
+
+        public void UpdateProcessorContext()
+        {
+            _graphicsProcessor.ChangeContext(CurrentScene);
+
+            _processors.ForEach(x =>
+            {
+                x.ChangeContext(CurrentScene);
+            });
+        }
         /// <summary>
         /// Updates the game logic
         /// </summary>
@@ -94,39 +116,39 @@ namespace Engine.ViewModels
         {
             _gameTime.UpdateDeltaTime(); // keep track of elapsed time
 
-            if (State.IsRunning())
-            {
-                secondsElapsed += _gameTime.DeltaTimeInSeconds;
-            }
+            //if (State.IsRunning())
+            //{
+            //    secondsElapsed += _gameTime.DeltaTimeInSeconds;
+            //}
 
-            if (State.IsLoading())
-            {
-                loadingTime += _gameTime.DeltaTimeInSeconds;
-            }
+            //if (State.IsLoading())
+            //{
+            //    loadingTime += _gameTime.DeltaTimeInSeconds;
+            //}
 
-            if (loadingTime >= 3)
-            {
-                State.CurrentState = GameState.RUNNING;
-                secondsElapsed = 0;
-                loadingTime = 0;
-            }
+            //if (loadingTime >= 3)
+            //{
+            //    State.CurrentState = GameState.RUNNING;
+            //    secondsElapsed = 0;
+            //    loadingTime = 0;
+            //}
 
-            if (secondsElapsed >= 60 && State.IsRunning())
-            {
-                int val = _rnd.Next(100, 200);
-                State.CurrentState = GameState.LOADING;
-                //CurrentScene = SceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
-                //CurrentScene = SceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
-                CurrentScene = SceneManager.LoadNextScene();
-                _graphicsProcessor.ChangeContext(CurrentScene);
-                _processors.ForEach(x =>
-                {
-                    x.ChangeContext(CurrentScene);
-                });
-                generateTheGuy = !generateTheGuy;
+            //if (secondsElapsed >= 60 && State.IsRunning())
+            //{
+            //    int val = _rnd.Next(100, 200);
+            //    State.CurrentState = GameState.LOADING;
+            //    //CurrentScene = SceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
+            //    //CurrentScene = SceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
+            //    CurrentScene = SceneManager.LoadNextScene();
+            //    _graphicsProcessor.ChangeContext(CurrentScene);
+            //    _processors.ForEach(x =>
+            //    {
+            //        x.ChangeContext(CurrentScene);
+            //    });
+            //    generateTheGuy = !generateTheGuy;
 
-                secondsElapsed = 0;
-            }
+            //    secondsElapsed = 0;
+            //}
 
             if (State.IsRunning())
             {

@@ -16,5 +16,6 @@ namespace Engine.ViewModels
         ISceneManager SceneManager { get; set; }
         void Update();
         void UpdateGraphics();
+        void UpdateProcessorContext();
     }
 }

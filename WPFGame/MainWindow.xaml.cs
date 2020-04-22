@@ -22,6 +22,7 @@ using Engine.Saving;
 using WPFGame.Saving;
 using Microsoft.Win32;
 using System.Runtime.Serialization.Formatters.Binary;
+using Engine.Models.Factories.Scenes;
 
 namespace WPFGame
 {
@@ -307,22 +308,8 @@ namespace WPFGame
                 string filename = dialog.FileName;
                 Save save = new Save();
                 var sceneManager = _session.SceneManager;
-                List<byte[]> serializedScenes = new List<byte[]>();
 
-
-                foreach (var item in sceneManager.MetaScenes)
-                {
-                    byte[] current;
-                    using (MemoryStream fs = new MemoryStream())
-                    {
-                        var binaryFormatter = new BinaryFormatter();
-                        binaryFormatter.Serialize(fs, save);
-                        current = fs.ToArray();
-                    }
-
-                    serializedScenes.Add(current);
-                }
-                save.Scenes = serializedScenes;
+                save.Scenes = sceneManager.MetaScenes;
                 save.PlayerPosX = sceneManager.CurrentScene.PlayerTransform.Position.X;
                 save.PlayerPosY = sceneManager.CurrentScene.PlayerTransform.Position.Y;
                 save.PlayerSizeX = sceneManager.CurrentScene.PlayerTransform.ScaleX;
@@ -343,7 +330,17 @@ namespace WPFGame
             {
                 string filename = dialog.FileName;
                 Save save = SaveFileManager.LoadGame(filename);
+
+                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.LOADING;
+                _session.SceneManager.MetaScenes = save.Scenes;
+                _session.CurrentScene = _session.SceneManager.LoadNextScene();
+                _currentScene = _session.CurrentScene;
+                _currentCamera = _session.CurrentScene.SceneCamera;
+                _session.UpdateProcessorContext();
+                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.RUNNING;
             }
+
+
         }
 
         private void SaveGame(string path, Save save)

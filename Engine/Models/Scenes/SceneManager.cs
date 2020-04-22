@@ -12,7 +12,9 @@ using GameInputHandler;
 using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using TimeUtils;
 
@@ -21,7 +23,7 @@ namespace Engine.Models.Scenes
     public class SceneManager : ISceneManager
     {
         public IScene CurrentScene { get; set; }
-        public List<MetaScene> MetaScenes { get; set; }
+        public List<byte[]> MetaScenes { get; set; }
         private GameInput _gameInput;
         private GameTime _gameTime;
 
@@ -29,14 +31,47 @@ namespace Engine.Models.Scenes
         {
             _gameInput = gameInput;
             _gameTime = gameTime;
-            MetaScenes = new List<MetaScene>();
+            MetaScenes = new List<byte[]>();
         }
 
         public SceneManager(List<MetaScene> metaScenes, GameInput gameInput, GameTime gameTime)
         {
             _gameInput = gameInput;
             _gameTime = gameTime;
+            MetaScenes = new List<byte[]>();
+            
+            using (MemoryStream stream = new MemoryStream())
+            {
+                byte[] current;
+                var binaryFormatter = new BinaryFormatter();
+                foreach (var item in metaScenes)
+                {
+                    binaryFormatter.Serialize(stream, item);
+                    current = stream.ToArray();
+                    MetaScenes.Add(current);
+                    stream.SetLength(0);
+                }
+            }
+        }
+
+        public SceneManager(List<byte[]> metaScenes, GameInput gameInput, GameTime gameTime)
+        {
+            _gameInput = gameInput;
+            _gameTime = gameTime;
             MetaScenes = metaScenes;
+        }
+
+        private MetaScene DeserializeMetaScene(int index)
+        {
+            byte[] item = MetaScenes[index];
+            MetaScene result;
+            using (MemoryStream fs = new MemoryStream(item))
+            {
+                var binaryFormatter = new BinaryFormatter();
+                result = binaryFormatter.Deserialize(fs) as MetaScene;
+            }
+
+            return result;
         }
 
         public IScene LoadBattleScene()
@@ -48,17 +83,17 @@ namespace Engine.Models.Scenes
         {
             if (CurrentScene == null)
             {
-                return GenerateSceneFromMeta(MetaScenes[0]);
+                return GenerateSceneFromMeta(DeserializeMetaScene(0));
             }
 
-            MetaScene searched = MetaScenes[0];
+            MetaScene searched = DeserializeMetaScene(0);
 
             foreach (var item in MetaScenes)
             {
-                if (item.ID.CompareTo(CurrentScene.NextScene) == 0)
-                {
-                    searched = item;
-                }
+                //if (item.ID.CompareTo(CurrentScene.NextScene) == 0)
+                //{
+                //    searched = item;
+                //}
             }
 
             return GenerateSceneFromMeta(searched);
@@ -70,20 +105,27 @@ namespace Engine.Models.Scenes
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
             ISpatialIndex grid = new Grid(metaScene.NumOfEntitiesOnX, metaScene.NumOfEntitiesOnY, cellSize);
             IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid);
+            scene.SceneID = metaScene.ID;
             foreach (var item in metaScene.GroundEntities)
             {
                 EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
             }            
             foreach (var item in metaScene.StaticCollisionEntities)
             {
-                EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                if (item != null)
+                {
+                    EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                }
             }            
             foreach (var item in metaScene.DynamicEntities)
             {
-                uint curr = EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
-                if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
+                if (item != null)
                 {
-                    scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(_gameTime, scene, curr, 2 * metaScene.BaseObjectSize));
+                    uint curr = EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                    if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
+                    {
+                        scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(_gameTime, scene, curr, 2 * metaScene.BaseObjectSize));
+                    }
                 }
             }
 

@@ -7,7 +7,7 @@ namespace Engine.Models.Scenes
 {
     public interface ISceneManager
     {
-        List<MetaScene> MetaScenes { get; set; }
+        List<byte[]> MetaScenes { get; set; }
         IScene CurrentScene { get; set; }
         IScene LoadBattleScene();
         IScene LoadNextScene();
