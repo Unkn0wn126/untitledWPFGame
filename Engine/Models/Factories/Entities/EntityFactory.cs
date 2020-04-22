@@ -23,6 +23,7 @@ namespace Engine.Models.Factories.Entities
         RigidBodyComponent = 1 << 3,
         SoundComponent = 1 << 4,
         NavMeshComponent = 1 << 5,
+        LifeComponent = 1 << 6
     }
     public static class EntityFactory
     {
