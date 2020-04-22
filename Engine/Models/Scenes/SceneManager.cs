@@ -3,6 +3,7 @@ using Engine.EntityManagers;
 using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Components.Collision;
+using Engine.Models.Components.Life;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
@@ -82,7 +83,7 @@ namespace Engine.Models.Scenes
                 uint curr = EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
                 if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
                 {
-                    scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(_gameTime, scene, curr, 4 * metaScene.BaseObjectSize));
+                    scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(_gameTime, scene, curr, 2 * metaScene.BaseObjectSize));
                 }
             }
 
@@ -114,6 +115,8 @@ namespace Engine.Models.Scenes
             scene.PlayerTransform = playerTransform;
 
             manager.AddComponentToEntity<IScriptComponent>(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
+
+            manager.AddComponentToEntity<ILifeComponent>(player, new LifeComponent());
         }
     }
 }

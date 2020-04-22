@@ -1,4 +1,6 @@
-﻿using Engine.Models.Components.RigidBody;
+﻿using Engine.Models.Components.Life;
+using Engine.Models.Components.RigidBody;
+using Engine.Models.Components.Script.AIState;
 using Engine.Models.Scenes;
 using Engine.ViewModels;
 using GameInputHandler;
@@ -28,6 +30,8 @@ namespace Engine.Models.Components.Script
 
         private int _direction;
 
+        private MapAIStateMachine _state;
+
         public AiMovementScript(GameTime gameTime, IScene context, uint player, float baseVelocity)
         {
             _gameTime = gameTime;
@@ -42,31 +46,37 @@ namespace Engine.Models.Components.Script
 
             _random = new Random();
             _direction = _random.Next(6);
+
+            _state = new MapAIStateMachine(gameTime, _context, player, _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player), _context.EntityManager.GetComponentOfType<ITransformComponent>(_player), baseVelocity);
         }
 
         public void Update()
         {
-            _timer += _gameTime.DeltaTimeInSeconds;
+            //_timer += _gameTime.DeltaTimeInSeconds;
 
-            IRigidBodyComponent rigidBody = _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player);
-
-            if (_timer >= 2)
+            //IRigidBodyComponent rigidBody = _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player);
+            var active = _context.EntityManager.GetAllActiveEntities();
+            var ownerTransform = _context.EntityManager.GetComponentOfType<ITransformComponent>(_player);
+            _state.SetStateToWalk();
+            foreach (var item in active)
             {
-                _direction = _random.Next(6);
-                _timer = 0;
+                if (_context.EntityManager.EntityHasComponent<ITransformComponent>(item) && _context.EntityManager.EntityHasComponent<ILifeComponent>(item))
+                {
+                    var transform = _context.EntityManager.GetComponentOfType<ITransformComponent>(item);
+                    if (IsDistanceLowerThan(transform.Position.X, ownerTransform.Position.X, 3) && IsDistanceLowerThan(transform.Position.Y, ownerTransform.Position.Y, 3))
+                    {
+                        _state.SetStateToFollow(item, transform);
+                        break;
+                    }
+                }
             }
+            _state.ProcessState();
 
-            rigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
-            rigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
+        }
 
-            if (_direction == 1)
-                rigidBody.ForceY = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
-            else if (_direction == 2)
-                rigidBody.ForceY = +_baseVelocity * _gameTime.DeltaTimeInSeconds;            
-            else if (_direction == 3)
-                rigidBody.ForceX = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
-            else if (_direction == 4)
-                rigidBody.ForceX = +_baseVelocity * _gameTime.DeltaTimeInSeconds; 
+        private bool IsDistanceLowerThan(float firstPoint, float secondPoint, int distance)
+        {
+            return Math.Abs(firstPoint - secondPoint) <= distance;
         }
     }
 }
