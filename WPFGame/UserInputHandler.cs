@@ -14,30 +14,31 @@ namespace WPFGame
 
         private GameInput _gameInputHandler;
 
-        public UserInputHandler(GameInput gameInputHandler)
+        public UserInputHandler(GameInput gameInputHandler, Configuration gameConfig)
         {
             _gameInputHandler = gameInputHandler;
-            InitializeUserInputActions();
+            InitializeKeyCodes(gameConfig);
         }
 
-        private void InitializeUserInputActions()
+        public void UpdateConfiguration(Configuration gameConfig)
         {
-            InitializeKeyCodes();
+            _keyCodes.Clear();
+            InitializeKeyCodes(gameConfig);
         }
 
-        private void InitializeKeyCodes()
+        private void InitializeKeyCodes(Configuration gameConfig)
         {
             // Kind of like a state machine of pressed down keys
             // powers of 2 to allow diagonal movement
-            _keyCodes.Add(Key.W, GameKey.Up);
-            _keyCodes.Add(Key.A, GameKey.Left);
-            _keyCodes.Add(Key.S, GameKey.Down);
-            _keyCodes.Add(Key.D, GameKey.Right);
-            _keyCodes.Add(Key.Escape, GameKey.Escape);
-            _keyCodes.Add(Key.E, GameKey.Action);
-            _keyCodes.Add(Key.Q, GameKey.Action2);
-            _keyCodes.Add(Key.B, GameKey.Back);
-            _keyCodes.Add(Key.Space, GameKey.Space);
+            _keyCodes.Add(gameConfig.Up, GameKey.Up);
+            _keyCodes.Add(gameConfig.Left, GameKey.Left);
+            _keyCodes.Add(gameConfig.Down, GameKey.Down);
+            _keyCodes.Add(gameConfig.Right, GameKey.Right);
+            _keyCodes.Add(gameConfig.Escape, GameKey.Escape);
+            _keyCodes.Add(gameConfig.Action, GameKey.Action);
+            _keyCodes.Add(gameConfig.Action2, GameKey.Action2);
+            _keyCodes.Add(gameConfig.Back, GameKey.Back);
+            _keyCodes.Add(gameConfig.Space, GameKey.Space);
         }
 
         public void HandleKeyPressed(Key e)

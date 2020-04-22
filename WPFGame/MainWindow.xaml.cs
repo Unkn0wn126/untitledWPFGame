@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WPFGame.ResourceManagers;
 using System.Diagnostics;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace WPFGame
 {
@@ -53,6 +55,9 @@ namespace WPFGame
 
         private int _sizeMultiplier;
 
+        private Configuration _gameConfiguration;
+        private string _configPath = @"./Configuration/GameConfig.xml";
+
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session, int xRes, int yRes)
         {
             _imagePaths = imagePaths;
@@ -60,27 +65,49 @@ namespace WPFGame
 
             InitializeComponent();
 
+            LoadConfig();
+
             _session = session;
             InitializeImages();
             //InitializeCaching();
 
-            _inputHandler = new UserInputHandler(gameInputHandler);
+            _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             // to get shorter routes to frequently used objects
             _currentScene = _session.CurrentScene;
             _currentCamera = _currentScene.SceneCamera;
 
-            SetWindowSize(xRes, yRes);
+            SetWindowSize();
 
             // this is what everything renders to
-            bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
+            bitmap = new RenderTargetBitmap(_gameConfiguration.Width, _gameConfiguration.Height, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
         }
 
-        private void SetWindowSize(int xRes, int yRes)
+        private void LoadConfig()
         {
-            _xRes = xRes;
-            _yRes = yRes;
+            _gameConfiguration = new Configuration();
+            using (FileStream fs2 = new FileStream(_configPath, FileMode.Open))
+            {
+                XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
+                _gameConfiguration = serializer.Deserialize(fs2) as Configuration;
+            }
+        }
+
+        private void SaveCurrentConfig()
+        {
+            using (FileStream fs = new FileStream(_configPath, FileMode.OpenOrCreate))
+            {
+                XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
+
+                serializer.Serialize(fs, _gameConfiguration);
+            }
+        }
+
+        private void SetWindowSize()
+        {
+            _xRes = _gameConfiguration.Width;
+            _yRes = _gameConfiguration.Height;
 
             _sizeMultiplier = (int)Math.Ceiling(_xRes / 16f);
 
@@ -92,10 +119,13 @@ namespace WPFGame
             GameImage.Width = _xRes;
             GameImage.Height = _yRes;
 
-            bitmap = new RenderTargetBitmap(xRes, yRes, 96, 96, PixelFormats.Pbgra32);
+            bitmap = new RenderTargetBitmap(_xRes, _yRes, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
             _currentCamera.UpdateSize(_xRes, _yRes);
+
+            WindowStyle = _gameConfiguration.WindowStyle == 0 ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+            WindowState = _gameConfiguration.WindowState == 0 ? WindowState.Normal : WindowState.Maximized;
         }
 
         private void InitializeCaching()
@@ -241,25 +271,10 @@ namespace WPFGame
             switch (e.Key)
             {
                 case Key.D1:
-                    SetWindowSize(640, 480);
+                    LoadConfig();
+                    SetWindowSize();
+                    _inputHandler.UpdateConfiguration(_gameConfiguration);
                     break;                
-                case Key.D2:
-                    SetWindowSize(800, 600);
-                    break;                
-                case Key.D3:
-                    SetWindowSize(1280, 720);
-                    break;                
-                case Key.D4:
-                    SetWindowSize(1920, 1080);
-                    break;
-                case Key.D5:
-                    WindowStyle = WindowStyle.None;
-                    WindowState = WindowState.Maximized;
-                    break;
-                case Key.D6:
-                    WindowStyle = WindowStyle.ThreeDBorderWindow;
-                    WindowState = WindowState.Normal;
-                    break;
             }
 
             if (e.Key == Key.F)

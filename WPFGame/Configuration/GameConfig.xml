@@ -1,15 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Configuration>
-  <Resolution Width="800" Height="600"/>
-  <Keyboard>
-    <Up>W</Up>
-    <Down>S</Down>
-    <Left>A</Left>
-    <Right>D</Right>
-    <Escape>Escape</Escape>
-    <Action>E</Action>
-    <Action2>Q</Action2>
-    <Back>B</Back>
-    <Space>Space</Space>
-  </Keyboard>
+﻿<?xml version="1.0"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Width>800</Width>
+  <Height>600</Height>
+  <WindowStyle>0</WindowStyle>
+  <WindowState>0</WindowState>
+  <Up>W</Up>
+  <Down>S</Down>
+  <Left>A</Left>
+  <Right>D</Right>
+  <Escape>Escape</Escape>
+  <Action>E</Action>
+  <Action2>Q</Action2>
+  <Back>B</Back>
+  <Space>Space</Space>
 </Configuration>
