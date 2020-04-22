@@ -165,8 +165,8 @@ namespace WPFGame
             foreach (var item in _currentCamera.VisibleObjects)
             {
                 // conversion of logical coordinates to graphical ones
-                float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X * _sizeMultiplier, _currentCamera.XOffset, focusPos.X * _sizeMultiplier);
-                float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y * _sizeMultiplier, _currentCamera.YOffset, focusPos.Y * _sizeMultiplier);
+                float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
+                float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
 
                 DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX * _sizeMultiplier, transformComponents[index].ScaleY * _sizeMultiplier, drawingContext, _isTextureModeOn);
                 index++;
@@ -182,7 +182,7 @@ namespace WPFGame
         /// <returns></returns>
         private float CalculateGraphicsCoordinate(float logicalPosition, float offset, float focusPos)
         {
-            return logicalPosition < focusPos ? offset - (focusPos - logicalPosition) : offset + (logicalPosition - focusPos);
+            return logicalPosition < focusPos ? offset - ((focusPos - logicalPosition) * _sizeMultiplier) : offset + ((logicalPosition - focusPos) * _sizeMultiplier);
         }
 
         /// <summary>
@@ -240,17 +240,25 @@ namespace WPFGame
             }
             switch (e.Key)
             {
-                case Key.NumPad0:
+                case Key.D1:
                     SetWindowSize(640, 480);
                     break;                
-                case Key.NumPad1:
+                case Key.D2:
                     SetWindowSize(800, 600);
                     break;                
-                case Key.NumPad2:
+                case Key.D3:
                     SetWindowSize(1280, 720);
                     break;                
-                case Key.NumPad3:
+                case Key.D4:
                     SetWindowSize(1920, 1080);
+                    break;
+                case Key.D5:
+                    WindowStyle = WindowStyle.None;
+                    WindowState = WindowState.Maximized;
+                    break;
+                case Key.D6:
+                    WindowStyle = WindowStyle.ThreeDBorderWindow;
+                    WindowState = WindowState.Normal;
                     break;
             }
 

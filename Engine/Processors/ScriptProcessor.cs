@@ -36,7 +36,7 @@ namespace Engine.Processors
                 }
             });
 
-            Parallel.ForEach(scripts, x =>
+            scripts.ForEach(x =>
             {
                 foreach (var item in x)
                 {

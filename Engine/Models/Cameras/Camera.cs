@@ -17,6 +17,8 @@ namespace Engine.Models.Cameras
         public float XOffset { get; set; }
         public float YOffset { get; set; }
 
+        private float _sizeMultiplier;
+
         // Keep window res as well as renderable res
         public Camera(float width, float height)
         {
@@ -32,6 +34,7 @@ namespace Engine.Models.Cameras
             Height = height;
             _halfWidth = Width / 2;
             _halfHeight = Height / 2;
+            _sizeMultiplier = (int)Math.Ceiling(width / 16f);
         }
 
         /// <summary>
@@ -51,8 +54,8 @@ namespace Engine.Models.Cameras
             VisibleObjects = keyValuePairs.Values.ToList();
             VisibleTransforms = keyValuePairs.Keys.ToList();
 
-            XOffset = Math.Abs(_halfWidth - (focusPoint.ScaleX / 2f));
-            YOffset = Math.Abs(_halfHeight - (focusPoint.ScaleY / 2f));
+            XOffset = Math.Abs(_halfWidth - ((focusPoint.ScaleX * _sizeMultiplier) / 2f));
+            YOffset = Math.Abs(_halfHeight - ((focusPoint.ScaleY * _sizeMultiplier) / 2f));
         }
     }
 }

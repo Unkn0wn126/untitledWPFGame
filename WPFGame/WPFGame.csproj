@@ -21,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Configuration\GameConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\Images\cobblestone.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
