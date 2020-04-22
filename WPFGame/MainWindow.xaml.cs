@@ -18,6 +18,10 @@ using WPFGame.ResourceManagers;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Engine.Saving;
+using WPFGame.Saving;
+using Microsoft.Win32;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace WPFGame
 {
@@ -274,7 +278,13 @@ namespace WPFGame
                     LoadConfig();
                     SetWindowSize();
                     _inputHandler.UpdateConfiguration(_gameConfiguration);
+                    break;
+                case Key.NumPad1:
+                    ShowSaveDialog();
                     break;                
+                case Key.NumPad2:
+                    ShowLoadDialog();
+                    break;
             }
 
             if (e.Key == Key.F)
@@ -283,6 +293,62 @@ namespace WPFGame
             }
 
             _inputHandler.HandleKeyPressed(e.Key);
+        }
+
+        private void ShowSaveDialog()
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".save";
+            dialog.Filter = "Save Files (*.save)|*.save";
+            Nullable<bool> result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = dialog.FileName;
+                Save save = new Save();
+                var sceneManager = _session.SceneManager;
+                List<byte[]> serializedScenes = new List<byte[]>();
+
+
+                foreach (var item in sceneManager.MetaScenes)
+                {
+                    byte[] current;
+                    using (MemoryStream fs = new MemoryStream())
+                    {
+                        var binaryFormatter = new BinaryFormatter();
+                        binaryFormatter.Serialize(fs, save);
+                        current = fs.ToArray();
+                    }
+
+                    serializedScenes.Add(current);
+                }
+                save.Scenes = serializedScenes;
+                save.PlayerPosX = sceneManager.CurrentScene.PlayerTransform.Position.X;
+                save.PlayerPosY = sceneManager.CurrentScene.PlayerTransform.Position.Y;
+                save.PlayerSizeX = sceneManager.CurrentScene.PlayerTransform.ScaleX;
+                save.PlayerSizeY = sceneManager.CurrentScene.PlayerTransform.ScaleY;
+                save.PlayerZIndex = sceneManager.CurrentScene.PlayerTransform.ZIndex;
+                SaveGame(filename, save);
+            }
+        }
+
+        private void ShowLoadDialog()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.DefaultExt = ".save";
+            dialog.Filter = "Save Files (*.save)|*.save";
+            Nullable<bool> result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = dialog.FileName;
+                Save save = SaveFileManager.LoadGame(filename);
+            }
+        }
+
+        private void SaveGame(string path, Save save)
+        {
+            SaveFileManager.SaveGame(path, save);
         }
         
         private void ShowPauseOverlay()

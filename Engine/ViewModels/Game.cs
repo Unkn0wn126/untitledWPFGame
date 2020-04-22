@@ -59,7 +59,7 @@ namespace Engine.ViewModels
                 CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
-            int val = _rnd.Next(100, 200);
+            int val = _rnd.Next(1000, 2000);
 
             // Scene generation should take place elsewhere
             List<MetaScene> metaScenes = new List<MetaScene>();
@@ -94,7 +94,10 @@ namespace Engine.ViewModels
         {
             _gameTime.UpdateDeltaTime(); // keep track of elapsed time
 
-            secondsElapsed += _gameTime.DeltaTimeInSeconds;
+            if (State.IsRunning())
+            {
+                secondsElapsed += _gameTime.DeltaTimeInSeconds;
+            }
 
             if (State.IsLoading())
             {

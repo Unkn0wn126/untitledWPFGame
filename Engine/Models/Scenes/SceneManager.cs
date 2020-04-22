@@ -21,7 +21,7 @@ namespace Engine.Models.Scenes
     public class SceneManager : ISceneManager
     {
         public IScene CurrentScene { get; set; }
-        private List<MetaScene> _metaScenes { get; set; }
+        public List<MetaScene> MetaScenes { get; set; }
         private GameInput _gameInput;
         private GameTime _gameTime;
 
@@ -29,14 +29,14 @@ namespace Engine.Models.Scenes
         {
             _gameInput = gameInput;
             _gameTime = gameTime;
-            _metaScenes = new List<MetaScene>();
+            MetaScenes = new List<MetaScene>();
         }
 
         public SceneManager(List<MetaScene> metaScenes, GameInput gameInput, GameTime gameTime)
         {
             _gameInput = gameInput;
             _gameTime = gameTime;
-            _metaScenes = metaScenes;
+            MetaScenes = metaScenes;
         }
 
         public IScene LoadBattleScene()
@@ -48,12 +48,12 @@ namespace Engine.Models.Scenes
         {
             if (CurrentScene == null)
             {
-                return GenerateSceneFromMeta(_metaScenes[0]);
+                return GenerateSceneFromMeta(MetaScenes[0]);
             }
 
-            MetaScene searched = _metaScenes[0];
+            MetaScene searched = MetaScenes[0];
 
-            foreach (var item in _metaScenes)
+            foreach (var item in MetaScenes)
             {
                 if (item.ID.CompareTo(CurrentScene.NextScene) == 0)
                 {
