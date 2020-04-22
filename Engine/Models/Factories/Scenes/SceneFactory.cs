@@ -148,7 +148,26 @@ namespace Engine.Models.Factories
             metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
             metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
 
+            int numOfEnemies = (int)((numOfObjectsOnX / 2f) * (numOfObjectsOnY / 2f));
+
+            for (int i = 0; i < numOfEnemies; i++)
+            {
+                int x = _rnd.Next(10, numOfObjectsOnX - 10);
+                int y = _rnd.Next(10, numOfObjectsOnY - 10);
+
+                metaScene.DynamicEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, x, y));
+            }
+
             return metaScene;
+        }
+
+        private static MetaMapEntity GenerateDynamicEntities(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int xPos, int yPos)
+        {
+            MetaMapEntity metaMapEntity = new MetaMapEntity();
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent;
+            metaMapEntity = new MetaMapEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Enemy, Components = current, ZIndex = 3, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
+            metaMapEntity.Scripts = ScriptType.AiMovement;
+            return metaMapEntity;
         }
 
         public static IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)

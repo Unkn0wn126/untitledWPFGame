@@ -79,7 +79,11 @@ namespace Engine.Models.Scenes
             }            
             foreach (var item in metaScene.DynamicEntities)
             {
-                EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                uint curr = EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
+                {
+                    scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(_gameTime, scene, curr, 4 * metaScene.BaseObjectSize));
+                }
             }
 
             GeneratePlayer(scene.EntityManager, scene, metaScene.BaseObjectSize, _gameTime, _gameInput);
