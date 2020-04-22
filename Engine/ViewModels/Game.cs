@@ -65,9 +65,9 @@ namespace Engine.ViewModels
                 CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
-            int val = _rnd.Next(100, 1000);
+            int val = _rnd.Next(100, 200);
             List<MetaScene> metaScenes = new List<MetaScene>();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 10; i++)
             {
                 metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 4));
             }
@@ -112,7 +112,7 @@ namespace Engine.ViewModels
                 loadingTime = 0;
             }
 
-            if (secondsElapsed >= 8 && State.IsRunning())
+            if (secondsElapsed >= 60 && State.IsRunning())
             {
                 int val = _rnd.Next(100, 200);
                 State.CurrentState = GameState.LOADING;

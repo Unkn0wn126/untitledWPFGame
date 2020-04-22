@@ -238,6 +238,21 @@ namespace WPFGame
                     GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
                 }
             }
+            switch (e.Key)
+            {
+                case Key.NumPad0:
+                    SetWindowSize(640, 480);
+                    break;                
+                case Key.NumPad1:
+                    SetWindowSize(800, 600);
+                    break;                
+                case Key.NumPad2:
+                    SetWindowSize(1280, 720);
+                    break;                
+                case Key.NumPad3:
+                    SetWindowSize(1920, 1080);
+                    break;
+            }
 
             if (e.Key == Key.F)
             {
