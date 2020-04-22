@@ -26,7 +26,7 @@ namespace WPFGame
                 //player.Play();
                 //player.SoundLocation = @"./Resources/Sounds/arena_loop2.wav";
 
-                GameEngine engine = new GameEngine(800, 600);
+                GameEngine engine = new GameEngine();
                 engine.StartRun();
             }
         }

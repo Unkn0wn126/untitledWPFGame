@@ -58,7 +58,7 @@ namespace WPFGame
         private Configuration _gameConfiguration;
         private string _configPath = @"./Configuration/GameConfig.xml";
 
-        public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session, int xRes, int yRes)
+        public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
             _imagePaths = imagePaths;
             _isTextureModeOn = true;

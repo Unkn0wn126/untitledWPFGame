@@ -11,24 +11,32 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using TimeUtils;
 
 namespace WPFGame
 {
     public class GameEngine
     {
         private IGame _logicEngine;
+
         private MainWindow _graphicsEngine;
         private App _app;
+
         private bool _isRunning = false;
         private Thread _logicThread;
 
-        public GameEngine(int xRes, int yRes)
-        {
-            GameInput gameInputHandler = new GameInput();
-            ImagePaths imagePaths = new ImagePaths();
-            _logicEngine = new Game(imagePaths, gameInputHandler, xRes, yRes);
+        private GameTime _gameTime;
+        private GameInput _gameInputHandler;
+        private ImagePaths _imagePaths;
 
-            _graphicsEngine = new MainWindow(imagePaths, gameInputHandler, _logicEngine, xRes, yRes);
+        public GameEngine()
+        {
+            _gameInputHandler = new GameInput();
+            _gameTime = new GameTime();
+            _imagePaths = new ImagePaths();
+            _logicEngine = new Game(_gameInputHandler, _gameTime);
+
+            _graphicsEngine = new MainWindow(_imagePaths, _gameInputHandler, _logicEngine);
             CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
             _logicThread = new Thread(Update);
         }

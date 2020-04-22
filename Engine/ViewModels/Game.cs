@@ -31,31 +31,25 @@ namespace Engine.ViewModels
         public IScene CurrentScene { get; set; }
         public GameStateMachine State { get; set; }
 
-        private ImagePaths _imgPaths;
         private IProcessor _graphicsProcessor;
         private List<IProcessor> _processors;
+
         private GameTime _gameTime;
         private GameInput _gameInputHandler;
-
-        private float _xRes;
-        private float _yRes;
+        public ISceneManager SceneManager { get; set; }
 
         private Random _rnd;
 
-        private ISceneManager _sceneManager;
 
         /*
          * does not need: imgPaths, xRes, yRes
-         * may need: gameInputHandler, player context, gameTime from parameter
+         * may need: gameInputHandler, gameTime from parameter
          * will need scene manager
          */
-        public Game(ImagePaths imgPaths, GameInput gameInputHandler, float xRes, float yRes)
+        public Game(GameInput gameInputHandler, GameTime gameTime)
         {
-            _xRes = xRes;
-            _yRes = yRes;
-            _gameTime = new GameTime();
+            _gameTime = gameTime;
             _gameInputHandler = gameInputHandler;
-            _imgPaths = imgPaths;
             _processors = new List<IProcessor>();
 
             _rnd = new Random();
@@ -66,6 +60,8 @@ namespace Engine.ViewModels
             };
 
             int val = _rnd.Next(100, 200);
+
+            // Scene generation should take place elsewhere
             List<MetaScene> metaScenes = new List<MetaScene>();
             for (int i = 0; i < 10; i++)
             {
@@ -76,10 +72,10 @@ namespace Engine.ViewModels
                 metaScenes[i].NextScene = metaScenes[i + 1].ID;
             }
 
-            _sceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
+            SceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
             
             //CurrentScene = SceneFactory.CreateScene(xRes, yRes, _gameTime, _gameInputHandler, true, val, val);
-            CurrentScene = _sceneManager.LoadNextScene();
+            CurrentScene = SceneManager.LoadNextScene();
 
             _graphicsProcessor = new GraphicsProcessor(CurrentScene);
 
@@ -118,7 +114,7 @@ namespace Engine.ViewModels
                 State.CurrentState = GameState.LOADING;
                 //CurrentScene = SceneFactory.CreateScene(_xRes, _yRes, _gameTime, _gameInputHandler, generateTheGuy, val, val);
                 //CurrentScene = SceneFactory.CreateBattleScene(_xRes, _yRes, _gameTime, _gameInputHandler);
-                CurrentScene = _sceneManager.LoadNextScene();
+                CurrentScene = SceneManager.LoadNextScene();
                 _graphicsProcessor.ChangeContext(CurrentScene);
                 _processors.ForEach(x =>
                 {
