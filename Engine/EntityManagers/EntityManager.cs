@@ -1,6 +1,7 @@
 ﻿using Engine.Coordinates;
 using Engine.Models;
 using Engine.Models.Components;
+using Engine.Models.Components.Life;
 using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
@@ -41,6 +42,7 @@ namespace Engine.EntityManagers
             _gameComponents.Add(typeof(ISoundComponent), new Dictionary<uint, IGameComponent>());
             _gameComponents.Add(typeof(IRigidBodyComponent), new Dictionary<uint, IGameComponent>());
             _gameComponents.Add(typeof(INavmeshComponent), new Dictionary<uint, IGameComponent>());
+            _gameComponents.Add(typeof(ILifeComponent), new Dictionary<uint, IGameComponent>());
         }
 
         public List<uint> GetAllEntities()
