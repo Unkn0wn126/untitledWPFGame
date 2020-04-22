@@ -108,20 +108,20 @@ namespace Engine.Models.Scenes
             scene.SceneID = metaScene.ID;
             foreach (var item in metaScene.GroundEntities)
             {
-                EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                EntityFactory.GenerateEntity(item, scene.EntityManager);
             }            
             foreach (var item in metaScene.StaticCollisionEntities)
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                    EntityFactory.GenerateEntity(item, scene.EntityManager);
                 }
             }            
             foreach (var item in metaScene.DynamicEntities)
             {
                 if (item != null)
                 {
-                    uint curr = EntityFactory.GenerateEntity(scene.EntityManager, item.Components, item.Graphics, item.CollisionType, new Vector2(item.SizeX, item.SizeY), new Vector2(item.PosX, item.PosY), item.ZIndex);
+                    uint curr = EntityFactory.GenerateEntity(item, scene.EntityManager);
                     if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
                     {
                         scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(_gameTime, scene, curr, 2 * metaScene.BaseObjectSize));

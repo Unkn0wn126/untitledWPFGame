@@ -4,6 +4,7 @@ using Engine.Models.Components.Collision;
 using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Sound;
+using Engine.Models.Factories.Scenes;
 using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
@@ -27,30 +28,30 @@ namespace Engine.Models.Factories.Entities
     }
     public static class EntityFactory
     {
-        public static uint GenerateEntity(IEntityManager manager, ComponentState requiredComponents, ImgName imgName, CollisionType collisionType, Vector2 size, Vector2 pos, int zIndex)
+        public static uint GenerateEntity(MetaMapEntity metaEntity, IEntityManager manager)
         {
             uint entity = manager.AddEntity();
-            if (IsComponentRequired(requiredComponents, ComponentState.TransformComponent))
+            if (IsComponentRequired(metaEntity.Components, ComponentState.TransformComponent))
             {
-                manager.AddComponentToEntity<ITransformComponent>(entity, new TransformComponent(pos, size.X, size.Y, new Vector2(0, 0), zIndex));
+                manager.AddComponentToEntity<ITransformComponent>(entity, new TransformComponent(new Vector2(metaEntity.PosX, metaEntity.PosY), metaEntity.SizeX, metaEntity.SizeY, new Vector2(0, 0), metaEntity.ZIndex));
             }
-            if (IsComponentRequired(requiredComponents, ComponentState.CollisionComponent))
+            if (IsComponentRequired(metaEntity.Components, ComponentState.CollisionComponent))
             {
-                manager.AddComponentToEntity<ICollisionComponent>(entity, new CollisionComponent(IsCollisionType(collisionType, CollisionType.Solid), IsCollisionType(collisionType, CollisionType.Dynamic)));
+                manager.AddComponentToEntity<ICollisionComponent>(entity, new CollisionComponent(IsCollisionType(metaEntity.CollisionType, CollisionType.Solid), IsCollisionType(metaEntity.CollisionType, CollisionType.Dynamic)));
             }            
-            if (IsComponentRequired(requiredComponents, ComponentState.GraphicsComponent))
+            if (IsComponentRequired(metaEntity.Components, ComponentState.GraphicsComponent))
             {
-                manager.AddComponentToEntity<IGraphicsComponent>(entity, new GraphicsComponent(imgName));
+                manager.AddComponentToEntity<IGraphicsComponent>(entity, new GraphicsComponent(metaEntity.Graphics));
             }            
-            if (IsComponentRequired(requiredComponents, ComponentState.RigidBodyComponent))
+            if (IsComponentRequired(metaEntity.Components, ComponentState.RigidBodyComponent))
             {
                 manager.AddComponentToEntity<IRigidBodyComponent>(entity, new RigidBodyComponent());
             }            
-            if (IsComponentRequired(requiredComponents, ComponentState.SoundComponent))
+            if (IsComponentRequired(metaEntity.Components, ComponentState.SoundComponent))
             {
                 manager.AddComponentToEntity<ISoundComponent>(entity, new SoundComponent());
             }            
-            if (IsComponentRequired(requiredComponents, ComponentState.NavMeshComponent))
+            if (IsComponentRequired(metaEntity.Components, ComponentState.NavMeshComponent))
             {
                 manager.AddComponentToEntity<INavmeshComponent>(entity, new NavmeshComponent());
             }           

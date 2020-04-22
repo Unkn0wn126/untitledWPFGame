@@ -61,7 +61,7 @@ namespace Engine.ViewModels
                 CurrentState = GameState.LOADING // prevent update of logic while not ready
             };
 
-            int val = _rnd.Next(100, 200);
+            int val = _rnd.Next(10, 100);
 
             // Scene generation should take place elsewhere
             List<byte[]> metaScenes = new List<byte[]>();
