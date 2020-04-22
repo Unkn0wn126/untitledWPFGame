@@ -69,7 +69,7 @@ namespace Engine.ViewModels
             List<MetaScene> metaScenes = new List<MetaScene>();
             for (int i = 0; i < 10; i++)
             {
-                metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 4));
+                metaScenes.Add(SceneFactory.CreateMetaScene(val, val, 1, 5));
             }
             for (int i = 0; i < metaScenes.Count - 1; i++)
             {
