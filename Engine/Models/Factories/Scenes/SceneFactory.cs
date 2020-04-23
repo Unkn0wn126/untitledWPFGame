@@ -3,6 +3,7 @@ using Engine.EntityManagers;
 using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Components.Collision;
+using Engine.Models.Components.Life;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
@@ -249,6 +250,170 @@ namespace Engine.Models.Factories
             //IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 4 * objectSize);
 
             manager.AddComponentToEntity<IScriptComponent>(player, movementStrategy);
+        }
+
+        public static MetaScene GenerateMetaSceneFromScene(IScene scene)
+        {
+            MetaScene metaScene = new MetaScene(SceneType.General);
+            IEntityManager manager = scene.EntityManager;
+            foreach (var item in manager.GetAllEntities())
+            {
+                ComponentState required = 0;
+                MetaMapEntity currentEntity = new MetaMapEntity();
+                if (manager.EntityHasComponent<ITransformComponent>(item))
+                {
+                    required |= ComponentState.TransformComponent;
+                    ITransformComponent currTransform = manager.GetComponentOfType<ITransformComponent>(item);
+                    currentEntity.PosX = currTransform.Position.X;
+                    currentEntity.PosY = currTransform.Position.Y;
+                    currentEntity.SizeX = currTransform.ScaleX;
+                    currentEntity.SizeY = currTransform.ScaleY;
+                    currentEntity.ZIndex = currTransform.ZIndex;
+                }
+                if (manager.EntityHasComponent<ILifeComponent>(item))
+                {
+                    currentEntity.LifeComponent = manager.GetComponentOfType<ILifeComponent>(item);
+                }
+                if (manager.EntityHasComponent<IGraphicsComponent>(item))
+                {
+                    required |= ComponentState.GraphicsComponent;
+                    currentEntity.Graphics = manager.GetComponentOfType<IGraphicsComponent>(item).CurrentImageName;
+                }
+                if (manager.EntityHasComponent<ICollisionComponent>(item))
+                {
+                    required |= ComponentState.CollisionComponent;
+                    ICollisionComponent currCollision = manager.GetComponentOfType<ICollisionComponent>(item);
+                    currentEntity.CollisionType = 0;
+                    if (currCollision.IsDynamic)
+                    {
+                        currentEntity.CollisionType |= CollisionType.Dynamic;
+                    }
+                    if (currCollision.IsSolid)
+                    {
+                        currentEntity.CollisionType |= CollisionType.Solid;
+
+                    }
+                }
+                if (manager.EntityHasComponent<IRigidBodyComponent>(item))
+                {
+                    required |= ComponentState.RigidBodyComponent;
+                }
+                if (manager.EntityHasComponent<IScriptComponent>(item))
+                {
+                    var scripts = manager.GetEntityScriptComponents(item);
+                    currentEntity.Scripts = 0;
+                    foreach (var script in scripts)
+                    {
+                        if (script.GetType() == typeof(AiMovementScript))
+                        {
+                            currentEntity.Scripts |= ScriptType.AiMovement;
+                        }
+                        if (script.GetType() == typeof(PlayerMovementScript))
+                        {
+                            currentEntity.Scripts |= ScriptType.PlayerMovement;
+                        }
+                    }
+                }
+
+                currentEntity.Components = required;
+
+                if ((currentEntity.Components & ComponentState.CollisionComponent) != ComponentState.CollisionComponent)
+                {
+                    metaScene.GroundEntities.Add(currentEntity);
+                }
+                else if ((currentEntity.CollisionType & CollisionType.Solid) == CollisionType.Solid && (currentEntity.CollisionType & CollisionType.Dynamic) != CollisionType.Dynamic && currentEntity.LifeComponent == null)
+                {
+                    metaScene.StaticCollisionEntities.Add(currentEntity);
+                }
+                else
+                {
+                    metaScene.DynamicEntities.Add(currentEntity);
+                }
+            }
+
+            metaScene.BaseObjectSize = 1;
+            metaScene.ID = scene.SceneID;
+            metaScene.NextScene = scene.NextScene;
+            metaScene.NumOfEntitiesOnX = scene.NumOfEntitiesOnX;
+            metaScene.NumOfEntitiesOnY = scene.NumOfEntitiesOnY;
+            metaScene.NumOfObjectsInCell = scene.NumOfObjectsInCell;
+
+            return metaScene;
+        }
+
+        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime)
+        {
+            ICamera oldCamera = camera;
+            int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
+            ISpatialIndex grid = new Grid(metaScene.NumOfEntitiesOnX, metaScene.NumOfEntitiesOnY, cellSize);
+            IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid);
+            scene.SceneID = metaScene.ID;
+            scene.NumOfEntitiesOnX = metaScene.NumOfEntitiesOnX;
+            scene.NumOfEntitiesOnY = metaScene.NumOfEntitiesOnY;
+            scene.BaseObjectSize = metaScene.BaseObjectSize;
+            scene.NumOfObjectsInCell = metaScene.NumOfObjectsInCell;
+            foreach (var item in metaScene.GroundEntities)
+            {
+                EntityFactory.GenerateEntity(item, scene.EntityManager);
+            }
+            foreach (var item in metaScene.StaticCollisionEntities)
+            {
+                if (item != null)
+                {
+                    EntityFactory.GenerateEntity(item, scene.EntityManager);
+                }
+            }
+            foreach (var item in metaScene.DynamicEntities)
+            {
+                if (item != null)
+                {
+                    uint curr = EntityFactory.GenerateEntity(item, scene.EntityManager);
+                    if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
+                    {
+                        scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(gameTime, scene, curr, 2 * metaScene.BaseObjectSize));
+                    }
+                    if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
+                    {
+                        scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new PlayerMovementScript(gameTime, gameInput, scene, curr, 4 * metaScene.BaseObjectSize));
+                        scene.EntityManager.AddComponentToEntity<ILifeComponent>(curr, item.LifeComponent);
+                        scene.PlayerEntity = curr;
+                        scene.PlayerTransform = scene.EntityManager.GetComponentOfType<ITransformComponent>(curr);
+                    }
+                }
+            }
+
+            if (scene.PlayerTransform == null)
+            {
+                GeneratePlayer(scene.EntityManager, scene, metaScene.BaseObjectSize, gameTime, gameInput);
+            }
+
+            scene.NextScene = metaScene.NextScene;
+
+            return scene;
+        }
+
+        private static void GeneratePlayer(IEntityManager manager, IScene scene, int objectSize, GameTime gameTime, GameInput gameInputHandler)
+        {
+            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
+            IGraphicsComponent test = new GraphicsComponent(ImgName.Player);
+            //_playerTransform = playerTransform;
+
+            uint player = manager.AddEntity(playerTransform);
+            //_player = player;
+            manager.AddComponentToEntity<IGraphicsComponent>(player, test);
+
+            ICollisionComponent collision = new CollisionComponent(true, true);
+            manager.AddComponentToEntity<ICollisionComponent>(player, collision);
+
+            IRigidBodyComponent rigidBody = new RigidBodyComponent();
+            manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
+
+            scene.PlayerEntity = player;
+            scene.PlayerTransform = playerTransform;
+
+            manager.AddComponentToEntity<IScriptComponent>(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
+
+            manager.AddComponentToEntity<ILifeComponent>(player, new LifeComponent { IsPlayer = true });
         }
     }
 }
