@@ -138,9 +138,10 @@ namespace Engine.Models.Factories
         private static MetaMapEntity GenerateDynamicEntities(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int xPos, int yPos)
         {
             MetaMapEntity metaMapEntity = new MetaMapEntity();
-            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent;
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
             metaMapEntity = new MetaMapEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Enemy, Components = current, ZIndex = 3, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
             metaMapEntity.Scripts = ScriptType.AiMovement;
+            metaMapEntity.LifeComponent = new LifeComponent { Agility = 10, AttributePoints = 0, BattleClass = BattleClass.Swordsman, CurrentLevel = 1, CurrentXP = 0, Gender = Gender.Male, MaxHP = 100, HP = 100, Intelligence = 10, IsPlayer = false, MaxMP = 100, MaxStamina = 100, MP = 100, Name = "Prak", NextLevelXP = 100, Race = Race.Human, Stamina = 100, Strength = 10 };
             return metaMapEntity;
         }
 

@@ -63,7 +63,8 @@ namespace Engine.Models.Components.Script
                 if (_context.EntityManager.EntityHasComponent<ITransformComponent>(item) && _context.EntityManager.EntityHasComponent<ILifeComponent>(item))
                 {
                     var transform = _context.EntityManager.GetComponentOfType<ITransformComponent>(item);
-                    if (IsDistanceLowerThan(transform.Position.X, ownerTransform.Position.X, 3) && IsDistanceLowerThan(transform.Position.Y, ownerTransform.Position.Y, 3))
+                    var life = _context.EntityManager.GetComponentOfType<ILifeComponent>(item);
+                    if (IsDistanceLowerThan(transform.Position.X, ownerTransform.Position.X, 3) && IsDistanceLowerThan(transform.Position.Y, ownerTransform.Position.Y, 3) && life.IsPlayer)
                     {
                         _state.SetStateToFollow(item, transform);
                         break;

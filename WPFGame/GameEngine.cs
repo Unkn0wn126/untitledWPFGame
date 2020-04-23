@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
@@ -23,7 +24,7 @@ namespace WPFGame
         private App _app;
 
         private bool _isRunning = false;
-        private Thread _logicThread;
+        private Task _logicThread;
 
         private GameTime _gameTime;
         private GameInput _gameInputHandler;
@@ -38,7 +39,7 @@ namespace WPFGame
 
             _graphicsEngine = new MainWindow(_imagePaths, _gameInputHandler, _logicEngine);
             CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
-            _logicThread = new Thread(Update);
+            _logicThread = new Task(Update);
         }
 
         public void StartRun()
@@ -61,11 +62,6 @@ namespace WPFGame
                     _logicEngine.Update();
             }
 
-        }
-
-        private void Update(object sender, ElapsedEventArgs e)
-        {
-            _logicEngine.Update();
         }
 
     }
