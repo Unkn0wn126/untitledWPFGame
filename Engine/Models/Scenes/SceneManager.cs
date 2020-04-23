@@ -1,22 +1,12 @@
-﻿using Engine.Coordinates;
-using Engine.EntityManagers;
-using Engine.Models.Cameras;
+﻿using Engine.Models.Cameras;
 using Engine.Models.Components;
-using Engine.Models.Components.Collision;
-using Engine.Models.Components.Life;
-using Engine.Models.Components.RigidBody;
-using Engine.Models.Components.Script;
 using Engine.Models.Factories;
-using Engine.Models.Factories.Entities;
 using Engine.Models.Factories.Scenes;
 using GameInputHandler;
-using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using TimeUtils;
 
 namespace Engine.Models.Scenes
@@ -119,6 +109,7 @@ namespace Engine.Models.Scenes
 
             _currIndex++;
             CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime);
+            CurrentScene.SceneCamera.UpdateFocusPoint(CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(CurrentScene.PlayerEntity));
             return CurrentScene;
         }
     }

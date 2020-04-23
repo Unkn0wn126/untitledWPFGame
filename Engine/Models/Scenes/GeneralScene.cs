@@ -19,10 +19,7 @@ namespace Engine.Models.Scenes
         public int BaseObjectSize { get; set; }
         public int NumOfEntitiesOnX { get; set; }
         public int NumOfEntitiesOnY { get; set; }
-        public ITransformComponent PlayerTransform { get; set; }
         public ISpatialIndex Coordinates { get; set; }
-        public Guid SceneID { get; set; }
-        public Guid NextScene { get; set; }
 
         public GeneralScene(ICamera camera, IEntityManager entityManager, ISpatialIndex coordinates)
         {

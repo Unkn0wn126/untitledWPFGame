@@ -1,10 +1,6 @@
 ﻿using Engine.Models.Components;
 using Engine.Models.Scenes;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine.Processors
 {
@@ -18,7 +14,7 @@ namespace Engine.Processors
         public GraphicsProcessor(IScene context)
         {
             _context = context;
-            _focusPoint = context.PlayerTransform;
+            _focusPoint = context.SceneCamera.FocusPoint;
             _renderables = new Dictionary<ITransformComponent, IGraphicsComponent>();
         }
 
@@ -29,7 +25,7 @@ namespace Engine.Processors
         public void ChangeContext(IScene context)
         {
             _context = context;
-            _focusPoint = context.PlayerTransform;
+            _focusPoint = context.SceneCamera.FocusPoint;
         }
 
         /// <summary>
@@ -52,7 +48,7 @@ namespace Engine.Processors
                 }
             });
 
-            _context.SceneCamera.UpdatePosition(_focusPoint, _renderables);
+            _context.SceneCamera.UpdatePosition(_renderables);
         }
     }
 }

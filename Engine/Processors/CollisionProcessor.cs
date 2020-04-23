@@ -1,10 +1,6 @@
-﻿using Engine.EntityManagers;
-using Engine.Models.Components;
+﻿using Engine.Models.Components;
 using Engine.Models.Scenes;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace Engine.Processors
 {

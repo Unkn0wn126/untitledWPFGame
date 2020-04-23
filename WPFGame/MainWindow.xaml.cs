@@ -79,7 +79,7 @@ namespace WPFGame
             _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             // to get shorter routes to frequently used objects
-            _currentScene = _session.CurrentScene;
+            _currentScene = _session.SceneManager.CurrentScene;
             _currentCamera = _currentScene.SceneCamera;
 
             SetWindowSize();
@@ -169,8 +169,8 @@ namespace WPFGame
                     RemoveLoadingOverlay();
                     loadingOverlayActive = false;
                 }
-                _currentCamera = _session.CurrentScene.SceneCamera;
-                _currentScene = _session.CurrentScene;
+                _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
+                _currentScene = _session.SceneManager.CurrentScene;
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();
@@ -193,7 +193,7 @@ namespace WPFGame
         /// <param name="drawingContext"></param>
         private void DrawSceneObjects(DrawingContext drawingContext)
         {
-            Vector2 focusPos = _currentScene.PlayerTransform.Position;
+            Vector2 focusPos = _currentCamera.FocusPoint.Position;
             int index = 0;
             List<ITransformComponent> transformComponents = _currentCamera.VisibleTransforms;
 
@@ -310,11 +310,12 @@ namespace WPFGame
                 var sceneManager = _session.SceneManager;
 
                 save.Scenes = sceneManager.GetScenesToSave();
-                save.PlayerPosX = sceneManager.CurrentScene.PlayerTransform.Position.X;
-                save.PlayerPosY = sceneManager.CurrentScene.PlayerTransform.Position.Y;
-                save.PlayerSizeX = sceneManager.CurrentScene.PlayerTransform.ScaleX;
-                save.PlayerSizeY = sceneManager.CurrentScene.PlayerTransform.ScaleY;
-                save.PlayerZIndex = sceneManager.CurrentScene.PlayerTransform.ZIndex;
+                ITransformComponent playerTransform = sceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(sceneManager.CurrentScene.PlayerEntity);
+                save.PlayerPosX = playerTransform.Position.X;
+                save.PlayerPosY = playerTransform.Position.Y;
+                save.PlayerSizeX = playerTransform.ScaleX;
+                save.PlayerSizeY = playerTransform.ScaleY;
+                save.PlayerZIndex = playerTransform.ZIndex;
                 SaveGame(filename, save);
             }
         }
@@ -333,9 +334,8 @@ namespace WPFGame
 
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.LOADING;
                 _session.SceneManager.UpdateScenes(save.Scenes);
-                _session.CurrentScene = _session.SceneManager.CurrentScene;
-                _currentScene = _session.CurrentScene;
-                _currentCamera = _session.CurrentScene.SceneCamera;
+                _currentScene = _session.SceneManager.CurrentScene;
+                _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
                 _session.UpdateProcessorContext();
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.RUNNING;
             }

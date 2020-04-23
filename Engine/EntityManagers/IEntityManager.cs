@@ -1,12 +1,8 @@
 ﻿using Engine.Coordinates;
-using Engine.Models;
 using Engine.Models.Components;
-using Engine.Models.Components.Navmesh;
-using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Engine.EntityManagers
 {

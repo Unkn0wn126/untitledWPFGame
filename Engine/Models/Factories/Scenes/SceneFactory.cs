@@ -14,7 +14,6 @@ using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 using TimeUtils;
 
 namespace Engine.Models.Factories
@@ -51,7 +50,6 @@ namespace Engine.Models.Factories
             IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
 
             scene.PlayerEntity = currEntity;
-            scene.PlayerTransform = currTransform;
 
             return scene;
         }
@@ -168,8 +166,6 @@ namespace Engine.Models.Factories
             }
 
             metaScene.BaseObjectSize = 1;
-            metaScene.ID = scene.SceneID;
-            metaScene.NextScene = scene.NextScene;
             metaScene.NumOfEntitiesOnX = scene.NumOfEntitiesOnX;
             metaScene.NumOfEntitiesOnY = scene.NumOfEntitiesOnY;
             metaScene.NumOfObjectsInCell = scene.NumOfObjectsInCell;
@@ -218,7 +214,6 @@ namespace Engine.Models.Factories
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
             ISpatialIndex grid = new Grid(metaScene.NumOfEntitiesOnX, metaScene.NumOfEntitiesOnY, cellSize);
             IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid);
-            scene.SceneID = metaScene.ID;
             scene.NumOfEntitiesOnX = metaScene.NumOfEntitiesOnX;
             scene.NumOfEntitiesOnY = metaScene.NumOfEntitiesOnY;
             scene.BaseObjectSize = metaScene.BaseObjectSize;
@@ -242,17 +237,9 @@ namespace Engine.Models.Factories
                     if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
                     {
                         scene.PlayerEntity = curr;
-                        scene.PlayerTransform = scene.EntityManager.GetComponentOfType<ITransformComponent>(curr);
                     }
                 }
             }
-
-            //if (scene.PlayerTransform == null)
-            //{
-            //    GeneratePlayer(scene.EntityManager, scene, metaScene.BaseObjectSize, gameTime, gameInput);
-            //}
-
-            scene.NextScene = metaScene.NextScene;
 
             return scene;
         }
@@ -275,7 +262,6 @@ namespace Engine.Models.Factories
             manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
 
             scene.PlayerEntity = player;
-            scene.PlayerTransform = playerTransform;
 
             manager.AddComponentToEntity<IScriptComponent>(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
 

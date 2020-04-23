@@ -16,6 +16,7 @@ namespace Engine.Models.Cameras
         public List<ITransformComponent> VisibleTransforms { get; set; }
         public float XOffset { get; set; }
         public float YOffset { get; set; }
+        public ITransformComponent FocusPoint { get; set; }
 
         private float _sizeMultiplier;
 
@@ -38,15 +39,20 @@ namespace Engine.Models.Cameras
         }
 
         /// <summary>
-        /// Updates the list of objects visible by this camera
+        /// Updates the focus point of this camera
         /// </summary>
         /// <param name="focusPoint"></param>
-        /// <param name="context"></param>
-        public void UpdatePosition(ITransformComponent focusPoint, Dictionary<ITransformComponent, IGraphicsComponent> renderables)
+        public void UpdateFocusPoint(ITransformComponent focusPoint)
         {
-            //VisibleObjects = graphicsComponents;
-            //VisibleTransforms = transformComponents;
+            FocusPoint = focusPoint;
+        }
 
+        /// <summary>
+        /// Updates the list of objects visible by this camera
+        /// </summary>
+        /// <param name="renderables"></param>
+        public void UpdatePosition(Dictionary<ITransformComponent, IGraphicsComponent> renderables)
+        {
             Dictionary<ITransformComponent, IGraphicsComponent> keyValuePairs = renderables.OrderBy(x => x.Key.ZIndex).ToDictionary(x => x.Key, x => x.Value);
 
             //keyValuePairs.OrderBy(x => x.Key.ZIndex);
@@ -54,8 +60,8 @@ namespace Engine.Models.Cameras
             VisibleObjects = keyValuePairs.Values.ToList();
             VisibleTransforms = keyValuePairs.Keys.ToList();
 
-            XOffset = Math.Abs(_halfWidth - ((focusPoint.ScaleX * _sizeMultiplier) / 2f));
-            YOffset = Math.Abs(_halfHeight - ((focusPoint.ScaleY * _sizeMultiplier) / 2f));
+            XOffset = Math.Abs(_halfWidth - ((FocusPoint.ScaleX * _sizeMultiplier) / 2f));
+            YOffset = Math.Abs(_halfHeight - ((FocusPoint.ScaleY * _sizeMultiplier) / 2f));
         }
     }
 }

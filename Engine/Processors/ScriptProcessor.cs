@@ -1,10 +1,7 @@
 ﻿using Engine.EntityManagers;
 using Engine.Models.Components.Script;
 using Engine.Models.Scenes;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine.Processors
 {

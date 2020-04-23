@@ -1,26 +1,15 @@
-﻿using Engine.Coordinates;
-using Engine.EntityManagers;
-using Engine.Models.Cameras;
-using Engine.Models.Components;
-using Engine.Models.Components.Collision;
-using Engine.Models.Components.RigidBody;
-using Engine.Models.GameStateMachine;
+﻿using Engine.Models.GameStateMachine;
 using Engine.Models.Scenes;
 using Engine.Processors;
-using ResourceManagers.Images;
 using GameInputHandler;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
-using System.Text;
 using TimeUtils;
-using Engine.Models.Components.Script;
-using System.Threading.Tasks;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Engine.Models.Components;
 
 namespace Engine.ViewModels
 {
@@ -30,7 +19,6 @@ namespace Engine.ViewModels
     /// </summary>
     public class Game : IGame
     {
-        public IScene CurrentScene { get; set; }
         public GameStateMachine State { get; set; }
 
         private IProcessor _graphicsProcessor;
@@ -81,22 +69,22 @@ namespace Engine.ViewModels
 
             SceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
 
-            CurrentScene = SceneManager.LoadNextScene();
+            SceneManager.LoadNextScene();
 
-            _graphicsProcessor = new GraphicsProcessor(CurrentScene);
+            _graphicsProcessor = new GraphicsProcessor(SceneManager.CurrentScene);
 
-            _processors.Add(new CollisionProcessor(CurrentScene));
-            _processors.Add(new RigidBodyProcessor(CurrentScene));
-            _processors.Add(new ScriptProcessor(CurrentScene));
+            _processors.Add(new CollisionProcessor(SceneManager.CurrentScene));
+            _processors.Add(new RigidBodyProcessor(SceneManager.CurrentScene));
+            _processors.Add(new ScriptProcessor(SceneManager.CurrentScene));
         }
 
         public void UpdateProcessorContext()
         {
-            _graphicsProcessor.ChangeContext(CurrentScene);
+            _graphicsProcessor.ChangeContext(SceneManager.CurrentScene);
 
             _processors.ForEach(x =>
             {
-                x.ChangeContext(CurrentScene);
+                x.ChangeContext(SceneManager.CurrentScene);
             });
         }
         /// <summary>
@@ -108,7 +96,7 @@ namespace Engine.ViewModels
 
             if (State.IsRunning())
             {
-                CurrentScene.EntityManager.UpdateActiveEntities(CurrentScene.PlayerTransform);
+                SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
 
                 foreach (var x in _processors)
                 {
