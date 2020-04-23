@@ -18,14 +18,14 @@ namespace Engine.Models.Scenes
         private GameInput _gameInput;
         private GameTime _gameTime;
 
-        private int _currIndex;
+        public int CurrentIndex { get; set; }
 
         public SceneManager(GameInput gameInput, GameTime gameTime)
         {
             _gameInput = gameInput;
             _gameTime = gameTime;
             MetaScenes = new List<byte[]>();
-            _currIndex = 0;
+            CurrentIndex = 0;
         }
 
         public SceneManager(List<MetaScene> metaScenes, GameInput gameInput, GameTime gameTime)
@@ -33,7 +33,7 @@ namespace Engine.Models.Scenes
             _gameInput = gameInput;
             _gameTime = gameTime;
             MetaScenes = new List<byte[]>();
-            _currIndex = 0;
+            CurrentIndex = 0;
 
             using (MemoryStream stream = new MemoryStream())
             {
@@ -54,20 +54,20 @@ namespace Engine.Models.Scenes
             _gameInput = gameInput;
             _gameTime = gameTime;
             MetaScenes = metaScenes;
-            _currIndex = 0;
+            CurrentIndex = 0;
         }
 
         public List<byte[]> GetScenesToSave()
         {
             byte[] currentScene = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
-            MetaScenes[_currIndex - 1] = currentScene;
+            MetaScenes[CurrentIndex - 1] = currentScene;
 
             return MetaScenes;
         }
 
         public void UpdateScenes(List<byte[]> newScenes)
         {
-            _currIndex = 0;
+            CurrentIndex = 0;
             MetaScenes = newScenes;
             CurrentScene = LoadNextScene();
         }
@@ -105,9 +105,9 @@ namespace Engine.Models.Scenes
 
         public IScene LoadNextScene()
         {
-            MetaScene searched = DeserializeMetaScene(_currIndex);
+            MetaScene searched = DeserializeMetaScene(CurrentIndex);
 
-            _currIndex++;
+            CurrentIndex++;
             CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime);
             CurrentScene.SceneCamera.UpdateFocusPoint(CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(CurrentScene.PlayerEntity));
             return CurrentScene;

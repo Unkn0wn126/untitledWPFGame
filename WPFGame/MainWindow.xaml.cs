@@ -15,14 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WPFGame.ResourceManagers;
-using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 using Engine.Saving;
 using WPFGame.Saving;
 using Microsoft.Win32;
-using System.Runtime.Serialization.Formatters.Binary;
-using Engine.Models.Factories.Scenes;
 
 namespace WPFGame
 {
@@ -310,12 +307,7 @@ namespace WPFGame
                 var sceneManager = _session.SceneManager;
 
                 save.Scenes = sceneManager.GetScenesToSave();
-                ITransformComponent playerTransform = sceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(sceneManager.CurrentScene.PlayerEntity);
-                save.PlayerPosX = playerTransform.Position.X;
-                save.PlayerPosY = playerTransform.Position.Y;
-                save.PlayerSizeX = playerTransform.ScaleX;
-                save.PlayerSizeY = playerTransform.ScaleY;
-                save.PlayerZIndex = playerTransform.ZIndex;
+                save.CurrentIndex = sceneManager.CurrentIndex;
                 SaveGame(filename, save);
             }
         }
