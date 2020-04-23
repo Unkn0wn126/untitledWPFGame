@@ -244,6 +244,7 @@ namespace Engine.Models.Scenes
                     if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
                     {
                         scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new PlayerMovementScript(_gameTime, _gameInput, scene, curr, 4 * metaScene.BaseObjectSize));
+                        scene.EntityManager.AddComponentToEntity<ILifeComponent>(curr, item.LifeComponent);
                         scene.PlayerEntity = curr;
                         scene.PlayerTransform = scene.EntityManager.GetComponentOfType<ITransformComponent>(curr);
                     }

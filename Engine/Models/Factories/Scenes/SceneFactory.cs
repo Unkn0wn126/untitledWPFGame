@@ -148,7 +148,7 @@ namespace Engine.Models.Factories
             metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
             metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
 
-            int numOfEnemies = /*numOfObjectsOnX /*/ 2/*(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f))*/;
+            int numOfEnemies = numOfObjectsOnX / 2/*(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f))*/;
 
             for (int i = 0; i < numOfEnemies; i++)
             {
