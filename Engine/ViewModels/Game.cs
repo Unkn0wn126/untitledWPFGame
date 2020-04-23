@@ -46,7 +46,7 @@ namespace Engine.ViewModels
 
             State = new GameStateMachine
             {
-                CurrentState = GameState.LOADING // prevent update of logic while not ready
+                CurrentState = GameState.Loading // prevent update of logic while not ready
             };
 
             int val = _rnd.Next(10, 100);

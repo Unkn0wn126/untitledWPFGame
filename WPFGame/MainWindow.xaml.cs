@@ -21,6 +21,7 @@ using Engine.Saving;
 using WPFGame.Saving;
 using Microsoft.Win32;
 using WPFGame.UI.HUD;
+using WPFGame.UI.MainMenu;
 
 namespace WPFGame
 {
@@ -51,6 +52,7 @@ namespace WPFGame
         private ICamera _currentCamera;
 
         private MapPlayerInfo _mapHUD;
+        private MainMenu _mainMenu;
 
         Rect _rectangle;
 
@@ -89,6 +91,14 @@ namespace WPFGame
             GameImage.Source = bitmap;
 
             _mapHUD = new MapPlayerInfo();
+            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame));
+
+            GameGrid.Children.Add(_mainMenu);
+        }
+
+        private void CloseGame()
+        {
+            Close();
         }
 
         private void LoadConfig()
@@ -338,12 +348,12 @@ namespace WPFGame
                 string filename = dialog.FileName;
                 Save save = SaveFileManager.LoadGame(filename);
 
-                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.LOADING;
+                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
                 _session.SceneManager.UpdateScenes(save.Scenes);
                 _currentScene = _session.SceneManager.CurrentScene;
                 _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
                 _session.UpdateProcessorContext();
-                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.RUNNING;
+                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
             }
 
 

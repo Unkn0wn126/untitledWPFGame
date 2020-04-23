@@ -6,9 +6,10 @@ namespace Engine.Models.GameStateMachine
 {
     public enum GameState
     {
-        RUNNING,
-        PAUSED,
-        LOADING
+        Running,
+        Paused,
+        Menu,
+        Loading
     }
     public class GameStateMachine
     {
@@ -17,20 +18,20 @@ namespace Engine.Models.GameStateMachine
 
         public void Pause()
         {
-            CurrentState = GameState.PAUSED;
+            CurrentState = GameState.Paused;
         }
 
         public void UnPause()
         {
-            CurrentState = GameState.RUNNING;
+            CurrentState = GameState.Running;
         }
 
         public void TogglePause()
         {
-            if (CurrentState != GameState.PAUSED)
+            if (CurrentState != GameState.Paused)
             {
                 _lastState = CurrentState;
-                CurrentState = GameState.PAUSED;
+                CurrentState = GameState.Paused;
             }
             else
             {
@@ -40,17 +41,17 @@ namespace Engine.Models.GameStateMachine
 
         public bool IsRunning()
         {
-            return CurrentState != GameState.PAUSED && CurrentState != GameState.LOADING;
+            return CurrentState != GameState.Paused && CurrentState != GameState.Loading;
         }
 
         public bool IsPaused()
         {
-            return CurrentState == GameState.PAUSED;
+            return CurrentState == GameState.Paused;
         }
 
         public bool IsLoading()
         {
-            return CurrentState == GameState.LOADING;
+            return CurrentState == GameState.Loading;
         }
     }
 }

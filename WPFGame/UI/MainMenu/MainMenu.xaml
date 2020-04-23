@@ -6,7 +6,19 @@
              xmlns:local="clr-namespace:WPFGame.UI.MainMenu"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-            
+    <Grid x:Name="MainGrid" Background="DarkBlue">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="400"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="BackButton" Grid.Column="0" Grid.Row="0" Margin="3" Click="OnBackButtonClick" Visibility="Hidden">
+            Back
+        </Button>
     </Grid>
 </UserControl>

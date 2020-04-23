@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WPFGame"
         mc:Ignorable="d"
         Title="MainWindow" ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
         KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Background="Black">
     <Grid x:Name="GameGrid">
         <Canvas x:Name="GameCanvas" Width="800" Height="600">
