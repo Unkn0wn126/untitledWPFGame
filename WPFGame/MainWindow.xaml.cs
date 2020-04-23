@@ -20,6 +20,7 @@ using System.Xml.Serialization;
 using Engine.Saving;
 using WPFGame.Saving;
 using Microsoft.Win32;
+using WPFGame.UI.HUD;
 
 namespace WPFGame
 {
@@ -48,6 +49,8 @@ namespace WPFGame
 
         private IScene _currentScene;
         private ICamera _currentCamera;
+
+        private MapPlayerInfo _mapHUD;
 
         Rect _rectangle;
 
@@ -84,6 +87,8 @@ namespace WPFGame
             // this is what everything renders to
             bitmap = new RenderTargetBitmap(_gameConfiguration.Width, _gameConfiguration.Height, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
+
+            _mapHUD = new MapPlayerInfo();
         }
 
         private void LoadConfig()
@@ -262,10 +267,19 @@ namespace WPFGame
                 _session.State.TogglePause();
                 if (_session.State.IsPaused())
                 {
+                    if (GameGrid.Children.Contains(_mapHUD))
+                    {
+                        GameGrid.Children.Remove(_mapHUD);
+                    }
                         ShowPauseOverlay();
                 }
                 else
                 {
+                    if (!GameGrid.Children.Contains(_mapHUD))
+                    {
+                        GameGrid.Children.Add(_mapHUD);
+                    }
+                    
                     GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
                     GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
                 }
