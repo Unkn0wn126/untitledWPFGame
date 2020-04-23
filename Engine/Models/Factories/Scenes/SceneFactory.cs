@@ -258,77 +258,9 @@ namespace Engine.Models.Factories
             IEntityManager manager = scene.EntityManager;
             foreach (var item in manager.GetAllEntities())
             {
-                ComponentState required = 0;
-                MetaMapEntity currentEntity = new MetaMapEntity();
-                if (manager.EntityHasComponent<ITransformComponent>(item))
-                {
-                    required |= ComponentState.TransformComponent;
-                    ITransformComponent currTransform = manager.GetComponentOfType<ITransformComponent>(item);
-                    currentEntity.PosX = currTransform.Position.X;
-                    currentEntity.PosY = currTransform.Position.Y;
-                    currentEntity.SizeX = currTransform.ScaleX;
-                    currentEntity.SizeY = currTransform.ScaleY;
-                    currentEntity.ZIndex = currTransform.ZIndex;
-                }
-                if (manager.EntityHasComponent<ILifeComponent>(item))
-                {
-                    currentEntity.LifeComponent = manager.GetComponentOfType<ILifeComponent>(item);
-                }
-                if (manager.EntityHasComponent<IGraphicsComponent>(item))
-                {
-                    required |= ComponentState.GraphicsComponent;
-                    currentEntity.Graphics = manager.GetComponentOfType<IGraphicsComponent>(item).CurrentImageName;
-                }
-                if (manager.EntityHasComponent<ICollisionComponent>(item))
-                {
-                    required |= ComponentState.CollisionComponent;
-                    ICollisionComponent currCollision = manager.GetComponentOfType<ICollisionComponent>(item);
-                    currentEntity.CollisionType = 0;
-                    if (currCollision.IsDynamic)
-                    {
-                        currentEntity.CollisionType |= CollisionType.Dynamic;
-                    }
-                    if (currCollision.IsSolid)
-                    {
-                        currentEntity.CollisionType |= CollisionType.Solid;
+                MetaMapEntity currentEntity = EntityFactory.GenerateMetaEntityFromEntity(manager, item);
 
-                    }
-                }
-                if (manager.EntityHasComponent<IRigidBodyComponent>(item))
-                {
-                    required |= ComponentState.RigidBodyComponent;
-                }
-                if (manager.EntityHasComponent<IScriptComponent>(item))
-                {
-                    var scripts = manager.GetEntityScriptComponents(item);
-                    currentEntity.Scripts = 0;
-                    foreach (var script in scripts)
-                    {
-                        if (script.GetType() == typeof(AiMovementScript))
-                        {
-                            currentEntity.Scripts |= ScriptType.AiMovement;
-                        }
-                        if (script.GetType() == typeof(PlayerMovementScript))
-                        {
-                            currentEntity.Scripts |= ScriptType.PlayerMovement;
-                        }
-                    }
-                }
-
-                currentEntity.Components = required;
-
-                if ((currentEntity.Components & ComponentState.CollisionComponent) != ComponentState.CollisionComponent)
-                {
-                    metaScene.GroundEntities.Add(currentEntity);
-                }
-                else if ((currentEntity.CollisionType & CollisionType.Solid) == CollisionType.Solid && (currentEntity.CollisionType & CollisionType.Dynamic) != CollisionType.Dynamic && currentEntity.LifeComponent == null)
-                {
-                    metaScene.StaticCollisionEntities.Add(currentEntity);
-                }
-                else
-                {
-                    metaScene.DynamicEntities.Add(currentEntity);
-                }
+                DetermineEntityType(metaScene, currentEntity);
             }
 
             metaScene.BaseObjectSize = 1;
@@ -339,6 +271,41 @@ namespace Engine.Models.Factories
             metaScene.NumOfObjectsInCell = scene.NumOfObjectsInCell;
 
             return metaScene;
+        }
+
+        private static void DetermineEntityType(MetaScene metaScene, MetaMapEntity currentEntity)
+        {
+            if (IsGroundEntity(currentEntity))
+            {
+                metaScene.GroundEntities.Add(currentEntity);
+            }
+            else if (IsStaticCollisionEntity(currentEntity))
+            {
+                metaScene.StaticCollisionEntities.Add(currentEntity);
+            }
+            else
+            {
+                metaScene.DynamicEntities.Add(currentEntity);
+            }
+        }
+        private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
+        {
+            return (requiredValue & askedValue) == askedValue;
+        }
+
+        private static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)
+        {
+            return (requiredValue & askedValue) == askedValue;
+        }
+
+        private static bool IsGroundEntity(MetaMapEntity currentEntity)
+        {
+            return IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent);
+        }
+
+        private static bool IsStaticCollisionEntity(MetaMapEntity currentEntity)
+        {
+            return IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && currentEntity.LifeComponent == null;
         }
 
         public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime)

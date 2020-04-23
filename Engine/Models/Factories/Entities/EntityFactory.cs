@@ -4,6 +4,7 @@ using Engine.Models.Components.Collision;
 using Engine.Models.Components.Life;
 using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
+using Engine.Models.Components.Script;
 using Engine.Models.Components.Sound;
 using Engine.Models.Factories.Scenes;
 using ResourceManagers.Images;
@@ -62,6 +63,70 @@ namespace Engine.Models.Factories.Entities
             }
 
             return entity;
+        }
+
+        public static MetaMapEntity GenerateMetaEntityFromEntity(IEntityManager manager, uint item)
+        {
+            ComponentState required = 0;
+            MetaMapEntity currentEntity = new MetaMapEntity();
+            if (manager.EntityHasComponent<ITransformComponent>(item))
+            {
+                required |= ComponentState.TransformComponent;
+                ITransformComponent currTransform = manager.GetComponentOfType<ITransformComponent>(item);
+                currentEntity.PosX = currTransform.Position.X;
+                currentEntity.PosY = currTransform.Position.Y;
+                currentEntity.SizeX = currTransform.ScaleX;
+                currentEntity.SizeY = currTransform.ScaleY;
+                currentEntity.ZIndex = currTransform.ZIndex;
+            }
+            if (manager.EntityHasComponent<ILifeComponent>(item))
+            {
+                currentEntity.LifeComponent = manager.GetComponentOfType<ILifeComponent>(item);
+            }
+            if (manager.EntityHasComponent<IGraphicsComponent>(item))
+            {
+                required |= ComponentState.GraphicsComponent;
+                currentEntity.Graphics = manager.GetComponentOfType<IGraphicsComponent>(item).CurrentImageName;
+            }
+            if (manager.EntityHasComponent<ICollisionComponent>(item))
+            {
+                required |= ComponentState.CollisionComponent;
+                ICollisionComponent currCollision = manager.GetComponentOfType<ICollisionComponent>(item);
+                currentEntity.CollisionType = 0;
+                if (currCollision.IsDynamic)
+                {
+                    currentEntity.CollisionType |= CollisionType.Dynamic;
+                }
+                if (currCollision.IsSolid)
+                {
+                    currentEntity.CollisionType |= CollisionType.Solid;
+
+                }
+            }
+            if (manager.EntityHasComponent<IRigidBodyComponent>(item))
+            {
+                required |= ComponentState.RigidBodyComponent;
+            }
+            if (manager.EntityHasComponent<IScriptComponent>(item))
+            {
+                var scripts = manager.GetEntityScriptComponents(item);
+                currentEntity.Scripts = 0;
+                foreach (var script in scripts)
+                {
+                    if (script.GetType() == typeof(AiMovementScript))
+                    {
+                        currentEntity.Scripts |= ScriptType.AiMovement;
+                    }
+                    if (script.GetType() == typeof(PlayerMovementScript))
+                    {
+                        currentEntity.Scripts |= ScriptType.PlayerMovement;
+                    }
+                }
+            }
+
+            currentEntity.Components = required;
+
+            return currentEntity;
         }
 
         private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
