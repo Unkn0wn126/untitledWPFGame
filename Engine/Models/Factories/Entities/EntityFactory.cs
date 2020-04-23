@@ -7,6 +7,8 @@ using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Components.Sound;
 using Engine.Models.Factories.Scenes;
+using Engine.Models.Scenes;
+using GameInputHandler;
 using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
@@ -30,9 +32,29 @@ namespace Engine.Models.Factories.Entities
     }
     public static class EntityFactory
     {
-        public static uint GenerateEntity(MetaMapEntity metaEntity, IEntityManager manager)
+        public static uint GenerateEntity(MetaMapEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
         {
             uint entity = manager.AddEntity();
+            DetermineComponents(entity, metaEntity, manager);
+            DetermineScripts(entity, metaEntity, scene, manager, gameTime, gameInput);
+            return entity;
+        }
+
+        private static void DetermineScripts(uint entity, MetaMapEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
+        {
+            if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
+            {
+                // TODO: get the speed from LifeComponent
+                manager.AddComponentToEntity<IScriptComponent>(entity, new AiMovementScript(gameTime, scene, entity, 2 * scene.BaseObjectSize));
+            }
+            if (IsScriptRequired(metaEntity.Scripts, ScriptType.PlayerMovement))
+            {
+                manager.AddComponentToEntity<IScriptComponent>(entity, new PlayerMovementScript(gameTime, gameInput, scene, entity, 4 * scene.BaseObjectSize));
+            }
+        }
+
+        private static void DetermineComponents(uint entity, MetaMapEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.TransformComponent))
             {
                 manager.AddComponentToEntity<ITransformComponent>(entity, new TransformComponent(new Vector2(metaEntity.PosX, metaEntity.PosY), metaEntity.SizeX, metaEntity.SizeY, new Vector2(0, 0), metaEntity.ZIndex));
@@ -40,29 +62,27 @@ namespace Engine.Models.Factories.Entities
             if (IsComponentRequired(metaEntity.Components, ComponentState.CollisionComponent))
             {
                 manager.AddComponentToEntity<ICollisionComponent>(entity, new CollisionComponent(IsCollisionType(metaEntity.CollisionType, CollisionType.Solid), IsCollisionType(metaEntity.CollisionType, CollisionType.Dynamic)));
-            }            
+            }
             if (IsComponentRequired(metaEntity.Components, ComponentState.GraphicsComponent))
             {
                 manager.AddComponentToEntity<IGraphicsComponent>(entity, new GraphicsComponent(metaEntity.Graphics));
-            }            
+            }
             if (IsComponentRequired(metaEntity.Components, ComponentState.RigidBodyComponent))
             {
                 manager.AddComponentToEntity<IRigidBodyComponent>(entity, new RigidBodyComponent());
-            }            
+            }
             if (IsComponentRequired(metaEntity.Components, ComponentState.SoundComponent))
             {
                 manager.AddComponentToEntity<ISoundComponent>(entity, new SoundComponent());
-            }            
+            }
             if (IsComponentRequired(metaEntity.Components, ComponentState.NavMeshComponent))
             {
                 manager.AddComponentToEntity<INavmeshComponent>(entity, new NavmeshComponent());
             }
             if (IsComponentRequired(metaEntity.Components, ComponentState.LifeComponent))
             {
-                manager.AddComponentToEntity<ILifeComponent>(entity, metaEntity.LifeComponent);
+                manager.AddComponentToEntity(entity, metaEntity.LifeComponent);
             }
-
-            return entity;
         }
 
         public static MetaMapEntity GenerateMetaEntityFromEntity(IEntityManager manager, uint item)
@@ -81,6 +101,7 @@ namespace Engine.Models.Factories.Entities
             }
             if (manager.EntityHasComponent<ILifeComponent>(item))
             {
+                required |= ComponentState.LifeComponent;
                 currentEntity.LifeComponent = manager.GetComponentOfType<ILifeComponent>(item);
             }
             if (manager.EntityHasComponent<IGraphicsComponent>(item))
@@ -135,6 +156,11 @@ namespace Engine.Models.Factories.Entities
         }
 
         private static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)
+        {
+            return (requiredValue & askedValue) == askedValue;
+        }
+
+        private static bool IsScriptRequired(ScriptType requiredValue, ScriptType askedValue)
         {
             return (requiredValue & askedValue) == askedValue;
         }

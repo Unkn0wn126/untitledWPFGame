@@ -71,7 +71,7 @@ namespace Engine.ViewModels
                 var binaryFormatter = new BinaryFormatter();
                 for (int i = 0; i < 10; i++)
                 {
-                    MetaScene metaScene = SceneFactory.CreateMetaScene(val, val, 1, 5);
+                    MetaScene metaScene = SceneFactory.CreateMetaScene(null, val, val, 1, 5);
                     binaryFormatter.Serialize(stream, metaScene);
                     current = stream.ToArray();
                     metaScenes.Add(current);

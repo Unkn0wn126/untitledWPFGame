@@ -56,33 +56,6 @@ namespace Engine.Models.Factories
             return scene;
         }
 
-        private static MetaMapEntity[,] GenerateMetaMap(int numOfObjectsOnX, int numOfObjectsOnY)
-        {
-            MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
-            ComponentState current;
-            for (int i = 0; i < metaMap.GetLength(0); i++)
-            {
-                for (int j = 0; j < metaMap.GetLength(1); j++)
-                {
-                    if ((i == 0 || i == metaMap.GetLength(0) - 1) || (j == 0 || j == metaMap.GetLength(1) - 1))  // generate edges of the map
-                    {
-                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
-                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Rock, Components = current, ZIndex = 1};
-                    }
-                    else
-                    {
-                        ImgName currImg = (ImgName)_rnd.Next(1, 4);
-                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent;
-                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.None, Graphics = currImg, Components = current, ZIndex = 0 };
-                    }
-
-                    
-                }
-            }
-
-            return metaMap;
-        }
-
         private static List<MetaMapEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
         {
             MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
@@ -139,7 +112,7 @@ namespace Engine.Models.Factories
             return output;
         }
 
-        public static MetaScene CreateMetaScene(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int numOfObjectsInCell)
+        public static MetaScene CreateMetaScene(ILifeComponent lifeComponent, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int numOfObjectsInCell)
         {
             MetaScene metaScene = new MetaScene(SceneType.General);
             metaScene.NumOfEntitiesOnX = numOfObjectsOnX;
@@ -153,11 +126,13 @@ namespace Engine.Models.Factories
 
             for (int i = 0; i < numOfEnemies; i++)
             {
-                int x = _rnd.Next(10, numOfObjectsOnX - 10);
-                int y = _rnd.Next(10, numOfObjectsOnY - 10);
+                int x = _rnd.Next(3, numOfObjectsOnX - 3);
+                int y = _rnd.Next(3, numOfObjectsOnY - 3);
 
                 metaScene.DynamicEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, x, y));
             }
+
+            metaScene.DynamicEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
 
             return metaScene;
         }
@@ -171,85 +146,14 @@ namespace Engine.Models.Factories
             return metaMapEntity;
         }
 
-        public static IScene CreateScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler, bool generateTheGuy, int numOfObjectsOnX, int numOfObjectsOnY)
+        private static MetaMapEntity GenerateMetaPlayer(ILifeComponent lifeComponent, int baseObjectSize, int xPos, int yPos)
         {
-            int objectSize = 1;
-            int numOfObjectsInCell = 4;
-            int cellSize = objectSize * numOfObjectsInCell;
-            float baseCellXValue = (numOfObjectsOnX * objectSize) / (float)cellSize;
-            float baseCellYValue = (numOfObjectsOnY * objectSize) / (float)cellSize;
-            int numCellsX = (int)Math.Ceiling(baseCellXValue);
-            int numCellsY = (int)Math.Ceiling(baseCellYValue);
-
-            ISpatialIndex grid = new Grid(numCellsX, numCellsY, cellSize);
-
-            IEntityManager manager = new EntityManager(grid);
-
-            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
-
-            MetaMapEntity[,] metaMap = GenerateMetaMap(numOfObjectsOnX, numOfObjectsOnY);
-
-            for (int i = 0; i < metaMap.GetLength(0); i++)
-            {
-                for (int j = 0; j < metaMap.GetLength(1); j++)
-                {
-                    EntityFactory.GenerateEntity(metaMap[i, j], manager);
-                }
-            }
-
-            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
-            IGraphicsComponent test = new GraphicsComponent(ImgName.Player);
-            //_playerTransform = playerTransform;
-
-            uint player = manager.AddEntity(playerTransform);
-            //_player = player;
-            manager.AddComponentToEntity<IGraphicsComponent>(player, test);
-
-            ICollisionComponent collision = new CollisionComponent(true, true);
-            manager.AddComponentToEntity<ICollisionComponent>(player, collision);
-
-            IRigidBodyComponent rigidBody = new RigidBodyComponent();
-            manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
-
-            scene.PlayerEntity = player;
-            scene.PlayerTransform = playerTransform;
-
-            manager.AddComponentToEntity<IScriptComponent>(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
-
-            int numOfEnemies = (int)((numOfObjectsOnX / 2f) * (numOfObjectsOnY / 2f));
-
-            if (generateTheGuy)
-            {
-                for (int i = 0; i < numOfEnemies; i++)
-                {
-                    int x = _rnd.Next(10, numOfObjectsOnX - 10);
-                    int y = _rnd.Next(10, numOfObjectsOnY - 10);
-
-                    SetupCharacter(scene, manager, objectSize, gameTime, new Vector2(x, y));
-                }
-            }
-
-            return scene;
-        }
-
-        private static void SetupCharacter(IScene scene, IEntityManager manager, float objectSize, GameTime gameTime, Vector2 position)
-        {
-            ITransformComponent playerTransform = new TransformComponent(position, objectSize, objectSize, new Vector2(0, 0), 2);
-            IGraphicsComponent test = new GraphicsComponent(ImgName.Enemy);
-
-            uint player = manager.AddEntity(playerTransform);
-            manager.AddComponentToEntity<IGraphicsComponent>(player, test);
-
-            ICollisionComponent collision = new CollisionComponent(true, true);
-            manager.AddComponentToEntity<ICollisionComponent>(player, collision);
-
-            IRigidBodyComponent rigidBody = new RigidBodyComponent();
-            manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
-
-            IScriptComponent movementStrategy = new AiMovementScript(gameTime, scene, player, 4 * objectSize);
-            //IScriptComponent movementStrategy = new FollowPlayerScript(gameTime, scene, player, scene.PlayerEntity, 4 * objectSize);
-
-            manager.AddComponentToEntity<IScriptComponent>(player, movementStrategy);
+            MetaMapEntity metaMapEntity = new MetaMapEntity();
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
+            metaMapEntity = new MetaMapEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Player, Components = current, ZIndex = 2, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
+            metaMapEntity.Scripts = ScriptType.PlayerMovement;
+            metaMapEntity.LifeComponent = lifeComponent == null ? new LifeComponent { IsPlayer = true} : lifeComponent;
+            return metaMapEntity;
         }
 
         public static MetaScene GenerateMetaSceneFromScene(IScene scene)
@@ -300,12 +204,12 @@ namespace Engine.Models.Factories
 
         private static bool IsGroundEntity(MetaMapEntity currentEntity)
         {
-            return IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent);
+            return !IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent);
         }
 
         private static bool IsStaticCollisionEntity(MetaMapEntity currentEntity)
         {
-            return IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && currentEntity.LifeComponent == null;
+            return IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && !IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && currentEntity.LifeComponent == null;
         }
 
         public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime)
@@ -321,44 +225,39 @@ namespace Engine.Models.Factories
             scene.NumOfObjectsInCell = metaScene.NumOfObjectsInCell;
             foreach (var item in metaScene.GroundEntities)
             {
-                EntityFactory.GenerateEntity(item, scene.EntityManager);
+                EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
             }
             foreach (var item in metaScene.StaticCollisionEntities)
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene.EntityManager);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
                 }
             }
             foreach (var item in metaScene.DynamicEntities)
             {
                 if (item != null)
                 {
-                    uint curr = EntityFactory.GenerateEntity(item, scene.EntityManager);
-                    if ((item.Scripts & ScriptType.AiMovement) == ScriptType.AiMovement)
-                    {
-                        scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new AiMovementScript(gameTime, scene, curr, 2 * metaScene.BaseObjectSize));
-                    }
+                    uint curr = EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
                     if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
                     {
-                        scene.EntityManager.AddComponentToEntity<IScriptComponent>(curr, new PlayerMovementScript(gameTime, gameInput, scene, curr, 4 * metaScene.BaseObjectSize));
-                        scene.EntityManager.AddComponentToEntity<ILifeComponent>(curr, item.LifeComponent);
                         scene.PlayerEntity = curr;
                         scene.PlayerTransform = scene.EntityManager.GetComponentOfType<ITransformComponent>(curr);
                     }
                 }
             }
 
-            if (scene.PlayerTransform == null)
-            {
-                GeneratePlayer(scene.EntityManager, scene, metaScene.BaseObjectSize, gameTime, gameInput);
-            }
+            //if (scene.PlayerTransform == null)
+            //{
+            //    GeneratePlayer(scene.EntityManager, scene, metaScene.BaseObjectSize, gameTime, gameInput);
+            //}
 
             scene.NextScene = metaScene.NextScene;
 
             return scene;
         }
 
+        // replace this with meta entity generation so every meta entity has the information about player and this is no longer needed...
         private static void GeneratePlayer(IEntityManager manager, IScene scene, int objectSize, GameTime gameTime, GameInput gameInputHandler)
         {
             ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
