@@ -309,7 +309,7 @@ namespace WPFGame
                 Save save = new Save();
                 var sceneManager = _session.SceneManager;
 
-                save.Scenes = sceneManager.MetaScenes;
+                save.Scenes = sceneManager.GetScenesToSave();
                 save.PlayerPosX = sceneManager.CurrentScene.PlayerTransform.Position.X;
                 save.PlayerPosY = sceneManager.CurrentScene.PlayerTransform.Position.Y;
                 save.PlayerSizeX = sceneManager.CurrentScene.PlayerTransform.ScaleX;
@@ -332,8 +332,8 @@ namespace WPFGame
                 Save save = SaveFileManager.LoadGame(filename);
 
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.LOADING;
-                _session.SceneManager.MetaScenes = save.Scenes;
-                _session.CurrentScene = _session.SceneManager.LoadNextScene();
+                _session.SceneManager.UpdateScenes(save.Scenes);
+                _session.CurrentScene = _session.SceneManager.CurrentScene;
                 _currentScene = _session.CurrentScene;
                 _currentCamera = _session.CurrentScene.SceneCamera;
                 _session.UpdateProcessorContext();

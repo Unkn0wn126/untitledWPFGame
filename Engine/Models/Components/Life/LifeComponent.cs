@@ -7,5 +7,6 @@ namespace Engine.Models.Components.Life
     [Serializable]
     public class LifeComponent : ILifeComponent
     {
+        public bool IsPlayer { get; set; }
     }
 }

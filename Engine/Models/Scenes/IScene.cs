@@ -11,6 +11,10 @@ namespace Engine.Models.Scenes
         uint PlayerEntity { get; set; }
         Guid SceneID { get; set; }
         Guid NextScene { get; set; }
+        int NumOfObjectsInCell { get; set; }
+        int BaseObjectSize { get; set; }
+        int NumOfEntitiesOnX { get; set; }
+        int NumOfEntitiesOnY { get; set; }
         ISpatialIndex Coordinates { get; set; }
         ITransformComponent PlayerTransform { get; set; }
         IEntityManager EntityManager { get; set; }

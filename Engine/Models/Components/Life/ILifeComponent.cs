@@ -6,5 +6,6 @@ namespace Engine.Models.Components.Life
 {
     public interface ILifeComponent : IGameComponent
     {
+        bool IsPlayer { get; set; }
     }
 }

@@ -15,6 +15,10 @@ namespace Engine.Models.Scenes
         public IEntityManager EntityManager { get; set; }
         public ICamera SceneCamera { get; set; }
         public uint PlayerEntity { get; set; }
+        public int NumOfObjectsInCell { get; set; }
+        public int BaseObjectSize { get; set; }
+        public int NumOfEntitiesOnX { get; set; }
+        public int NumOfEntitiesOnY { get; set; }
         public ITransformComponent PlayerTransform { get; set; }
         public ISpatialIndex Coordinates { get; set; }
         public Guid SceneID { get; set; }

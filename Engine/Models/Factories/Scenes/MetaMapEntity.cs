@@ -1,4 +1,5 @@
 ﻿using Engine.Models.Components;
+using Engine.Models.Components.Life;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
 using ResourceManagers.Images;
@@ -20,5 +21,6 @@ namespace Engine.Models.Factories.Scenes
         public float SizeX { get; set; }
         public float SizeY { get; set; }
         public int ZIndex { get; set; }
+        public ILifeComponent LifeComponent { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Engine.EntityManagers;
 using Engine.Models.Components;
 using Engine.Models.Components.Collision;
+using Engine.Models.Components.Life;
 using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Sound;
@@ -54,7 +55,11 @@ namespace Engine.Models.Factories.Entities
             if (IsComponentRequired(metaEntity.Components, ComponentState.NavMeshComponent))
             {
                 manager.AddComponentToEntity<INavmeshComponent>(entity, new NavmeshComponent());
-            }           
+            }
+            if (IsComponentRequired(metaEntity.Components, ComponentState.LifeComponent))
+            {
+                manager.AddComponentToEntity<ILifeComponent>(entity, metaEntity.LifeComponent);
+            }
 
             return entity;
         }
