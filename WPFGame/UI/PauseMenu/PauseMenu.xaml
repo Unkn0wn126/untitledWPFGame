@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WPFGame.UI.PauseMenu"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid x:Name="MainGrid" Background="#197385ff">
+    <Grid x:Name="MainGrid" Background="#7385ff">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="400"/>

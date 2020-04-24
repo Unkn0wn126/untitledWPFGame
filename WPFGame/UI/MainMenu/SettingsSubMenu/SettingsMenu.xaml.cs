@@ -19,15 +19,17 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu
     public partial class SettingsMenu : UserControl
     {
         private ProcessMenuBackButtonClick _processMenuBackButtonClick;
-        public SettingsMenu(ProcessMenuBackButtonClick processMenuBackButtonClick)
+        private ProcessMenuButtonClick _graphicsButtonAction;
+        public SettingsMenu(ProcessMenuBackButtonClick processMenuBackButtonClick, ProcessMenuButtonClick graphicsButtonAction)
         {
             InitializeComponent();
             _processMenuBackButtonClick = processMenuBackButtonClick;
+            _graphicsButtonAction = graphicsButtonAction;
         }
 
         private void OnGraphicsClick(object sender, RoutedEventArgs e)
         {
-
+            _graphicsButtonAction.Invoke();
         }
 
         private void OnControlsClick(object sender, RoutedEventArgs e)

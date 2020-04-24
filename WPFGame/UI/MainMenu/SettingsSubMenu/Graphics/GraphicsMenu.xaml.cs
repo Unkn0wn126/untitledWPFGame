@@ -22,5 +22,15 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
         {
             InitializeComponent();
         }
+
+        private void OnApplyClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnCancelClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
