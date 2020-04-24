@@ -31,11 +31,11 @@ namespace WPFGame.UI.PauseMenu
         private ControlsMenu _controlsMenu;
         private LoadSaveMenu _loadSaveMenu;
         private SaveSaveMenu _saveSaveMenu;
-        public PauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, Configuration originalConfiguration)
+        public PauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, Configuration originalConfiguration, ProcessSaveActionButtonClick loadSaveAction, ProcessSaveActionButtonClick saveSaveAction, Uri saveFolder)
         {
             InitializeComponent();
-            _loadSaveMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu));
-            _saveSaveMenu = new SaveSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu));
+            _loadSaveMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(loadSaveAction), saveFolder);
+            _saveSaveMenu = new SaveSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(saveSaveAction), saveFolder);
             _graphicsMenu = new GraphicsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
             _controlsMenu = new ControlsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
             _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessMenuButtonClick(LoadGraphicsMenu), new ProcessMenuButtonClick(LoadControlsMenu));
@@ -70,6 +70,7 @@ namespace WPFGame.UI.PauseMenu
             MainGrid.Children.Add(_loadSaveMenu);
             _loadSaveMenu.SetValue(Grid.RowProperty, 1);
             _loadSaveMenu.SetValue(Grid.ColumnProperty, 1);
+            _loadSaveMenu.UpdateSaveList();
         }
 
         private void LoadSaveGameMenu()
@@ -78,6 +79,7 @@ namespace WPFGame.UI.PauseMenu
             MainGrid.Children.Add(_saveSaveMenu);
             _saveSaveMenu.SetValue(Grid.RowProperty, 1);
             _saveSaveMenu.SetValue(Grid.ColumnProperty, 1);
+            _saveSaveMenu.UpdateSaveList();
         }
 
 

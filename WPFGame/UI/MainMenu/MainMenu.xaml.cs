@@ -22,6 +22,7 @@ namespace WPFGame.UI.MainMenu
     public delegate void ProcessMenuButtonClick();
     public delegate void ProcessMenuBackButtonClick(UserControl userControl);
     public delegate void ProcessSettingsApplyButtonClick(Configuration configuration);
+    public delegate void ProcessSaveActionButtonClick(Uri path);
     /// <summary>
     /// Interaction logic for MainMenu.xaml
     /// </summary>
@@ -35,14 +36,14 @@ namespace WPFGame.UI.MainMenu
 
         private ProcessMenuButtonClick _quitAction;
 
-        public MainMenu(ProcessMenuButtonClick quitAction, ProcessMenuButtonClick newGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, Configuration originalConfiguration)
+        public MainMenu(ProcessMenuButtonClick quitAction, ProcessMenuButtonClick newGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, Configuration originalConfiguration, ProcessSaveActionButtonClick loadSaveAction, Uri saveFolder)
         {
             InitializeComponent();
             _quitAction = quitAction;
             _graphicsMenu = new GraphicsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
             _controlsMenu = new ControlsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
             _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessMenuButtonClick(LoadGraphicsMenu), new ProcessMenuButtonClick(LoadControlsMenu));
-            _loadGameMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu));
+            _loadGameMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(loadSaveAction), saveFolder);
             _defaultMenu = new DefaultMenu(new ProcessMenuButtonClick(LoadSettingsMenu), _quitAction, newGameAction, new ProcessMenuButtonClick(LoadLoadGameMenu));
 
             MainGrid.Children.Add(_defaultMenu);

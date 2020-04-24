@@ -75,6 +75,12 @@ namespace WPFGame
         private ProcessMenuButtonClick _pauseQuitAction;
         private ProcessSettingsApplyButtonClick _pauseApplyAction;
 
+
+        private ProcessSaveActionButtonClick _saveGameAction;
+        private ProcessSaveActionButtonClick _loadGameAction;
+
+        private Uri _savesPath;
+
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
             _imagePaths = imagePaths;
@@ -88,6 +94,8 @@ namespace WPFGame
             InitializeImages();
             //InitializeCaching();
 
+            InitializeSaveMenusActions();
+
             _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             // this is what everything renders to
@@ -95,13 +103,20 @@ namespace WPFGame
             GameImage.Source = bitmap;
 
             _mapHUD = new MapPlayerInfo();
-            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame), new ProcessSettingsApplyButtonClick(UpadteCurrentConfig), _gameConfiguration);
+            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame), new ProcessSettingsApplyButtonClick(UpadteCurrentConfig), _gameConfiguration, _loadGameAction, _savesPath);
             InitializePauseMenuActions();
-            _pauseMenu = new PauseMenu(_pauseResumeAction, _pauseLoadMainAction, _pauseQuitAction, _pauseApplyAction, _gameConfiguration);
+            _pauseMenu = new PauseMenu(_pauseResumeAction, _pauseLoadMainAction, _pauseQuitAction, _pauseApplyAction, _gameConfiguration, _loadGameAction, _saveGameAction, _savesPath);
 
             SetWindowSize();
 
             LoadMainMenu();
+        }
+
+        private void InitializeSaveMenusActions()
+        {
+            _savesPath = new Uri(@"./Saves", UriKind.Relative);
+            _saveGameAction = new ProcessSaveActionButtonClick(SaveGame);
+            _loadGameAction = new ProcessSaveActionButtonClick(LoadGame);
         }
 
         private void InitializePauseMenuActions()
@@ -180,8 +195,16 @@ namespace WPFGame
             _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
             SetWindowSize();
             UpdateSceneContext();
-            GameGrid.Children.Remove(_mainMenu);
+            RemoveOverlay(_mainMenu);
             ToggleMapHUD();
+        }
+
+        private void RemoveOverlay(UserControl control)
+        {
+            if (GameGrid.Children.Contains(control))
+            {
+                GameGrid.Children.Remove(control);
+            }
         }
 
         private void CloseGame()
@@ -202,6 +225,8 @@ namespace WPFGame
         private void UpadteCurrentConfig(Configuration newConfig)
         {
             _gameConfiguration = newConfig;
+            SetWindowSize();
+            _inputHandler.UpdateConfiguration(_gameConfiguration);
             SaveCurrentConfig();
         }
 
@@ -276,6 +301,16 @@ namespace WPFGame
             }
             else if (_session.State.IsRunning())
             {
+                if (GameGrid.Children.Contains(_mainMenu))
+                {
+                    GameGrid.Children.Remove(_mainMenu);
+                }
+                if (GameGrid.Children.Contains(_pauseMenu))
+                {
+                    GameGrid.Children.Remove(_pauseMenu);
+                    _pauseMenu.RestoreDefaultState();
+                }
+
                 if (loadingOverlayActive)
                 {
                     RemoveLoadingOverlay();
@@ -382,12 +417,6 @@ namespace WPFGame
                     SetWindowSize();
                     _inputHandler.UpdateConfiguration(_gameConfiguration);
                     break;
-                case Key.D2:
-                    ShowSaveDialog();
-                    break;                
-                case Key.D3:
-                    ShowLoadDialog();
-                    break;
             }
 
             if (e.Key == Key.F)
@@ -398,46 +427,27 @@ namespace WPFGame
             _inputHandler.HandleKeyPressed(e.Key);
         }
 
-        private void ShowSaveDialog()
+        private void SaveGame(Uri path)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.DefaultExt = ".save";
-            dialog.Filter = "Save Files (*.save)|*.save";
-            Nullable<bool> result = dialog.ShowDialog();
-
-            if (result == true)
-            {
-                string filename = dialog.FileName;
+                string filename = path.ToString();
                 Save save = new Save();
                 var sceneManager = _session.SceneManager;
 
                 save.Scenes = sceneManager.GetScenesToSave();
                 save.CurrentIndex = sceneManager.CurrentIndex;
                 SaveGame(filename, save);
-            }
         }
 
-        private void ShowLoadDialog()
+        private void LoadGame(Uri path)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.DefaultExt = ".save";
-            dialog.Filter = "Save Files (*.save)|*.save";
-            Nullable<bool> result = dialog.ShowDialog();
-
-            if (result == true)
-            {
-                string filename = dialog.FileName;
+                string filename = path.ToString();
                 Save save = SaveFileManager.LoadGame(filename);
 
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
-                _session.SceneManager.UpdateScenes(save.Scenes);
+                _session.InitializeGame(save.Scenes);
                 _currentScene = _session.SceneManager.CurrentScene;
                 _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
-                _session.UpdateProcessorContext();
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
-            }
-
-
         }
 
         private void SaveGame(string path, Save save)
