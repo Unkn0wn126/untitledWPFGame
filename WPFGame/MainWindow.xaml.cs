@@ -25,6 +25,7 @@ using WPFGame.UI.MainMenu;
 using System.Runtime.Serialization.Formatters.Binary;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
+using WPFGame.UI.PauseMenu;
 
 namespace WPFGame
 {
@@ -56,6 +57,7 @@ namespace WPFGame
 
         private MapPlayerInfo _mapHUD;
         private MainMenu _mainMenu;
+        private PauseMenu _pauseMenu;
 
         Rect _rectangle;
 
@@ -89,10 +91,53 @@ namespace WPFGame
 
             _mapHUD = new MapPlayerInfo();
             _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame));
+            _pauseMenu = new PauseMenu(new ProcessMenuButtonClick(TogglePauseMenu), new ProcessMenuButtonClick(LoadMainMenu), new ProcessMenuButtonClick(CloseGame));
 
             SetWindowSize();
 
-            GameGrid.Children.Add(_mainMenu);
+            LoadMainMenu();
+        }
+
+        private void LoadMainMenu()
+        {
+            if (GameGrid.Children.Contains(_pauseMenu))
+            {
+                GameGrid.Children.Remove(_pauseMenu);
+            }
+            if (GameGrid.Children.Contains(_mapHUD))
+            {
+                GameGrid.Children.Remove(_mapHUD);
+            }
+            if (!GameGrid.Children.Contains(_mainMenu))
+            {
+                GameGrid.Children.Add(_mainMenu);
+            }
+        }
+
+        private void TogglePauseMenu()
+        {
+            _session.State.TogglePause();
+            ToggleMapHUD();
+            if (!GameGrid.Children.Contains(_pauseMenu))
+            {
+                GameGrid.Children.Add(_pauseMenu);
+            }
+            else
+            {
+                GameGrid.Children.Remove(_pauseMenu);
+            }
+        }
+
+        private void ToggleMapHUD()
+        {
+            if (!GameGrid.Children.Contains(_mapHUD))
+            {
+                GameGrid.Children.Add(_mapHUD);
+            }
+            else
+            {
+                GameGrid.Children.Remove(_mapHUD);
+            }
         }
 
         private void InitializeGame()
@@ -121,6 +166,7 @@ namespace WPFGame
             SetWindowSize();
             UpdateSceneContext();
             GameGrid.Children.Remove(_mainMenu);
+            ToggleMapHUD();
         }
 
         private void CloseGame()
@@ -306,25 +352,7 @@ namespace WPFGame
             // Temporairly here to show pause menu
             if (e.Key == Key.Escape)
             {
-                _session.State.TogglePause();
-                if (_session.State.IsPaused())
-                {
-                    if (GameGrid.Children.Contains(_mapHUD))
-                    {
-                        GameGrid.Children.Remove(_mapHUD);
-                    }
-                        ShowPauseOverlay();
-                }
-                else
-                {
-                    if (!GameGrid.Children.Contains(_mapHUD))
-                    {
-                        GameGrid.Children.Add(_mapHUD);
-                    }
-                    
-                    GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
-                    GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
-                }
+                TogglePauseMenu();
             }
             switch (e.Key)
             {
@@ -394,32 +422,6 @@ namespace WPFGame
         private void SaveGame(string path, Save save)
         {
             SaveFileManager.SaveGame(path, save);
-        }
-        
-        private void ShowPauseOverlay()
-        {
-            // hopefully a separate XML component in the future
-            // show "Pause" overlay
-            Rectangle overlay = new Rectangle();
-            Color testColor = Color.FromArgb(172, 172, 172, 255);
-            overlay.Width = _xRes;
-            overlay.Height = _yRes;
-            overlay.Fill = new SolidColorBrush(testColor);
-            GameCanvas.Children.Add(overlay);
-
-            TextBlock textBlock = new TextBlock();
-
-            textBlock.Text = "PAUSED";
-
-            textBlock.FontSize = 60;
-
-            textBlock.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-
-            Canvas.SetLeft(textBlock, 350);
-
-            Canvas.SetTop(textBlock, 250);
-
-            GameCanvas.Children.Add(textBlock);
         }
 
         private bool loadingOverlayActive = false;
