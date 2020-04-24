@@ -8,8 +8,7 @@ namespace WPFGame
 {
     public class Configuration
     {
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public ConfigResolution Resolution { get; set; }
         public int WindowStyle { get; set; }
         public int WindowState { get; set; }
         public Key Up { get; set; }
@@ -24,13 +23,14 @@ namespace WPFGame
 
         public Configuration()
         {
-
+            Resolution = new ConfigResolution();
         }
 
         public Configuration(Configuration originalConfiguration)
         {
-            Width = originalConfiguration.Width;
-            Height = originalConfiguration.Height;
+            Resolution = new ConfigResolution();
+            Resolution.Width = originalConfiguration.Resolution.Width;
+            Resolution.Height = originalConfiguration.Resolution.Height;
             WindowStyle = originalConfiguration.WindowStyle;
             WindowStyle = originalConfiguration.WindowStyle;
             Up = originalConfiguration.Up;

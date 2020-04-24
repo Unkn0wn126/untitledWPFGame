@@ -34,19 +34,19 @@
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Resolution
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="ResolutionCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
-                        Window mode
+                        Fullscreen
                         </TextBlock>
-                        <CheckBox Margin="5, 0, 5, 0" VerticalAlignment="Center" HorizontalAlignment="Center"></CheckBox>
+                        <CheckBox Margin="5, 0, 5, 0" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="WindowModeCheckBox"></CheckBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center" >
                         Window decoration
                         </TextBlock>
-                        <CheckBox Margin="5, 0, 5, 0" VerticalAlignment="Center" HorizontalAlignment="Center"></CheckBox>
+                        <CheckBox Margin="5, 0, 5, 0" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="WindowStyleCheckBox"></CheckBox>
                     </UniformGrid>
                 </UniformGrid>
             </ScrollViewer>

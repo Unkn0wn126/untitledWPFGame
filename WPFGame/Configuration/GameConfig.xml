@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0"?>
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Width>800</Width>
-  <Height>600</Height>
+  <Resolution>
+    <Width>800</Width>
+    <Height>600</Height>
+  </Resolution>
   <WindowStyle>0</WindowStyle>
   <WindowState>0</WindowState>
   <Up>W</Up>

@@ -31,15 +31,23 @@ namespace WPFGame.UI.PauseMenu
         private ControlsMenu _controlsMenu;
         private LoadSaveMenu _loadSaveMenu;
         private SaveSaveMenu _saveSaveMenu;
+
+        private Configuration _currentConfig;
         public PauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, Configuration originalConfiguration, ProcessSaveActionButtonClick loadSaveAction, ProcessSaveActionButtonClick saveSaveAction, Uri saveFolder)
         {
             InitializeComponent();
+            _currentConfig = originalConfiguration;
             _loadSaveMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(loadSaveAction), saveFolder);
             _saveSaveMenu = new SaveSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(saveSaveAction), saveFolder);
             _graphicsMenu = new GraphicsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
             _controlsMenu = new ControlsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
             _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessMenuButtonClick(LoadGraphicsMenu), new ProcessMenuButtonClick(LoadControlsMenu));
             InitializeDefault(resumeAction, exitToMainAction, quitGameAction);
+        }
+
+        public void UpdateConfig(Configuration originalConfiguration)
+        {
+            _currentConfig = originalConfiguration;
         }
 
         public void RestoreDefaultState()

@@ -99,7 +99,7 @@ namespace WPFGame
             _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             // this is what everything renders to
-            bitmap = new RenderTargetBitmap(_gameConfiguration.Width, _gameConfiguration.Height, 96, 96, PixelFormats.Pbgra32);
+            bitmap = new RenderTargetBitmap(_gameConfiguration.Resolution.Width, _gameConfiguration.Resolution.Height, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
             _mapHUD = new MapPlayerInfo();
@@ -242,8 +242,9 @@ namespace WPFGame
 
         private void SetWindowSize()
         {
-            _xRes = _gameConfiguration.Width;
-            _yRes = _gameConfiguration.Height;
+            ConfigResolution resolution = new ConfigResolution();
+            _xRes = _gameConfiguration.Resolution.Width;
+            _yRes = _gameConfiguration.Resolution.Height;
 
             _sizeMultiplier = (int)Math.Ceiling(_xRes / 16f);
 

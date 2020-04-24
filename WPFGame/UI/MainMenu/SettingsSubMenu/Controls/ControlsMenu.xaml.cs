@@ -31,6 +31,11 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             _currentConfiguration = new Configuration(originalConfiguration);
         }
 
+        public void UpdateOriginalConfiguration(Configuration originalConfiguration)
+        {
+            _currentConfiguration = new Configuration(originalConfiguration);
+        }
+
         private void OnApplyClick(object sender, RoutedEventArgs e)
         {
             _applyAction.Invoke(_currentConfiguration);
