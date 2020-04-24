@@ -17,6 +17,7 @@ using WPFGame.UI.MainMenu.SettingsSubMenu;
 namespace WPFGame.UI.MainMenu
 {
     public delegate void ProcessMenuButtonClick();
+    public delegate void ProcessMenuBackButtonClick(UserControl userControl);
     /// <summary>
     /// Interaction logic for MainMenu.xaml
     /// </summary>
@@ -27,15 +28,13 @@ namespace WPFGame.UI.MainMenu
 
         private UserControl _currentMenu;
 
-        private ProcessMenuButtonClick _backButtonAction;
-
         private ProcessMenuButtonClick _quitAction;
 
         public MainMenu(ProcessMenuButtonClick quitAction)
         {
             InitializeComponent();
             _quitAction = quitAction;
-            _settingsMenu = new SettingsMenu();
+            _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(RestoreDefaultState));
             _defaultMenu = new DefaultMenu(new ProcessMenuButtonClick(LoadSettingsMenu), _quitAction);
 
             MainGrid.Children.Add(_defaultMenu);
@@ -52,28 +51,14 @@ namespace WPFGame.UI.MainMenu
             _settingsMenu.SetValue(Grid.RowProperty, 1);
             _settingsMenu.SetValue(Grid.ColumnProperty, 1);
             _currentMenu = _settingsMenu;
-
-            ActivateBackButton();
         }
 
-        private void RestoreDefaultState()
+        private void RestoreDefaultState(UserControl userControl)
         {
-            MainGrid.Children.Remove(_currentMenu);
+            MainGrid.Children.Remove(userControl);
             MainGrid.Children.Add(_defaultMenu);
             _defaultMenu.SetValue(Grid.RowProperty, 1);
             _defaultMenu.SetValue(Grid.ColumnProperty, 1);
-        }
-
-        private void ActivateBackButton()
-        {
-            BackButton.Visibility = Visibility.Visible;
-            _backButtonAction = RestoreDefaultState;
-        }
-
-        private void OnBackButtonClick(object sender, RoutedEventArgs e)
-        {
-            _backButtonAction.Invoke();
-            BackButton.Visibility = Visibility.Hidden;
         }
     }
 }

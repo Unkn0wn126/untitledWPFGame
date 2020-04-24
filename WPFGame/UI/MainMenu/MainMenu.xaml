@@ -17,8 +17,5 @@
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="BackButton" Grid.Column="0" Grid.Row="0" Margin="3" Click="OnBackButtonClick" Visibility="Hidden">
-            Back
-        </Button>
     </Grid>
 </UserControl>

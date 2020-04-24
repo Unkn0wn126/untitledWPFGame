@@ -23,9 +23,10 @@
             FontSize="30">
             Settings
         </TextBlock>
-        <UniformGrid Grid.Row="1" Grid.Column="1" Columns="1" Margin="0, 0, 0, 120">
+        <UniformGrid Grid.Row="1" Grid.Column="1" Columns="1" Margin="0, 0, 0, 70">
             <Button Margin="0, 15, 0, 15" Click="OnGraphicsClick">Graphics</Button>
             <Button Margin="0, 15, 0, 15" Click="OnControlsClick">Controls</Button>
+            <Button Margin="0, 15, 0, 15" Click="OnBackClick">Back</Button>
         </UniformGrid>
     </Grid>
 </UserControl>
