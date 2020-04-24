@@ -28,8 +28,6 @@ namespace Engine.ViewModels
         private GameInput _gameInputHandler;
         public ISceneManager SceneManager { get; set; }
 
-        private Random _rnd;
-
 
         /*
          * does not need: imgPaths, xRes, yRes
@@ -42,40 +40,12 @@ namespace Engine.ViewModels
             _gameInputHandler = gameInputHandler;
             _processors = new List<IProcessor>();
 
-            _rnd = new Random();
-
             State = new GameStateMachine
             {
                 CurrentState = GameState.Loading // prevent update of logic while not ready
             };
 
-            int val = _rnd.Next(10, 100);
-
-            // Scene generation should take place elsewhere
-            List<byte[]> metaScenes = new List<byte[]>();
-            using (MemoryStream stream = new MemoryStream())
-            {
-                byte[] current;
-                var binaryFormatter = new BinaryFormatter();
-                for (int i = 0; i < 10; i++)
-                {
-                    MetaScene metaScene = SceneFactory.CreateMetaScene(null, val, val, 1, 5);
-                    binaryFormatter.Serialize(stream, metaScene);
-                    current = stream.ToArray();
-                    metaScenes.Add(current);
-                    stream.SetLength(0);
-                }
-            }
-
-            SceneManager = new SceneManager(metaScenes, _gameInputHandler, _gameTime);
-
-            SceneManager.LoadNextScene();
-
-            _graphicsProcessor = new GraphicsProcessor(SceneManager.CurrentScene);
-
-            _processors.Add(new CollisionProcessor(SceneManager.CurrentScene));
-            _processors.Add(new RigidBodyProcessor(SceneManager.CurrentScene));
-            _processors.Add(new ScriptProcessor(SceneManager.CurrentScene));
+            SceneManager = new SceneManager(_gameInputHandler, _gameTime);
         }
 
         public void UpdateProcessorContext()
@@ -111,6 +81,35 @@ namespace Engine.ViewModels
         public void UpdateGraphics()
         {
             _graphicsProcessor?.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+        }
+
+        public void InitializeGame(List<byte[]> metaScenes)
+        {
+            SceneManager.UpdateScenes(metaScenes);
+
+            SceneManager.LoadNextScene();
+
+            if (_graphicsProcessor == null)
+            {
+                _graphicsProcessor = new GraphicsProcessor(SceneManager.CurrentScene);
+            }
+            else
+            {
+                _graphicsProcessor.ChangeContext(SceneManager.CurrentScene);
+            }
+
+            if (_processors.Count == 0)
+            {
+                _processors.Add(new CollisionProcessor(SceneManager.CurrentScene));
+                _processors.Add(new RigidBodyProcessor(SceneManager.CurrentScene));
+                _processors.Add(new ScriptProcessor(SceneManager.CurrentScene));
+            }
+            else
+            {
+                UpdateProcessorContext();
+            }
+
+
         }
     }
 }

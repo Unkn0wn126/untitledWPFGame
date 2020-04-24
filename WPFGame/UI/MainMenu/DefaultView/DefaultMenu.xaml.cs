@@ -20,16 +20,18 @@ namespace WPFGame.UI.MainMenu.DefaultView
     {
         private ProcessMenuButtonClick _processSettingsClick;
         private ProcessMenuButtonClick _processQuitClick;
-        public DefaultMenu(ProcessMenuButtonClick processSettingsClick, ProcessMenuButtonClick processQuitClick)
+        private ProcessMenuButtonClick _processNewGameClick;
+        public DefaultMenu(ProcessMenuButtonClick processSettingsClick, ProcessMenuButtonClick processQuitClick, ProcessMenuButtonClick processNewGameClick)
         {
             InitializeComponent();
             _processSettingsClick = processSettingsClick;
             _processQuitClick = processQuitClick;
+            _processNewGameClick = processNewGameClick;
         }
 
         private void OnNewGameClick(object sender, RoutedEventArgs e)
         {
-
+            _processNewGameClick.Invoke();
         }
 
         private void OnLoadGameClick(object sender, RoutedEventArgs e)

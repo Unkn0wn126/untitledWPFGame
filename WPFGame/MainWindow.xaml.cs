@@ -22,6 +22,9 @@ using WPFGame.Saving;
 using Microsoft.Win32;
 using WPFGame.UI.HUD;
 using WPFGame.UI.MainMenu;
+using System.Runtime.Serialization.Formatters.Binary;
+using Engine.Models.Factories;
+using Engine.Models.Factories.Scenes;
 
 namespace WPFGame
 {
@@ -80,20 +83,44 @@ namespace WPFGame
 
             _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
-            // to get shorter routes to frequently used objects
-            _currentScene = _session.SceneManager.CurrentScene;
-            _currentCamera = _currentScene.SceneCamera;
-
-            SetWindowSize();
-
             // this is what everything renders to
             bitmap = new RenderTargetBitmap(_gameConfiguration.Width, _gameConfiguration.Height, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
             _mapHUD = new MapPlayerInfo();
-            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame));
+            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame));
+
+            SetWindowSize();
 
             GameGrid.Children.Add(_mainMenu);
+        }
+
+        private void InitializeGame()
+        {
+            Random rnd = new Random();
+            int val = rnd.Next(10, 100);
+
+            // Scene generation should take place elsewhere
+            List<byte[]> metaScenes = new List<byte[]>();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                byte[] current;
+                var binaryFormatter = new BinaryFormatter();
+                for (int i = 0; i < 10; i++)
+                {
+                    MetaScene metaScene = SceneFactory.CreateMetaScene(null, val, val, 1, 5);
+                    binaryFormatter.Serialize(stream, metaScene);
+                    current = stream.ToArray();
+                    metaScenes.Add(current);
+                    stream.SetLength(0);
+                }
+            }
+
+            _session.InitializeGame(metaScenes);
+            _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
+            SetWindowSize();
+            UpdateSceneContext();
+            GameGrid.Children.Remove(_mainMenu);
         }
 
         private void CloseGame()
@@ -139,10 +166,16 @@ namespace WPFGame
             bitmap = new RenderTargetBitmap(_xRes, _yRes, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
-            _currentCamera.UpdateSize(_xRes, _yRes);
+            _currentCamera?.UpdateSize(_xRes, _yRes);
 
             WindowStyle = _gameConfiguration.WindowStyle == 0 ? WindowStyle.SingleBorderWindow : WindowStyle.None;
             WindowState = _gameConfiguration.WindowState == 0 ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void UpdateSceneContext()
+        {
+            _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
+            _currentScene = _session.SceneManager.CurrentScene;
         }
 
         private void InitializeCaching()
@@ -181,8 +214,7 @@ namespace WPFGame
                     RemoveLoadingOverlay();
                     loadingOverlayActive = false;
                 }
-                _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
-                _currentScene = _session.SceneManager.CurrentScene;
+
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();

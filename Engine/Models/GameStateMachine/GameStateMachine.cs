@@ -41,7 +41,7 @@ namespace Engine.Models.GameStateMachine
 
         public bool IsRunning()
         {
-            return CurrentState != GameState.Paused && CurrentState != GameState.Loading;
+            return CurrentState == GameState.Running;
         }
 
         public bool IsPaused()

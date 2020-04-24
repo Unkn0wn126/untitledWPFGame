@@ -26,22 +26,18 @@ namespace WPFGame.UI.MainMenu
         private DefaultMenu _defaultMenu;
         private SettingsMenu _settingsMenu;
 
-        private UserControl _currentMenu;
-
         private ProcessMenuButtonClick _quitAction;
 
-        public MainMenu(ProcessMenuButtonClick quitAction)
+        public MainMenu(ProcessMenuButtonClick quitAction, ProcessMenuButtonClick newGameAction)
         {
             InitializeComponent();
             _quitAction = quitAction;
             _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(RestoreDefaultState));
-            _defaultMenu = new DefaultMenu(new ProcessMenuButtonClick(LoadSettingsMenu), _quitAction);
+            _defaultMenu = new DefaultMenu(new ProcessMenuButtonClick(LoadSettingsMenu), _quitAction, newGameAction);
 
             MainGrid.Children.Add(_defaultMenu);
             _defaultMenu.SetValue(Grid.RowProperty, 1);
             _defaultMenu.SetValue(Grid.ColumnProperty, 1);
-
-            _currentMenu = _defaultMenu;
         }
 
         private void LoadSettingsMenu()
@@ -50,7 +46,6 @@ namespace WPFGame.UI.MainMenu
             MainGrid.Children.Add(_settingsMenu);
             _settingsMenu.SetValue(Grid.RowProperty, 1);
             _settingsMenu.SetValue(Grid.ColumnProperty, 1);
-            _currentMenu = _settingsMenu;
         }
 
         private void RestoreDefaultState(UserControl userControl)
