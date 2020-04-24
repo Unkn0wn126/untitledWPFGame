@@ -18,9 +18,26 @@ namespace WPFGame.UI.MainMenu.SaveSaveSubMenu
     /// </summary>
     public partial class SaveSaveMenu : UserControl
     {
-        public SaveSaveMenu()
+        private ProcessMenuBackButtonClick _backButtonAction;
+        public SaveSaveMenu(ProcessMenuBackButtonClick backButtonAction)
         {
             InitializeComponent();
+            _backButtonAction = backButtonAction;
+        }
+
+        private void OnNewSaveClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnOverWriteClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnBackClick(object sender, RoutedEventArgs e)
+        {
+            _backButtonAction.Invoke(this);
         }
     }
 }

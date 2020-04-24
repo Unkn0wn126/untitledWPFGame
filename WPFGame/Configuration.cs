@@ -21,5 +21,27 @@ namespace WPFGame
         public Key Action2 { get; set; }
         public Key Back { get; set; }
         public Key Space { get; set; }
+
+        public Configuration()
+        {
+
+        }
+
+        public Configuration(Configuration originalConfiguration)
+        {
+            Width = originalConfiguration.Width;
+            Height = originalConfiguration.Height;
+            WindowStyle = originalConfiguration.WindowStyle;
+            WindowStyle = originalConfiguration.WindowStyle;
+            Up = originalConfiguration.Up;
+            Down = originalConfiguration.Down;
+            Left = originalConfiguration.Left;
+            Right = originalConfiguration.Right;
+            Escape = originalConfiguration.Escape;
+            Action = originalConfiguration.Action;
+            Action2 = originalConfiguration.Action2;
+            Back = originalConfiguration.Back;
+            Space = originalConfiguration.Space;
+        }
     }
 }

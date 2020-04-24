@@ -25,13 +25,15 @@ namespace WPFGame.UI.PauseMenu.PauseDefaultMenu
         private ProcessMenuButtonClick _saveGameAction;
         private ProcessMenuButtonClick _settingsAction;
         private ProcessMenuButtonClick _quitGameAction;
-        public DefaultPauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessMenuButtonClick settingsAction)
+        public DefaultPauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessMenuButtonClick settingsAction, ProcessMenuButtonClick loadGameAction, ProcessMenuButtonClick saveGameAction)
         {
             InitializeComponent();
             _resumeAction = resumeAction;
             _exitToMainAction = exitToMainAction;
             _quitGameAction = quitGameAction;
             _settingsAction = settingsAction;
+            _loadGameAction = loadGameAction;
+            _saveGameAction = saveGameAction;
         }
 
         private void OnResumeClick(object sender, RoutedEventArgs e)
@@ -46,12 +48,12 @@ namespace WPFGame.UI.PauseMenu.PauseDefaultMenu
 
         private void OnLoadGamesClick(object sender, RoutedEventArgs e)
         {
-
+            _loadGameAction.Invoke();
         }
 
         private void OnSaveGameClick(object sender, RoutedEventArgs e)
         {
-
+            _saveGameAction.Invoke();
         }
 
         private void OnSettingsClick(object sender, RoutedEventArgs e)

@@ -70,6 +70,11 @@ namespace WPFGame
         private Configuration _gameConfiguration;
         private string _configPath = @"./Configuration/GameConfig.xml";
 
+        private ProcessMenuButtonClick _pauseResumeAction;
+        private ProcessMenuButtonClick _pauseLoadMainAction;
+        private ProcessMenuButtonClick _pauseQuitAction;
+        private ProcessSettingsApplyButtonClick _pauseApplyAction;
+
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
             _imagePaths = imagePaths;
@@ -90,12 +95,21 @@ namespace WPFGame
             GameImage.Source = bitmap;
 
             _mapHUD = new MapPlayerInfo();
-            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame));
-            _pauseMenu = new PauseMenu(new ProcessMenuButtonClick(TogglePauseMenu), new ProcessMenuButtonClick(LoadMainMenu), new ProcessMenuButtonClick(CloseGame));
+            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame), new ProcessSettingsApplyButtonClick(UpadteCurrentConfig), _gameConfiguration);
+            InitializePauseMenuActions();
+            _pauseMenu = new PauseMenu(_pauseResumeAction, _pauseLoadMainAction, _pauseQuitAction, _pauseApplyAction, _gameConfiguration);
 
             SetWindowSize();
 
             LoadMainMenu();
+        }
+
+        private void InitializePauseMenuActions()
+        {
+            _pauseResumeAction = new ProcessMenuButtonClick(TogglePauseMenu);
+            _pauseLoadMainAction = new ProcessMenuButtonClick(LoadMainMenu);
+            _pauseQuitAction = new ProcessMenuButtonClick(CloseGame);
+            _pauseApplyAction = new ProcessSettingsApplyButtonClick(UpadteCurrentConfig);
         }
 
         private void LoadMainMenu()
@@ -125,6 +139,7 @@ namespace WPFGame
             else
             {
                 GameGrid.Children.Remove(_pauseMenu);
+                _pauseMenu.RestoreDefaultState();
             }
         }
 
@@ -182,6 +197,12 @@ namespace WPFGame
                 XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
                 _gameConfiguration = serializer.Deserialize(fs2) as Configuration;
             }
+        }
+
+        private void UpadteCurrentConfig(Configuration newConfig)
+        {
+            _gameConfiguration = newConfig;
+            SaveCurrentConfig();
         }
 
         private void SaveCurrentConfig()

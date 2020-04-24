@@ -18,9 +18,21 @@ namespace WPFGame.UI.MainMenu.LoadSaveSubMenu
     /// </summary>
     public partial class LoadSaveMenu : UserControl
     {
-        public LoadSaveMenu()
+        private ProcessMenuBackButtonClick _backButtonAction;
+        public LoadSaveMenu(ProcessMenuBackButtonClick backButtonAction)
         {
             InitializeComponent();
+            _backButtonAction = backButtonAction;
+        }
+
+        private void OnLoadClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnBackClick(object sender, RoutedEventArgs e)
+        {
+            _backButtonAction.Invoke(this);
         }
     }
 }

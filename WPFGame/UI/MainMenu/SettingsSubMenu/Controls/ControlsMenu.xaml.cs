@@ -18,9 +18,27 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
     /// </summary>
     public partial class ControlsMenu : UserControl
     {
-        public ControlsMenu()
+        private ProcessMenuBackButtonClick _cancelAction;
+        private ProcessSettingsApplyButtonClick _applyAction;
+
+        private Configuration _currentConfiguration;
+
+        public ControlsMenu(ProcessMenuBackButtonClick cancelAction, ProcessSettingsApplyButtonClick applyAction, Configuration originalConfiguration)
         {
             InitializeComponent();
+            _cancelAction = cancelAction;
+            _applyAction = applyAction;
+            _currentConfiguration = new Configuration(originalConfiguration);
+        }
+
+        private void OnApplyClick(object sender, RoutedEventArgs e)
+        {
+            _applyAction.Invoke(_currentConfiguration);
+        }
+
+        private void OnCancelClick(object sender, RoutedEventArgs e)
+        {
+            _cancelAction.Invoke(this);
         }
     }
 }

@@ -18,19 +18,28 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
     /// </summary>
     public partial class GraphicsMenu : UserControl
     {
-        public GraphicsMenu()
+        private ProcessMenuBackButtonClick _cancelAction;
+        private ProcessSettingsApplyButtonClick _applyAction;
+
+        private Configuration _currentConfiguration;
+        public GraphicsMenu(ProcessMenuBackButtonClick cancelAction, ProcessSettingsApplyButtonClick applyAction, Configuration originalConfiguration)
         {
             InitializeComponent();
+            _cancelAction = cancelAction;
+            _applyAction = applyAction;
+            _currentConfiguration = new Configuration(originalConfiguration);
         }
+
+        // TODO: Bind properties of settings with the configuration
 
         private void OnApplyClick(object sender, RoutedEventArgs e)
         {
-
+            _applyAction.Invoke(_currentConfiguration);
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
-
+            _cancelAction.Invoke(this);
         }
     }
 }
