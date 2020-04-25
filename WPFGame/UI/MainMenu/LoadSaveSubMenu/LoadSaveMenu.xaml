@@ -28,7 +28,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="70"/>
             </Grid.RowDefinitions>
-            <ListView x:Name="SaveListView">
+            <ListView x:Name="SaveListView" SelectionChanged="OnSelectionChanged">
 
             </ListView>
             <UniformGrid Columns="2" Grid.Row="1">

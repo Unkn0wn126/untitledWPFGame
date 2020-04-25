@@ -27,6 +27,7 @@ namespace WPFGame.UI.MainMenu.LoadSaveSubMenu
         public LoadSaveMenu(ProcessMenuBackButtonClick backButtonAction, ProcessSaveActionButtonClick loadAction, Uri savesPath)
         {
             InitializeComponent();
+            LoadBtn.IsEnabled = SaveListView.SelectedItem != null;
             _backButtonAction = backButtonAction;
             _loadAction = loadAction;
             _saveFolder = savesPath;
@@ -49,6 +50,11 @@ namespace WPFGame.UI.MainMenu.LoadSaveSubMenu
         private void OnBackClick(object sender, RoutedEventArgs e)
         {
             _backButtonAction.Invoke(this);
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LoadBtn.IsEnabled = SaveListView.SelectedItem != null;
         }
     }
 }

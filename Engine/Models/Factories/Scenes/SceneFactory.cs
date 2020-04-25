@@ -81,8 +81,10 @@ namespace Engine.Models.Factories
             return output;
         }
 
-        private static List<MetaMapEntity> GenerateStaticBlocks(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        private static List<MetaMapEntity> GenerateStaticBlocks(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, out List<int> vacantOnX, out List<int> vacantOnY)
         {
+            vacantOnX = new List<int>();
+            vacantOnY = new List<int>();
             MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
             ComponentState current;
             for (int i = 0; i < metaMap.GetLength(0); i++)
@@ -93,6 +95,11 @@ namespace Engine.Models.Factories
                     {
                         current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
                         metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Rock, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
+                    }
+                    else
+                    {
+                        vacantOnX.Add(i);
+                        vacantOnY.Add(j);
                     }
                 }
             }
@@ -118,16 +125,23 @@ namespace Engine.Models.Factories
             metaScene.BaseObjectSize = baseObjectSize;
             metaScene.NumOfObjectsInCell = numOfObjectsInCell;
             metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
-            metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
+            List<int> vacantOnX;
+            List<int> vacantOnY;
+            metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, out vacantOnX, out vacantOnY);
 
             int numOfEnemies = numOfObjectsOnX / 2;//(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f));
 
+            int currX = vacantOnX[_rnd.Next(vacantOnX.Count)];
+            int currY = vacantOnY[_rnd.Next(vacantOnY.Count)];
             for (int i = 0; i < numOfEnemies; i++)
             {
-                int x = _rnd.Next(3, numOfObjectsOnX - 3);
-                int y = _rnd.Next(3, numOfObjectsOnY - 3);
+                int x = currX;
+                int y = currY;
 
                 metaScene.DynamicEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, x, y));
+
+                currX = vacantOnX[_rnd.Next(vacantOnX.Count)];
+                currY = vacantOnY[_rnd.Next(vacantOnY.Count)];
             }
 
             metaScene.DynamicEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));

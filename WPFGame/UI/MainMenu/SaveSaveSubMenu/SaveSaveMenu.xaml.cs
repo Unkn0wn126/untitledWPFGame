@@ -27,6 +27,7 @@ namespace WPFGame.UI.MainMenu.SaveSaveSubMenu
         public SaveSaveMenu(ProcessMenuBackButtonClick backButtonAction, ProcessSaveActionButtonClick saveAction, Uri saveFolder)
         {
             InitializeComponent();
+                        OverWriteBtn.IsEnabled = SaveListView.SelectedItem != null;
             _backButtonAction = backButtonAction;
             _saveFolder = saveFolder;
             _saveAction = saveAction;
@@ -58,6 +59,11 @@ namespace WPFGame.UI.MainMenu.SaveSaveSubMenu
         private void OnBackClick(object sender, RoutedEventArgs e)
         {
             _backButtonAction.Invoke(this);
+        }
+
+        private void OnItemSelect(object sender, SelectionChangedEventArgs e)
+        {
+            OverWriteBtn.IsEnabled = SaveListView.SelectedItem != null;
         }
     }
 }

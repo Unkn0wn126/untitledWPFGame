@@ -102,7 +102,7 @@ namespace WPFGame
             _loadingScreen = new LoadingScreen();
 
             _updateTimer = new DispatcherTimer();
-            _updateTimer.Interval = TimeSpan.FromMilliseconds(20);
+            _updateTimer.Interval = TimeSpan.FromMilliseconds(1/16f);
             _updateTimer.Tick += UpdateGraphics;
 
             _updateTimer.Start();
@@ -189,7 +189,7 @@ namespace WPFGame
             ShowLoadingOverlay();
 
             Random rnd = new Random();
-            int val = rnd.Next(100, 200);
+            int val = rnd.Next(10, 100);
 
             // Scene generation should take place elsewhere
             List<byte[]> metaScenes = new List<byte[]>();

@@ -17,7 +17,8 @@ namespace ResourceManagers.Images
         Player,
         Enemy,
         PlayerLeft,
-        PlayerRight
+        PlayerRight,
+        LocationTrigger
     }
 
     /// <summary>
@@ -49,6 +50,7 @@ namespace ResourceManagers.Images
             ImageSprites.Add(ImgName.Enemy, new Uri(@"./Resources/Images/enemy.png", UriKind.Relative));
             ImageSprites.Add(ImgName.PlayerLeft, new Uri(@"./Resources/Images/player_left.png", UriKind.Relative));
             ImageSprites.Add(ImgName.PlayerRight, new Uri(@"./Resources/Images/player_right.png", UriKind.Relative));
+            ImageSprites.Add(ImgName.LocationTrigger, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
         }
 
         private void InitColors()
@@ -63,6 +65,7 @@ namespace ResourceManagers.Images
             ColorSprites.Add(ImgName.Enemy, new byte[3] { 255, 25, 25 });
             ColorSprites.Add(ImgName.PlayerLeft, new byte[3] { 78, 71, 255 });
             ColorSprites.Add(ImgName.PlayerRight, new byte[3] { 78, 71, 255 });
+            ColorSprites.Add(ImgName.LocationTrigger, new byte[3] { 255, 175, 25 });
         }
     }
 }
