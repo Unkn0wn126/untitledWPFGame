@@ -26,6 +26,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
 using WPFGame.UI.PauseMenu;
+using System.Windows.Threading;
+using WPFGame.UI.LoadingScreen;
 
 namespace WPFGame
 {
@@ -58,6 +60,7 @@ namespace WPFGame
         private MapPlayerInfo _mapHUD;
         private MainMenu _mainMenu;
         private PauseMenu _pauseMenu;
+        private LoadingScreen _loadingScreen;
 
         Rect _rectangle;
 
@@ -81,6 +84,8 @@ namespace WPFGame
 
         private Uri _savesPath;
 
+        private DispatcherTimer _updateTimer;
+
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
             _imagePaths = imagePaths;
@@ -93,6 +98,14 @@ namespace WPFGame
             _session = session;
             InitializeImages();
             //InitializeCaching();
+
+            _loadingScreen = new LoadingScreen();
+
+            _updateTimer = new DispatcherTimer();
+            _updateTimer.Interval = TimeSpan.FromMilliseconds(1/16f);
+            _updateTimer.Tick += UpdateGraphics;
+
+            _updateTimer.Start();
 
             InitializeSaveMenusActions();
 
@@ -172,6 +185,9 @@ namespace WPFGame
 
         private void InitializeGame()
         {
+            RemoveOverlay(_mainMenu);
+            ShowLoadingOverlay();
+
             Random rnd = new Random();
             int val = rnd.Next(10, 100);
 
@@ -195,7 +211,7 @@ namespace WPFGame
             _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
             SetWindowSize();
             UpdateSceneContext();
-            RemoveOverlay(_mainMenu);
+
             //ToggleMapHUD();
 
             if (_session.SceneManager.CurrentScene != null)
@@ -318,7 +334,7 @@ namespace WPFGame
         /// <param name="e"></param>
         public void UpdateGraphics(object sender, EventArgs e)
         {
-            if (_session.State.IsLoading() && !loadingOverlayActive)
+            if (_session.State.IsLoading() && !GameGrid.Children.Contains(_mainMenu))
             {
                 ShowLoadingOverlay();
             }
@@ -334,11 +350,7 @@ namespace WPFGame
                     _pauseMenu.RestoreDefaultState();
                 }
 
-                if (loadingOverlayActive)
-                {
-                    RemoveLoadingOverlay();
-                    loadingOverlayActive = false;
-                }
+                RemoveOverlay(_loadingScreen);
 
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
@@ -481,38 +493,14 @@ namespace WPFGame
         }
 
         private bool loadingOverlayActive = false;
-
-        private void RemoveLoadingOverlay()
-        {
-            GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
-            GameCanvas.Children.RemoveAt(GameCanvas.Children.Count - 1);
-        }
         
         private void ShowLoadingOverlay()
         {
-            // Hopefully a separate XML component in the future
-            // show "Loading" overlay
-            Rectangle overlay = new Rectangle();
-            Color testColor = Color.FromArgb(255, 0, 0, 0);
-            overlay.Width = _xRes;
-            overlay.Height = _yRes;
-            overlay.Fill = new SolidColorBrush(testColor);
-            GameCanvas.Children.Add(overlay);
+            if (!GameGrid.Children.Contains(_loadingScreen))
+            {
+                GameGrid.Children.Add(_loadingScreen);
+            }
 
-            TextBlock textBlock = new TextBlock();
-
-            textBlock.Text = "LOADING";
-
-            textBlock.FontSize = 60;
-
-            textBlock.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-
-            Canvas.SetLeft(textBlock, 350);
-
-            Canvas.SetTop(textBlock, 250);
-
-            GameCanvas.Children.Add(textBlock);
-            loadingOverlayActive = true;
         }
         
         private void Window_KeyUp(object sender, KeyEventArgs e)

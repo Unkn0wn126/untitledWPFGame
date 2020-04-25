@@ -38,7 +38,7 @@ namespace WPFGame
             _logicEngine = new Game(_gameInputHandler, _gameTime);
 
             _graphicsEngine = new MainWindow(_imagePaths, _gameInputHandler, _logicEngine);
-            CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
+            //CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
             _logicThread = new Task(Update);
         }
 
