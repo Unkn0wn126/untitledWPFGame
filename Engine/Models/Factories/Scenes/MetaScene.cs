@@ -19,7 +19,9 @@ namespace Engine.Models.Factories.Scenes
         public int NumOfEntitiesOnY { get; set; }
         public List<MetaMapEntity> GroundEntities { get; set; }
         public List<MetaMapEntity> StaticCollisionEntities { get; set; }
-        public List<MetaMapEntity> DynamicEntities { get; set; }
+        public List<MetaMapEntity> TriggerEntities { get; set; }
+        public List<MetaMapEntity> LivingEntities { get; set; }
+        public List<MetaMapEntity> OtherEntities { get; set; }
         public Guid ID { get; set; }
         public Guid NextScene { get; set; }
 
@@ -30,7 +32,9 @@ namespace Engine.Models.Factories.Scenes
             Type = type;
             GroundEntities = new List<MetaMapEntity>();
             StaticCollisionEntities = new List<MetaMapEntity>();
-            DynamicEntities = new List<MetaMapEntity>();
+            TriggerEntities = new List<MetaMapEntity>();
+            LivingEntities = new List<MetaMapEntity>();
+            OtherEntities = new List<MetaMapEntity>();
         }
     }
 }

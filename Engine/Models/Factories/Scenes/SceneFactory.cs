@@ -138,13 +138,13 @@ namespace Engine.Models.Factories
                 int x = currX;
                 int y = currY;
 
-                metaScene.DynamicEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, x, y));
+                metaScene.LivingEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, x, y));
 
                 currX = vacantOnX[_rnd.Next(vacantOnX.Count)];
                 currY = vacantOnY[_rnd.Next(vacantOnY.Count)];
             }
 
-            metaScene.DynamicEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
+            metaScene.LivingEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
 
             return metaScene;
         }
@@ -200,7 +200,7 @@ namespace Engine.Models.Factories
             }
             else
             {
-                metaScene.DynamicEntities.Add(currentEntity);
+                metaScene.LivingEntities.Add(currentEntity);
             }
         }
         private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
@@ -244,7 +244,7 @@ namespace Engine.Models.Factories
                     EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
                 }
             }
-            foreach (var item in metaScene.DynamicEntities)
+            foreach (var item in metaScene.LivingEntities)
             {
                 if (item != null)
                 {
