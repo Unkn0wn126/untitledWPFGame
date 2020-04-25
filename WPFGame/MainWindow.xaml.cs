@@ -102,7 +102,7 @@ namespace WPFGame
             _loadingScreen = new LoadingScreen();
 
             _updateTimer = new DispatcherTimer();
-            _updateTimer.Interval = TimeSpan.FromMilliseconds(1/16f);
+            _updateTimer.Interval = TimeSpan.FromMilliseconds(25);
             _updateTimer.Tick += UpdateGraphics;
 
             _updateTimer.Start();
@@ -225,6 +225,10 @@ namespace WPFGame
             if (GameGrid.Children.Contains(control))
             {
                 GameGrid.Children.Remove(control);
+            }
+            if (control == _pauseMenu)
+            {
+                _pauseMenu.RestoreDefaultState();
             }
         }
 
@@ -478,13 +482,16 @@ namespace WPFGame
 
         private void LoadGame(Uri path)
         {
-                string filename = path.ToString();
-                Save save = SaveFileManager.LoadGame(filename);
+            RemoveOverlay(_mainMenu);
+            RemoveOverlay(_pauseMenu);
+            ShowLoadingOverlay();
+            string filename = path.ToString();
+            Save save = SaveFileManager.LoadGame(filename);
 
-                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
-                _session.InitializeGame(save.Scenes);
-                UpdateSceneContext();
-                _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
+            _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
+            _session.InitializeGame(save.Scenes);
+            UpdateSceneContext();
+            _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
         }
 
         private void SaveGame(string path, Save save)
