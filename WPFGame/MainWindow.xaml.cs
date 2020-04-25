@@ -146,7 +146,7 @@ namespace WPFGame
         private void TogglePauseMenu()
         {
             _session.State.TogglePause();
-            ToggleMapHUD();
+            //ToggleMapHUD();
             if (!GameGrid.Children.Contains(_pauseMenu))
             {
                 GameGrid.Children.Add(_pauseMenu);
@@ -196,7 +196,7 @@ namespace WPFGame
             SetWindowSize();
             UpdateSceneContext();
             RemoveOverlay(_mainMenu);
-            ToggleMapHUD();
+            //ToggleMapHUD();
 
             if (_session.SceneManager.CurrentScene != null)
             {
@@ -225,11 +225,14 @@ namespace WPFGame
                 XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
                 _gameConfiguration = serializer.Deserialize(fs2) as Configuration;
             }
+
+            _gameConfiguration.PerformDuplicateCheck();
         }
 
         private void UpadteCurrentConfig(Configuration newConfig)
         {
             _gameConfiguration = new Configuration(newConfig);
+            _gameConfiguration.PerformDuplicateCheck();
             _mainMenu.UpdateConfig(_gameConfiguration);
             _pauseMenu.UpdateConfig(_gameConfiguration);
             SetWindowSize();

@@ -43,5 +43,30 @@ namespace WPFGame
             Back = originalConfiguration.Back;
             Space = originalConfiguration.Space;
         }
+
+        public void PerformDuplicateCheck()
+        {
+            List<Key> keys = new List<Key> { Up, Down, Left, Right, Escape, Action, Action2, Back, Space };
+            for (int i = 0; i < keys.Count; i++)
+            {
+                for (int j = i + 1; j < keys.Count; j++)
+                {
+                    if(keys[i] == keys[j])
+                    {
+                        keys[j] = Key.None;
+                    }
+                }
+            }
+
+            Up = keys[0];
+            Down = keys[1];
+            Left = keys[2];
+            Right = keys[3];
+            Escape = keys[4];
+            Action = keys[5];
+            Action2 = keys[6];
+            Back = keys[7];
+            Space = keys[8];
+        }
     }
 }
