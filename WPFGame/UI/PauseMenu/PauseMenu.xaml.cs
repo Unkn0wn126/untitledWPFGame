@@ -93,6 +93,7 @@ namespace WPFGame.UI.PauseMenu
 
         private void LoadControlsMenu()
         {
+            _controlsMenu.UpdateOriginalConfiguration(_currentConfig);
             MainGrid.Children.Remove(_settingsMenu);
             MainGrid.Children.Add(_controlsMenu);
             _controlsMenu.SetValue(Grid.RowProperty, 0);
@@ -103,6 +104,7 @@ namespace WPFGame.UI.PauseMenu
 
         private void LoadGraphicsMenu()
         {
+            _graphicsMenu.UpdateOriginalConfiguration(_currentConfig);
             MainGrid.Children.Remove(_settingsMenu);
             MainGrid.Children.Add(_graphicsMenu);
             _graphicsMenu.SetValue(Grid.RowProperty, 0);

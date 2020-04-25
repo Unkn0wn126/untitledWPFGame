@@ -34,55 +34,55 @@
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Up
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="UpCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Down
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="DownCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Left
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="LeftCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Right
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="RightCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Action
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="ActionCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Action2
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="Action2CB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Escape
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="EscapeCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Back
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="BackCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
                         Space
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="SpaceCB"></ComboBox>
                     </UniformGrid>
                 </UniformGrid>
             </ScrollViewer>

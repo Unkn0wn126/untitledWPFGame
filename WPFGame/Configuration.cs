@@ -32,7 +32,7 @@ namespace WPFGame
             Resolution.Width = originalConfiguration.Resolution.Width;
             Resolution.Height = originalConfiguration.Resolution.Height;
             WindowStyle = originalConfiguration.WindowStyle;
-            WindowStyle = originalConfiguration.WindowStyle;
+            WindowState = originalConfiguration.WindowState;
             Up = originalConfiguration.Up;
             Down = originalConfiguration.Down;
             Left = originalConfiguration.Left;

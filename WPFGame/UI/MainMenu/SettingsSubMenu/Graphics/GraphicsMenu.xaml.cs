@@ -39,6 +39,8 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
         public void UpdateOriginalConfiguration(Configuration originalConfiguration)
         {
             _currentConfiguration = new Configuration(originalConfiguration);
+            InitializeCheckBoxes();
+            ResolutionsContainOption(_currentConfiguration.Resolution);
         }
 
         private void ResolutionsContainOption(ConfigResolution resolution)
@@ -60,6 +62,7 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
 
         private void InitializeResolutionCombobox()
         {
+            _resolutions.Add(new ConfigResolution { Width = 640, Height = 480 });
             _resolutions.Add(new ConfigResolution { Width = 800, Height = 600 });
             _resolutions.Add(new ConfigResolution { Width = 1280, Height = 720 });
             _resolutions.Add(new ConfigResolution { Width = 1920, Height = 1080 });
@@ -68,14 +71,8 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
 
         private void InitializeCheckBoxes()
         {
-            if (_currentConfiguration.WindowState == 0)
-            {
-                WindowModeCheckBox.IsChecked = false;
-            }
-            if (_currentConfiguration.WindowStyle == 1)
-            {
-                WindowStyleCheckBox.IsChecked = false;
-            }
+            WindowModeCheckBox.IsChecked = _currentConfiguration.WindowState == 1;
+            WindowStyleCheckBox.IsChecked = _currentConfiguration.WindowStyle == 0;
         }
 
         // TODO: Bind properties of settings with the configuration

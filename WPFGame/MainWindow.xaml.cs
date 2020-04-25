@@ -197,6 +197,11 @@ namespace WPFGame
             UpdateSceneContext();
             RemoveOverlay(_mainMenu);
             ToggleMapHUD();
+
+            if (_session.SceneManager.CurrentScene != null)
+            {
+                _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
+            }
         }
 
         private void RemoveOverlay(UserControl control)
@@ -224,10 +229,16 @@ namespace WPFGame
 
         private void UpadteCurrentConfig(Configuration newConfig)
         {
-            _gameConfiguration = newConfig;
+            _gameConfiguration = new Configuration(newConfig);
+            _mainMenu.UpdateConfig(_gameConfiguration);
+            _pauseMenu.UpdateConfig(_gameConfiguration);
             SetWindowSize();
             _inputHandler.UpdateConfiguration(_gameConfiguration);
             SaveCurrentConfig();
+            if (_session.SceneManager.CurrentScene != null)
+            {
+                _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
+            }
         }
 
         private void SaveCurrentConfig()
@@ -259,7 +270,10 @@ namespace WPFGame
             bitmap = new RenderTargetBitmap(_xRes, _yRes, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
+            UpdateSceneContext();
+
             _currentCamera?.UpdateSize(_xRes, _yRes);
+
 
             WindowStyle = _gameConfiguration.WindowStyle == 0 ? WindowStyle.SingleBorderWindow : WindowStyle.None;
             WindowState = _gameConfiguration.WindowState == 0 ? WindowState.Normal : WindowState.Maximized;
@@ -267,8 +281,13 @@ namespace WPFGame
 
         private void UpdateSceneContext()
         {
-            _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
+            _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
             _currentScene = _session.SceneManager.CurrentScene;
+
+            if (_session.SceneManager.CurrentScene != null)
+            {
+                _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
+            }
         }
 
         private void InitializeCaching()
@@ -409,7 +428,10 @@ namespace WPFGame
             // Temporairly here to show pause menu
             if (e.Key == Key.Escape)
             {
-                TogglePauseMenu();
+                if (!GameGrid.Children.Contains(_mainMenu))
+                {
+                    TogglePauseMenu();
+                }
             }
             switch (e.Key)
             {
@@ -446,8 +468,7 @@ namespace WPFGame
 
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
                 _session.InitializeGame(save.Scenes);
-                _currentScene = _session.SceneManager.CurrentScene;
-                _currentCamera = _session.SceneManager.CurrentScene.SceneCamera;
+                UpdateSceneContext();
                 _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
         }
 
