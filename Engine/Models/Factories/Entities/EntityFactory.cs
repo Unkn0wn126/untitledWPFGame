@@ -49,7 +49,7 @@ namespace Engine.Models.Factories.Entities
             }
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.PlayerMovement))
             {
-                manager.AddComponentToEntity<IScriptComponent>(entity, new PlayerMovementScript(gameTime, gameInput, scene, entity, 4 * scene.BaseObjectSize));
+                manager.AddComponentToEntity<IScriptComponent>(entity, new PlayerMovementScript(gameTime, gameInput, scene, entity, 2 * scene.BaseObjectSize));
             }
         }
 

@@ -120,7 +120,7 @@ namespace Engine.Models.Factories
             metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
             metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
 
-            int numOfEnemies = numOfObjectsOnX / 2/*(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f))*/;
+            int numOfEnemies = numOfObjectsOnX / 2;//(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f));
 
             for (int i = 0; i < numOfEnemies; i++)
             {
@@ -243,30 +243,6 @@ namespace Engine.Models.Factories
             }
 
             return scene;
-        }
-
-        // replace this with meta entity generation so every meta entity has the information about player and this is no longer needed...
-        private static void GeneratePlayer(IEntityManager manager, IScene scene, int objectSize, GameTime gameTime, GameInput gameInputHandler)
-        {
-            ITransformComponent playerTransform = new TransformComponent(new Vector2(objectSize, objectSize), objectSize, objectSize, new Vector2(0, 0), 2);
-            IGraphicsComponent test = new GraphicsComponent(ImgName.Player);
-            //_playerTransform = playerTransform;
-
-            uint player = manager.AddEntity(playerTransform);
-            //_player = player;
-            manager.AddComponentToEntity<IGraphicsComponent>(player, test);
-
-            ICollisionComponent collision = new CollisionComponent(true, true);
-            manager.AddComponentToEntity<ICollisionComponent>(player, collision);
-
-            IRigidBodyComponent rigidBody = new RigidBodyComponent();
-            manager.AddComponentToEntity<IRigidBodyComponent>(player, rigidBody);
-
-            scene.PlayerEntity = player;
-
-            manager.AddComponentToEntity<IScriptComponent>(player, new PlayerMovementScript(gameTime, gameInputHandler, scene, player, 4 * objectSize));
-
-            manager.AddComponentToEntity<ILifeComponent>(player, new LifeComponent { IsPlayer = true });
         }
     }
 }
