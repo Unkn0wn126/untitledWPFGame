@@ -246,7 +246,7 @@ namespace WPFGame
 
         private void SaveCurrentConfig()
         {
-            using (FileStream fs = new FileStream(_configPath, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(_configPath, FileMode.Create))
             {
                 XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
 

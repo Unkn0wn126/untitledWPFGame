@@ -11,7 +11,7 @@ namespace WPFGame.Saving
     {
         public static void SaveGame(string path, Save save)
         {
-            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 var binaryFormatter = new BinaryFormatter();
                 binaryFormatter.Serialize(fs, save);
