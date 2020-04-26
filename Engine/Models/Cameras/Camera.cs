@@ -55,8 +55,6 @@ namespace Engine.Models.Cameras
         {
             Dictionary<ITransformComponent, IGraphicsComponent> keyValuePairs = renderables.OrderBy(x => x.Key.ZIndex).ToDictionary(x => x.Key, x => x.Value);
 
-            //keyValuePairs.OrderBy(x => x.Key.ZIndex);
-
             VisibleObjects = keyValuePairs.Values.ToList();
             VisibleTransforms = keyValuePairs.Keys.ToList();
 
