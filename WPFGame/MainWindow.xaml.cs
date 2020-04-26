@@ -87,9 +87,6 @@ namespace WPFGame
 
         private DispatcherTimer _updateTimer;
 
-        private bool _shouldDisplayLoadingOverlay = false;
-        private bool _shouldUpdateSceneContext = false;
-
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
             _imagePaths = imagePaths;
@@ -101,10 +98,9 @@ namespace WPFGame
 
             _session = session;
             InitializeImages();
-            //InitializeCaching();
 
-            _session.SceneManager.SceneChangeStarted += delegate { _shouldDisplayLoadingOverlay = true; };
-            _session.SceneManager.SceneChangeFinished += delegate { _shouldUpdateSceneContext = true; };
+            _session.SceneManager.SceneChangeStarted += ShowLoadingOverlay;
+            _session.SceneManager.SceneChangeFinished += UpdateSceneContext;
 
             _loadingScreen = new LoadingScreen();
 
@@ -262,6 +258,10 @@ namespace WPFGame
             _gameConfiguration.PerformDuplicateCheck();
         }
 
+        /// <summary>
+        /// Updates the current 
+        /// </summary>
+        /// <param name="newConfig"></param>
         private void UpadteCurrentConfig(Configuration newConfig)
         {
             _gameConfiguration = new Configuration(newConfig);
@@ -277,6 +277,9 @@ namespace WPFGame
             }
         }
 
+        /// <summary>
+        /// Saves the new configuration to the config file
+        /// </summary>
         private void SaveCurrentConfig()
         {
             using (FileStream fs = new FileStream(_configPath, FileMode.Create))
@@ -287,7 +290,30 @@ namespace WPFGame
             }
         }
 
+        /// <summary>
+        /// Updates the state of the game window
+        /// </summary>
         private void SetWindowSize()
+        {
+            UpdateGameRenderSize(_xRes, _yRes);
+
+            bitmap = new RenderTargetBitmap(_xRes, _yRes, 96, 96, PixelFormats.Pbgra32);
+            GameImage.Source = bitmap;
+
+            UpdateSceneContext();
+
+            _currentCamera?.UpdateSize(_xRes, _yRes);
+
+            WindowStyle = _gameConfiguration.WindowStyle == 0 ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+            WindowState = _gameConfiguration.WindowState == 0 ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        /// <summary>
+        /// Updates the renderable size info
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        private void UpdateGameRenderSize(int width, int height)
         {
             _xRes = _gameConfiguration.Resolution.Width;
             _yRes = _gameConfiguration.Resolution.Height;
@@ -297,35 +323,33 @@ namespace WPFGame
             Width = _xRes;
             Height = _yRes;
 
-            GameCanvas.Width = _xRes;
-            GameCanvas.Height = _yRes;
-            GameImage.Width = _xRes;
-            GameImage.Height = _yRes;
-
-            bitmap = new RenderTargetBitmap(_xRes, _yRes, 96, 96, PixelFormats.Pbgra32);
-            GameImage.Source = bitmap;
-
-            UpdateSceneContext();
-
-            _currentCamera?.UpdateSize(_xRes, _yRes);
-
-
-            WindowStyle = _gameConfiguration.WindowStyle == 0 ? WindowStyle.SingleBorderWindow : WindowStyle.None;
-            WindowState = _gameConfiguration.WindowState == 0 ? WindowState.Normal : WindowState.Maximized;
+            GameCanvas.Width = width;
+            GameCanvas.Height = height;
+            GameImage.Width = width;
+            GameImage.Height = height;
         }
 
+        /// <summary>
+        /// Updates the context
+        /// according to the current scene
+        /// </summary>
         private void UpdateSceneContext()
         {
-            RemoveOverlay(_loadingScreen);
-            _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
-            _currentScene = _session.SceneManager.CurrentScene;
-
-            if (_session.SceneManager.CurrentScene != null)
+            Dispatcher.Invoke(() =>
             {
-                _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
-            }
+                RemoveOverlay(_loadingScreen);
+                _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
+                _currentScene = _session.SceneManager.CurrentScene;
 
-            _shouldUpdateSceneContext = false;
+                if (_session.SceneManager.CurrentScene != null)
+                {
+                    uint player = _session.SceneManager.CurrentScene.PlayerEntity;
+                    ITransformComponent playerTransform = _currentScene.EntityManager.GetComponentOfType<ITransformComponent>(player);
+                    _currentCamera.UpdateFocusPoint(playerTransform);
+                }
+
+                _shouldUpdateSceneContext = false;
+            });
         }
 
         /// <summary>
@@ -345,15 +369,6 @@ namespace WPFGame
         /// <param name="e"></param>
         public void UpdateGraphics(object sender, EventArgs e)
         {
-            if (_shouldDisplayLoadingOverlay)
-            {
-                ShowLoadingOverlay();
-            }
-
-            if (_shouldUpdateSceneContext)
-            {
-                UpdateSceneContext();
-            }
             if (_session.State.IsRunning())
             {
                 // redrawing a bitmap image should be faster
@@ -426,9 +441,13 @@ namespace WPFGame
 
         }
 
+        /// <summary>
+        /// Handles when a key is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            // Temporairly here to show pause menu
             if (e.Key == Key.Escape)
             {
                 if (!GameGrid.Children.Contains(_mainMenu))
@@ -443,6 +462,16 @@ namespace WPFGame
             }
 
             _inputHandler.HandleKeyPressed(e.Key);
+        }
+
+        /// <summary>
+        /// Handles when a key is no longer pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            _inputHandler.HandleKeyReleased(e.Key);
         }
 
         /// <summary>
@@ -472,21 +501,24 @@ namespace WPFGame
             InitializeGame(save.Scenes);
         }
         
+        /// <summary>
+        /// Shows loading overlay
+        /// and removes menu overlays
+        /// </summary>
         private void ShowLoadingOverlay()
         {
-            if (!GameGrid.Children.Contains(_loadingScreen))
+            Dispatcher.Invoke(() =>
             {
-                GameGrid.Children.Add(_loadingScreen);
-            }
-            RemoveOverlay(_mainMenu);
-            RemoveOverlay(_pauseMenu);
+                if (!GameGrid.Children.Contains(_loadingScreen))
+                {
+                    GameGrid.Children.Add(_loadingScreen);
+                }
+                RemoveOverlay(_mainMenu);
+                RemoveOverlay(_pauseMenu);
 
-            _shouldDisplayLoadingOverlay = false;
+                _shouldDisplayLoadingOverlay = false;
+            });
         }
-        
-        private void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            _inputHandler.HandleKeyReleased(e.Key);
-        }
+
     }
 }
