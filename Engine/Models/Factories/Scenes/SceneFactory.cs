@@ -24,38 +24,6 @@ namespace Engine.Models.Factories
     public static class SceneFactory
     {
         private static Random _rnd = new Random();
-        public static IScene CreateBattleScene(float xRes, float yRes, GameTime gameTime, GameInput gameInputHandler)
-        {
-            int objectSize = 5;
-            int numOfObjectsInCell = 3;
-            int cellSize = objectSize * numOfObjectsInCell;
-            float baseCellXValue = (2 * objectSize) / (float)cellSize;
-            float baseCellYValue = (2 * objectSize) / (float)cellSize;
-            int numCellsX = (int)Math.Ceiling(baseCellXValue);
-            int numCellsY = (int)Math.Ceiling(baseCellYValue);
-
-            ISpatialIndex grid = new Grid(numCellsX, numCellsY, cellSize);
-
-            IEntityManager manager = new EntityManager(grid);
-
-            ITransformComponent currTransform = new TransformComponent(new Vector2(1 * objectSize, 1 * objectSize), objectSize, objectSize, new Vector2(0, 0), 0);
-            IGraphicsComponent current = new GraphicsComponent(ImgName.Player);
-
-            uint currEntity = manager.AddEntity(currTransform);
-            manager.AddComponentToEntity<IGraphicsComponent>(currEntity, current);            
-            
-            ITransformComponent currTransform2 = new TransformComponent(new Vector2(2 * objectSize, 1 * objectSize), objectSize, objectSize, new Vector2(0, 0), 1);
-            IGraphicsComponent current2 = new GraphicsComponent(ImgName.Enemy);
-
-            uint currEntity2 = manager.AddEntity(currTransform2);
-            manager.AddComponentToEntity<IGraphicsComponent>(currEntity2, current2);
-
-            IScene scene = new GeneralScene(new Camera(xRes, yRes), manager, grid);
-
-            scene.PlayerEntity = currEntity;
-
-            return scene;
-        }
 
         private static List<MetaEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, bool[,] staticCollisionsPositions)
         {
@@ -102,17 +70,7 @@ namespace Engine.Models.Factories
                 }
             }
 
-            List<MetaEntity> output = new List<MetaEntity>();
-            foreach (var item in metaMap)
-            {
-                if (item != null)
-                {
-                    output.Add(item);
-                }
-
-            }
-
-            return output;
+            return ConvertMatrixToList(metaMap);
         }
 
         private static List<MetaEntity> GenerateStaticBlocks(bool[,] staticCollisionsPositions, int baseObjectSize)
@@ -131,6 +89,11 @@ namespace Engine.Models.Factories
                 }
             }
 
+            return ConvertMatrixToList(metaMap);
+        }
+
+        private static List<MetaEntity> ConvertMatrixToList(MetaEntity[,] metaMap)
+        {
             List<MetaEntity> output = new List<MetaEntity>();
             foreach (var item in metaMap)
             {
@@ -138,7 +101,6 @@ namespace Engine.Models.Factories
                 {
                     output.Add(item);
                 }
-                
             }
 
             return output;
@@ -221,6 +183,7 @@ namespace Engine.Models.Factories
 
         private static void DetermineEntityType(MetaScene metaScene, MetaEntity currentEntity)
         {
+            // TODO: Update this to the new structure
             if (IsGroundEntity(currentEntity))
             {
                 metaScene.GroundEntities.Add(currentEntity);
@@ -295,6 +258,14 @@ namespace Engine.Models.Factories
             return scene;
         }
 
+        /// <summary>
+        /// Generates a matrix of booleans
+        /// representing indexes with walls
+        /// by boolean value true
+        /// </summary>
+        /// <param name="numOfObjectsOnX"></param>
+        /// <param name="numOfObjectsOnY"></param>
+        /// <returns></returns>
         public static bool[,] GenerateCollisions(int numOfObjectsOnX, int numOfObjectsOnY)
         {
             bool[,] map = new bool[numOfObjectsOnX, numOfObjectsOnY];
@@ -303,6 +274,11 @@ namespace Engine.Models.Factories
             return map;
         }
 
+        /// <summary>
+        /// Randomly generates walls
+        /// inside of the playable area
+        /// </summary>
+        /// <param name="map"></param>
         private static void GenerateCollisionsInside(bool[,] map)
         {
             int block = _rnd.Next(2);
@@ -355,13 +331,6 @@ namespace Engine.Models.Factories
                 bool moveUpDown = canGoUp || canGoDown;
                 bool moveLeftRight = canGoLeft || canGoRight;
 
-                //if (moveUpDown && moveLeftRight)
-                //{
-                //    int randomNumber = _rnd.Next(3);
-                //    moveUpDown = randomNumber == 0 || randomNumber == 2;
-                //    moveLeftRight = randomNumber == 1 || randomNumber == 2;
-                //}
-
                 if (moveLeftRight)
                 {
                     bool vacantFound = false;
@@ -413,6 +382,11 @@ namespace Engine.Models.Factories
             }
         }
 
+        /// <summary>
+        /// Generates walls around
+        /// the playable area
+        /// </summary>
+        /// <param name="map"></param>
         private static void GenerateEdges(bool[,] map)
         {
             for (int i = 0; i < map.GetLength(0); i++)
