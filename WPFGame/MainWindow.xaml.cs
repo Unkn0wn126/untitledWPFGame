@@ -1,5 +1,4 @@
-﻿#define TRACE
-using Engine.Models.Cameras;
+﻿using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Scenes;
 using ResourceManagers.Images;
@@ -13,13 +12,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WPFGame.ResourceManagers;
 using System.IO;
 using System.Xml.Serialization;
 using Engine.Saving;
 using WPFGame.Saving;
-using Microsoft.Win32;
 using WPFGame.UI.HUD;
 using WPFGame.UI.MainMenu;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -28,7 +25,6 @@ using Engine.Models.Factories.Scenes;
 using WPFGame.UI.PauseMenu;
 using System.Windows.Threading;
 using WPFGame.UI.LoadingScreen;
-using System.Diagnostics;
 
 namespace WPFGame
 {
@@ -93,12 +89,36 @@ namespace WPFGame
             _savesPath = new Uri(@"./Saves", UriKind.Relative);
             _imagePaths = imagePaths;
             _isTextureModeOn = true;
+            _session = session;
+            LoadConfig();
+            _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             InitializeComponent();
 
-            LoadConfig();
+            FinishInitialization();
+        }
 
-            _session = session;
+        /// <summary>
+        /// Creates a new instance of image
+        /// to render the game to
+        /// </summary>
+        private void InitializeRenderImage()
+        {
+            // this is what everything renders to
+            bitmap = new RenderTargetBitmap(_gameConfiguration.Resolution.Width, 
+                _gameConfiguration.Resolution.Height, 96, 96, PixelFormats.Pbgra32);
+
+            GameImage.Source = bitmap;
+        }
+
+        /// <summary>
+        /// Takes care of the rest of
+        /// the initialization process
+        /// </summary>
+        private void FinishInitialization()
+        {
+            InitializeRenderImage();
+
             InitializeImages();
 
             _session.SceneManager.SceneChangeStarted += ShowLoadingOverlay;
@@ -106,28 +126,48 @@ namespace WPFGame
 
             _loadingScreen = new LoadingScreen();
 
+            InitializeGameRenderLoop();
+
+            InitializeSaveMenusActions();
+
+            InitializeOverlays();
+
+            SetWindowSize();
+
+            LoadMainMenu();
+        }
+
+        /// <summary>
+        /// Initializes main menu
+        /// </summary>
+        private void InitializeMainMenu()
+        {
+            ProcessMenuButtonClick closeGameAction = new ProcessMenuButtonClick(CloseGame);
+            ProcessMenuButtonClick generateGameAction = new ProcessMenuButtonClick(GenerateGame);
+            ProcessSettingsApplyButtonClick updateCurrentConfigAction = new ProcessSettingsApplyButtonClick(UpadteCurrentConfig);
+            _mainMenu = new MainMenu(closeGameAction, generateGameAction, updateCurrentConfigAction, _gameConfiguration, _loadGameAction, _savesPath);
+        }
+
+        /// <summary>
+        /// Initializes the overlays
+        /// </summary>
+        private void InitializeOverlays()
+        {
+            _mapHUD = new MapPlayerInfo();
+            InitializeMainMenu();
+            InitializePauseMenu();
+        }
+
+        /// <summary>
+        /// Initializes the main game renderer
+        /// </summary>
+        private void InitializeGameRenderLoop()
+        {
             _updateTimer = new DispatcherTimer();
             _updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 17);
             _updateTimer.Tick += UpdateGraphics;
 
             _updateTimer.Start();
-
-            InitializeSaveMenusActions();
-
-            _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
-
-            // this is what everything renders to
-            bitmap = new RenderTargetBitmap(_gameConfiguration.Resolution.Width, _gameConfiguration.Resolution.Height, 96, 96, PixelFormats.Pbgra32);
-            GameImage.Source = bitmap;
-
-            _mapHUD = new MapPlayerInfo();
-            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(GenerateGame), new ProcessSettingsApplyButtonClick(UpadteCurrentConfig), _gameConfiguration, _loadGameAction, _savesPath);
-            InitializePauseMenuActions();
-            _pauseMenu = new PauseMenu(_pauseResumeAction, _pauseLoadMainAction, _pauseQuitAction, _pauseApplyAction, _gameConfiguration, _loadGameAction, _saveGameAction, _savesPath);
-
-            SetWindowSize();
-
-            LoadMainMenu();
         }
 
         /// <summary>
@@ -142,12 +182,16 @@ namespace WPFGame
         /// <summary>
         /// Initializes the pause menu actions
         /// </summary>
-        private void InitializePauseMenuActions()
+        private void InitializePauseMenu()
         {
             _pauseResumeAction = new ProcessMenuButtonClick(TogglePauseMenu);
             _pauseLoadMainAction = new ProcessMenuButtonClick(LoadMainMenu);
             _pauseQuitAction = new ProcessMenuButtonClick(CloseGame);
             _pauseApplyAction = new ProcessSettingsApplyButtonClick(UpadteCurrentConfig);
+
+            _pauseMenu = new PauseMenu(_pauseResumeAction, _pauseLoadMainAction, 
+                _pauseQuitAction, _pauseApplyAction, _gameConfiguration, 
+                _loadGameAction, _saveGameAction, _savesPath);
         }
 
         /// <summary>
