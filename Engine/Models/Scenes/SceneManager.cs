@@ -6,7 +6,6 @@ using Engine.Models.Factories.Scenes;
 using GameInputHandler;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TimeUtils;
@@ -61,6 +60,11 @@ namespace Engine.Models.Scenes
             CurrentIndex = 0;
         }
 
+        /// <summary>
+        /// Serializes the current state
+        /// of the game
+        /// </summary>
+        /// <returns></returns>
         public List<byte[]> GetScenesToSave()
         {
             byte[] currentScene = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
@@ -69,6 +73,10 @@ namespace Engine.Models.Scenes
             return MetaScenes;
         }
 
+        /// <summary>
+        /// Basically loads a new game
+        /// </summary>
+        /// <param name="newScenes"></param>
         public void UpdateScenes(List<byte[]> newScenes)
         {
             CurrentIndex = 0;
@@ -77,6 +85,13 @@ namespace Engine.Models.Scenes
             LoadNextScene();
         }
 
+        /// <summary>
+        /// Deserializes meta scene
+        /// from the list of current
+        /// scenes
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         private MetaScene DeserializeMetaScene(int index)
         {
             byte[] item = MetaScenes[index];
@@ -90,6 +105,12 @@ namespace Engine.Models.Scenes
             return result;
         }
 
+        /// <summary>
+        /// Serializes the given meta scene
+        /// to a byte array
+        /// </summary>
+        /// <param name="metaScene"></param>
+        /// <returns></returns>
         private byte[] SerializeMetaScene(MetaScene metaScene)
         {
             byte[] current;
@@ -108,6 +129,9 @@ namespace Engine.Models.Scenes
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Loads the next scene in the list
+        /// </summary>
         public void LoadNextScene()
         {
             SceneChangeStarted.Invoke();
