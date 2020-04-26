@@ -128,6 +128,9 @@ namespace WPFGame
             LoadMainMenu();
         }
 
+        /// <summary>
+        /// Initializes the save menu actions
+        /// </summary>
         private void InitializeSaveMenusActions()
         {
             _savesPath = new Uri(@"./Saves", UriKind.Relative);
@@ -135,6 +138,9 @@ namespace WPFGame
             _loadGameAction = new ProcessSaveActionButtonClick(LoadGame);
         }
 
+        /// <summary>
+        /// Initializes the pause menu actions
+        /// </summary>
         private void InitializePauseMenuActions()
         {
             _pauseResumeAction = new ProcessMenuButtonClick(TogglePauseMenu);
@@ -143,22 +149,22 @@ namespace WPFGame
             _pauseApplyAction = new ProcessSettingsApplyButtonClick(UpadteCurrentConfig);
         }
 
+        /// <summary>
+        /// Loads the main menu
+        /// </summary>
         private void LoadMainMenu()
         {
-            if (GameGrid.Children.Contains(_pauseMenu))
-            {
-                GameGrid.Children.Remove(_pauseMenu);
-            }
-            if (GameGrid.Children.Contains(_mapHUD))
-            {
-                GameGrid.Children.Remove(_mapHUD);
-            }
+            RemoveOverlay(_pauseMenu);
+            RemoveOverlay(_mapHUD);
             if (!GameGrid.Children.Contains(_mainMenu))
             {
                 GameGrid.Children.Add(_mainMenu);
             }
         }
 
+        /// <summary>
+        /// Toggles the pause menu overlay
+        /// </summary>
         private void TogglePauseMenu()
         {
             _session.State.TogglePause();
@@ -168,12 +174,13 @@ namespace WPFGame
                 GameGrid.Children.Add(_pauseMenu);
             }
             else
-            {
-                GameGrid.Children.Remove(_pauseMenu);
-                _pauseMenu.RestoreDefaultState();
-            }
+                RemoveOverlay(_pauseMenu);
         }
 
+        /// <summary>
+        /// Toggles the player HUD
+        /// on the map
+        /// </summary>
         private void ToggleMapHUD()
         {
             if (!GameGrid.Children.Contains(_mapHUD))
@@ -186,8 +193,12 @@ namespace WPFGame
             }
         }
 
+        /// <summary>
+        /// Generates a new game
+        /// </summary>
         private void GenerateGame()
         {
+            ShowLoadingOverlay();
             Random rnd = new Random();
             int val = rnd.Next(10, 100);
 
@@ -210,27 +221,35 @@ namespace WPFGame
             InitializeGame(metaScenes);
         }
 
+        /// <summary>
+        /// Initializes the game
+        /// </summary>
+        /// <param name="metaScenes"></param>
         private void InitializeGame(List<byte[]> metaScenes)
         {
-            ShowLoadingOverlay();
-
             _session.InitializeGame(metaScenes);
-            SetWindowSize();
-
-            //ToggleMapHUD();
-
-            if (_session.SceneManager.CurrentScene != null)
-            {
-                _currentCamera?.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
-            }
         }
 
+        /// <summary>
+        /// Removes the given GUI overlay
+        /// </summary>
+        /// <param name="control"></param>
         private void RemoveOverlay(UserControl control)
         {
             if (GameGrid.Children.Contains(control))
             {
                 GameGrid.Children.Remove(control);
             }
+            ResetMenus(control);
+        }
+
+
+        /// <summary>
+        /// Resets the states of menus
+        /// </summary>
+        /// <param name="control"></param>
+        private void ResetMenus(UserControl control)
+        {
             if (control == _pauseMenu)
             {
                 _pauseMenu.RestoreDefaultState();
@@ -241,11 +260,19 @@ namespace WPFGame
             }
         }
 
+        /// <summary>
+        /// Allows to close the game
+        /// via a delegate
+        /// </summary>
         private void CloseGame()
         {
             Close();
         }
 
+        /// <summary>
+        /// Loads the configuration
+        /// from a configuration file
+        /// </summary>
         private void LoadConfig()
         {
             _gameConfiguration = new Configuration();
@@ -259,22 +286,29 @@ namespace WPFGame
         }
 
         /// <summary>
-        /// Updates the current 
+        /// Updates the current configuration
         /// </summary>
         /// <param name="newConfig"></param>
         private void UpadteCurrentConfig(Configuration newConfig)
+        {
+            UpdateMenuConfiguration(newConfig);
+            SetWindowSize();
+            _inputHandler.UpdateConfiguration(_gameConfiguration);
+            SaveCurrentConfig();
+            UpdateSceneContext();
+        }
+
+        /// <summary>
+        /// Updates the current configuration
+        /// and menu configuration as well
+        /// </summary>
+        /// <param name="newConfig"></param>
+        private void UpdateMenuConfiguration(Configuration newConfig)
         {
             _gameConfiguration = new Configuration(newConfig);
             _gameConfiguration.PerformDuplicateCheck();
             _mainMenu.UpdateConfig(_gameConfiguration);
             _pauseMenu.UpdateConfig(_gameConfiguration);
-            SetWindowSize();
-            _inputHandler.UpdateConfiguration(_gameConfiguration);
-            SaveCurrentConfig();
-            if (_session.SceneManager.CurrentScene != null)
-            {
-                _currentCamera?.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
-            }
         }
 
         /// <summary>
@@ -300,7 +334,7 @@ namespace WPFGame
             bitmap = new RenderTargetBitmap(_xRes, _yRes, 96, 96, PixelFormats.Pbgra32);
             GameImage.Source = bitmap;
 
-            UpdateSceneContext();
+            UpdateCameraFocusPoint();
 
             _currentCamera?.UpdateSize(_xRes, _yRes);
 
@@ -341,15 +375,18 @@ namespace WPFGame
                 _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
                 _currentScene = _session.SceneManager.CurrentScene;
 
-                if (_session.SceneManager.CurrentScene != null)
-                {
-                    uint player = _session.SceneManager.CurrentScene.PlayerEntity;
-                    ITransformComponent playerTransform = _currentScene.EntityManager.GetComponentOfType<ITransformComponent>(player);
-                    _currentCamera.UpdateFocusPoint(playerTransform);
-                }
-
-                _shouldUpdateSceneContext = false;
+                SetWindowSize();
             });
+        }
+
+        private void UpdateCameraFocusPoint()
+        {
+            if (_session.SceneManager.CurrentScene != null)
+            {
+                uint player = _session.SceneManager.CurrentScene.PlayerEntity;
+                ITransformComponent playerTransform = _currentScene.EntityManager.GetComponentOfType<ITransformComponent>(player);
+                _currentCamera.UpdateFocusPoint(playerTransform);
+            }
         }
 
         /// <summary>
@@ -398,10 +435,19 @@ namespace WPFGame
             foreach (var item in _currentCamera.VisibleObjects)
             {
                 // conversion of logical coordinates to graphical ones
-                float graphicX = CalculateGraphicsCoordinate(transformComponents[index].Position.X, _currentCamera.XOffset, focusPos.X);
-                float graphicY = CalculateGraphicsCoordinate(transformComponents[index].Position.Y, _currentCamera.YOffset, focusPos.Y);
+                float graphicX = CalculateGraphicsCoordinate(
+                    transformComponents[index].Position.X, 
+                    _currentCamera.XOffset, focusPos.X);
 
-                DrawGraphicsComponent(item, graphicX, graphicY, transformComponents[index].ScaleX * _sizeMultiplier, transformComponents[index].ScaleY * _sizeMultiplier, drawingContext, _isTextureModeOn);
+                float graphicY = CalculateGraphicsCoordinate(
+                    transformComponents[index].Position.Y, 
+                    _currentCamera.YOffset, focusPos.Y);
+
+                DrawGraphicsComponent(item, graphicX, graphicY, 
+                    transformComponents[index].ScaleX * _sizeMultiplier, 
+                    transformComponents[index].ScaleY * _sizeMultiplier, 
+                    drawingContext, _isTextureModeOn);
+
                 index++;
             }
         }
@@ -515,8 +561,6 @@ namespace WPFGame
                 }
                 RemoveOverlay(_mainMenu);
                 RemoveOverlay(_pauseMenu);
-
-                _shouldDisplayLoadingOverlay = false;
             });
         }
 
