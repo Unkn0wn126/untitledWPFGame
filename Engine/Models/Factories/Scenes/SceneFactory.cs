@@ -181,19 +181,62 @@ namespace Engine.Models.Factories
             return output;
         }
 
+        /// <summary>
+        /// Creates a meta scene
+        /// </summary>
+        /// <param name="lifeComponent"></param>
+        /// <param name="numOfObjectsOnX"></param>
+        /// <param name="numOfObjectsOnY"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="numOfObjectsInCell"></param>
+        /// <returns></returns>
         public static MetaScene CreateMetaScene(ILifeComponent lifeComponent, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int numOfObjectsInCell)
         {
-            MetaScene metaScene = new MetaScene(SceneType.General);
-            metaScene.NumOfEntitiesOnX = numOfObjectsOnX;
-            metaScene.NumOfEntitiesOnY = numOfObjectsOnY;
-            metaScene.BaseObjectSize = baseObjectSize;
-            metaScene.NumOfObjectsInCell = numOfObjectsInCell;
+            MetaScene metaScene = new MetaScene(SceneType.General)
+            {
+                NumOfEntitiesOnX = numOfObjectsOnX,
+                NumOfEntitiesOnY = numOfObjectsOnY,
+                BaseObjectSize = baseObjectSize,
+                NumOfObjectsInCell = numOfObjectsInCell
+            };
+
+            CreateMetaSceneEntities(metaScene, lifeComponent, numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
+
+            return metaScene;
+        }
+
+        /// <summary>
+        /// Creates meta entities
+        /// for the given meta scene
+        /// </summary>
+        /// <param name="metaScene"></param>
+        /// <param name="lifeComponent"></param>
+        /// <param name="numOfObjectsOnX"></param>
+        /// <param name="numOfObjectsOnY"></param>
+        /// <param name="baseObjectSize"></param>
+        private static void CreateMetaSceneEntities(MetaScene metaScene, ILifeComponent lifeComponent, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        {
             bool[,] staticCollisionsPositions = GenerateCollisions(numOfObjectsOnX, numOfObjectsOnY);
 
             metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, staticCollisionsPositions);
 
             metaScene.StaticCollisionEntities = GenerateStaticBlocks(staticCollisionsPositions, baseObjectSize);
 
+            metaScene.LivingEntities = GenerateLivingEntities(staticCollisionsPositions, numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
+            metaScene.LivingEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
+        }
+
+        /// <summary>
+        /// Generates a list of living entities
+        /// </summary>
+        /// <param name="staticCollisionsPositions"></param>
+        /// <param name="numOfObjectsOnX"></param>
+        /// <param name="numOfObjectsOnY"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <returns></returns>
+        private static List<MetaEntity> GenerateLivingEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        {
+            List<MetaEntity> livingEntities = new List<MetaEntity>();
             int numOfEnemies = numOfObjectsOnX / 2;//(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f));
             int currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
             int currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
@@ -206,41 +249,92 @@ namespace Engine.Models.Factories
                     currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
                 }
 
-                metaScene.LivingEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, currEnemyXIndex, currEnemyYIndex));
+                livingEntities.Add(GenerateLivingEntity(baseObjectSize, currEnemyXIndex, currEnemyYIndex));
 
                 currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
                 currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
             }
 
-            metaScene.LivingEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
-
-            return metaScene;
+            return livingEntities;
         }
 
-        private static MetaEntity GenerateDynamicEntities(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int xPos, int yPos)
+        /// <summary>
+        /// Generates a meta representation
+        /// of a living entity
+        /// </summary>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="xPos"></param>
+        /// <param name="yPos"></param>
+        /// <returns></returns>
+        private static MetaEntity GenerateLivingEntity(int baseObjectSize, int xPos, int yPos)
         {
-            MetaEntity metaMapEntity = new MetaEntity();
-            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
-            metaMapEntity = new MetaEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Enemy, Components = current, ZIndex = 3, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | 
+                ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
+
+            MetaEntity metaMapEntity = new MetaEntity 
+            { 
+                CollisionType = CollisionType.Solid | CollisionType.Dynamic, 
+                Graphics = ImgName.Enemy, Components = current, 
+                ZIndex = 3, 
+                PosX = xPos, 
+                PosY = yPos, 
+                SizeX = baseObjectSize, 
+                SizeY = baseObjectSize 
+            };
             metaMapEntity.Scripts = ScriptType.AiMovement;
-            metaMapEntity.LifeComponent = new LifeComponent { Agility = 10, AttributePoints = 0, BattleClass = BattleClass.Swordsman, CurrentLevel = 1, CurrentXP = 0, Gender = Gender.Male, MaxHP = 100, HP = 100, Intelligence = 10, IsPlayer = false, MaxMP = 100, MaxStamina = 100, MP = 100, Name = "Prak", NextLevelXP = 100, Race = Race.Human, Stamina = 100, Strength = 10 };
+            metaMapEntity.LifeComponent = new LifeComponent 
+            { 
+                Agility = 10, AttributePoints = 0, BattleClass = BattleClass.Swordsman, 
+                CurrentLevel = 1, CurrentXP = 0, Gender = Gender.Male, MaxHP = 100, HP = 100, 
+                Intelligence = 10, IsPlayer = false, MaxMP = 100, MaxStamina = 100, MP = 100, 
+                Name = "Prak", NextLevelXP = 100, Race = Race.Human, Stamina = 100, 
+                Strength = 10 
+            };
             return metaMapEntity;
         }
 
+        /// <summary>
+        /// Creates meta representation
+        /// of the player entity
+        /// </summary>
+        /// <param name="lifeComponent"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="xPos"></param>
+        /// <param name="yPos"></param>
+        /// <returns></returns>
         private static MetaEntity GenerateMetaPlayer(ILifeComponent lifeComponent, int baseObjectSize, int xPos, int yPos)
         {
-            MetaEntity metaMapEntity = new MetaEntity();
-            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
-            metaMapEntity = new MetaEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Player, Components = current, ZIndex = 2, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | 
+                ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
+
+            MetaEntity metaMapEntity = new MetaEntity 
+            { 
+                CollisionType = CollisionType.Solid | CollisionType.Dynamic, 
+                Graphics = ImgName.Player, 
+                Components = current, 
+                ZIndex = 2, 
+                PosX = xPos, 
+                PosY = yPos, 
+                SizeX = baseObjectSize, 
+                SizeY = baseObjectSize
+            };
+
             metaMapEntity.Scripts = ScriptType.PlayerMovement;
-            metaMapEntity.LifeComponent = lifeComponent == null ? new LifeComponent { IsPlayer = true} : lifeComponent;
+            metaMapEntity.LifeComponent = lifeComponent ?? new LifeComponent { IsPlayer = true };
             return metaMapEntity;
         }
 
+        /// <summary>
+        /// Generates a meta scene
+        /// based on the given scene
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <returns></returns>
         public static MetaScene GenerateMetaSceneFromScene(IScene scene)
         {
             MetaScene metaScene = new MetaScene(SceneType.General);
             IEntityManager manager = scene.EntityManager;
+
             foreach (var item in manager.GetAllEntities())
             {
                 MetaEntity currentEntity = EntityFactory.GenerateMetaEntityFromEntity(manager, item);
@@ -248,7 +342,7 @@ namespace Engine.Models.Factories
                 DetermineEntityType(metaScene, currentEntity);
             }
 
-            metaScene.BaseObjectSize = 1;
+            metaScene.BaseObjectSize = scene.BaseObjectSize;
             metaScene.NumOfEntitiesOnX = scene.NumOfEntitiesOnX;
             metaScene.NumOfEntitiesOnY = scene.NumOfEntitiesOnY;
             metaScene.NumOfObjectsInCell = scene.NumOfObjectsInCell;
@@ -256,6 +350,16 @@ namespace Engine.Models.Factories
             return metaScene;
         }
 
+        /// <summary>
+        /// Determines the type of
+        /// the entity based on its
+        /// components and adds it
+        /// to the corresponding
+        /// collection of the
+        /// meta scene
+        /// </summary>
+        /// <param name="metaScene"></param>
+        /// <param name="currentEntity"></param>
         private static void DetermineEntityType(MetaScene metaScene, MetaEntity currentEntity)
         {
             // TODO: Update this to the new structure
@@ -272,24 +376,32 @@ namespace Engine.Models.Factories
                 metaScene.LivingEntities.Add(currentEntity);
             }
         }
-        private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
-        {
-            return (requiredValue & askedValue) == askedValue;
-        }
 
-        private static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)
-        {
-            return (requiredValue & askedValue) == askedValue;
-        }
-
+        /// <summary>
+        /// Based on the components
+        /// determines if the entity
+        /// is ground entity
+        /// </summary>
+        /// <param name="currentEntity"></param>
+        /// <returns></returns>
         private static bool IsGroundEntity(MetaEntity currentEntity)
         {
-            return !IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent) && IsComponentRequired(currentEntity.Components, ComponentState.NavMeshComponent);
+            return !EntityFactory.IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent) && 
+                EntityFactory.IsComponentRequired(currentEntity.Components, ComponentState.NavMeshComponent);
         }
 
+        /// <summary>
+        /// Based on the components
+        /// determines if the entity
+        /// is static collision entity
+        /// </summary>
+        /// <param name="currentEntity"></param>
+        /// <returns></returns>
         private static bool IsStaticCollisionEntity(MetaEntity currentEntity)
         {
-            return IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && !IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && currentEntity.LifeComponent == null;
+            return EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && 
+                !EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && 
+                currentEntity.LifeComponent == null;
         }
 
         public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer)
@@ -372,86 +484,103 @@ namespace Engine.Models.Factories
                 }
             }
 
+            ProcessNonCollisionIndexes(map, vacantToCheck, visitedIndexes);
+        }
+
+        private static void GenerateNonCollisionForColumns(List<int> possibleYCoords, bool[,] map, Tuple<int, int> tuple, Stack<Tuple<int, int>> vacantToCheck)
+        {
+            bool vacantFound = false;
+            foreach (var item in possibleYCoords)
+            {
+                int currValue = _rnd.Next(2);
+                bool addAnother = vacantFound && currValue == 1;
+                if (map[tuple.Item1, item] && addAnother)
+                {
+                    map[tuple.Item1, item] = false;
+                }
+                else
+                {
+                    vacantFound = true;
+                }
+
+                if (!map[tuple.Item1, item])
+                {
+                    vacantToCheck.Push(new Tuple<int, int>(tuple.Item1, item));
+                }
+            }
+        }
+
+        private static void GenerateNonCollisionForRows(List<int> possibleXCoords, bool[,] map, Tuple<int, int> tuple, Stack<Tuple<int, int>> vacantToCheck)
+        {
+            bool vacantFound = false;
+            foreach (var item in possibleXCoords)
+            {
+                int currValue = _rnd.Next(2);
+                bool addAnother = vacantFound && currValue == 1;
+                if (map[item, tuple.Item2] && addAnother)
+                {
+                    map[item, tuple.Item2] = false;
+                }
+                else
+                {
+                    vacantFound = true;
+                }
+
+                if (!map[item, tuple.Item2])
+                {
+                    vacantToCheck.Push(new Tuple<int, int>(item, tuple.Item2));
+                }
+            }
+        }
+
+        private static void ProcessNonCollisionIndexDirection(bool moveUpDown, bool moveLeftRight, 
+            List<int> possibleXCoords, List<int> possibleYCoords, 
+            Tuple<int, int> tuple, bool[,] map, Stack<Tuple<int, int>> vacantToCheck)
+        {
+            if (moveLeftRight)
+            {
+                GenerateNonCollisionForColumns(possibleYCoords, map, tuple, vacantToCheck);
+            }
+            if (moveUpDown)
+            {
+                GenerateNonCollisionForRows(possibleXCoords, map, tuple, vacantToCheck);
+            }
+        }
+
+        private static void ProcessNonCollisionIndex(bool[,] map, Stack<Tuple<int, int>> vacantToCheck, Tuple<int, int> tuple)
+        {
+            bool canGoLeft = tuple.Item2 > 2;
+            bool canGoRight = tuple.Item2 < map.GetLength(1) - 2;
+            bool canGoUp = tuple.Item1 > 2;
+            bool canGoDown = tuple.Item1 < map.GetLength(0) - 2;
+
+            List<int> possibleXCoords = new List<int>();
+            List<int> possibleYCoords = new List<int>();
+
+            if (canGoLeft)
+                possibleYCoords.Add(tuple.Item2 - 1);
+            if (canGoRight)
+                possibleYCoords.Add(tuple.Item2 + 1);
+            if (canGoUp)
+                possibleXCoords.Add(tuple.Item1 - 1);
+            if (canGoDown)
+                possibleXCoords.Add(tuple.Item1 + 1);
+
+            bool moveUpDown = canGoUp || canGoDown;
+            bool moveLeftRight = canGoLeft || canGoRight;
+
+            ProcessNonCollisionIndexDirection(moveUpDown, moveLeftRight, possibleXCoords, possibleYCoords, tuple, map, vacantToCheck);
+        }
+
+        private static void ProcessNonCollisionIndexes(bool[,] map, Stack<Tuple<int, int>> vacantToCheck, List<Tuple<int, int>> visitedIndexes)
+        {
             while (vacantToCheck.Count > 0)
             {
                 Tuple<int, int> tuple = vacantToCheck.Pop();
                 if (visitedIndexes.Find(x => x.Item1 == tuple.Item1 && x.Item2 == tuple.Item2) != null) // already visited?
-                {
                     continue;
-                }
 
-                int numOfRows = map.GetLength(0);
-                int numOfCols = map.GetLength(1);
-
-                bool canGoLeft = tuple.Item2 > 2;
-                bool canGoRight = tuple.Item2 < map.GetLength(1) - 2;
-                bool canGoUp = tuple.Item1 > 2;
-                bool canGoDown = tuple.Item1 < map.GetLength(0) - 2;
-
-                List<int> possibleXCoords = new List<int>();
-                List<int> possibleYCoords = new List<int>();
-
-                if (canGoLeft)
-                    possibleYCoords.Add(tuple.Item2 - 1);
-                if (canGoRight)
-                    possibleYCoords.Add(tuple.Item2 + 1);
-                if (canGoUp)
-                    possibleXCoords.Add(tuple.Item1 - 1);
-                if (canGoDown)
-                    possibleXCoords.Add(tuple.Item1 + 1);
-
-                int nextXIndex = _rnd.Next(possibleXCoords.Count);
-                int nextYIndex = _rnd.Next(possibleYCoords.Count);
-
-                bool moveUpDown = canGoUp || canGoDown;
-                bool moveLeftRight = canGoLeft || canGoRight;
-
-                if (moveLeftRight)
-                {
-                    bool vacantFound = false;
-                    foreach (var item in possibleYCoords)
-                    {
-                        int currValue = _rnd.Next(2);
-                        bool addAnother = vacantFound && currValue == 1;
-                        if (map[tuple.Item1, item] && addAnother)
-                        {
-                            map[tuple.Item1, item] = false;
-                        }
-                        else
-                        {
-                            vacantFound = true;
-                        }
-
-                        if (!map[tuple.Item1, item])
-                        {
-                            vacantToCheck.Push(new Tuple<int, int>(tuple.Item1, item));
-                        }
-                    }
-
-                }
-                if (moveUpDown)
-                {
-
-                    bool vacantFound = false;
-                    foreach (var item in possibleXCoords)
-                    {
-                        int currValue = _rnd.Next(2);
-                        bool addAnother = vacantFound && currValue == 1;
-                        if (map[item, tuple.Item2] && addAnother)
-                        {
-                            map[item, tuple.Item2] = false;
-                        }
-                        else
-                        {
-                            vacantFound = true;
-                        }
-
-                        if (!map[item, tuple.Item2])
-                        {
-                            vacantToCheck.Push(new Tuple<int, int>(item, tuple.Item2));
-                        }
-                    }
-                }
+                ProcessNonCollisionIndex(map, vacantToCheck, tuple);
 
                 visitedIndexes.Add(tuple);
             }

@@ -82,15 +82,15 @@ namespace Engine.ViewModels
             if (State.IsRunning())
             {
 
-                // temporary start
-                timeElapsed += _gameTime.DeltaTimeInSeconds;
+                //// temporary start
+                //timeElapsed += _gameTime.DeltaTimeInSeconds;
 
-                if (timeElapsed >= 8)
-                {
-                    SceneManager.LoadNextScene();
-                    timeElapsed = 0;
-                }
-                // temporary end
+                //if (timeElapsed >= 8)
+                //{
+                //    SceneManager.LoadNextScene();
+                //    timeElapsed = 0;
+                //}
+                //// temporary end
 
                 SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
 
