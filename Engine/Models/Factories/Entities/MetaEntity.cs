@@ -14,7 +14,7 @@ namespace Engine.Models.Factories.Entities
     /// information for generation
     /// </summary>
     [Serializable]
-    public class MetaMapEntity
+    public class MetaEntity
     {
         public ComponentState Components { get; set; }
         public ImgName Graphics { get; set; }

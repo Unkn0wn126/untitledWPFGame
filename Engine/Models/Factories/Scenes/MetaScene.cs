@@ -28,11 +28,11 @@ namespace Engine.Models.Factories.Scenes
         public int BaseObjectSize { get; set; }
         public int NumOfEntitiesOnX { get; set; }
         public int NumOfEntitiesOnY { get; set; }
-        public List<MetaMapEntity> GroundEntities { get; set; }
-        public List<MetaMapEntity> StaticCollisionEntities { get; set; }
-        public List<MetaMapEntity> TriggerEntities { get; set; }
-        public List<MetaMapEntity> LivingEntities { get; set; }
-        public List<MetaMapEntity> OtherEntities { get; set; }
+        public List<MetaEntity> GroundEntities { get; set; }
+        public List<MetaEntity> StaticCollisionEntities { get; set; }
+        public List<MetaEntity> TriggerEntities { get; set; }
+        public List<MetaEntity> LivingEntities { get; set; }
+        public List<MetaEntity> OtherEntities { get; set; }
         public Guid ID { get; set; }
         public Guid NextScene { get; set; }
 
@@ -41,11 +41,11 @@ namespace Engine.Models.Factories.Scenes
             ID = Guid.NewGuid();
             NextScene = Guid.Empty;
             Type = type;
-            GroundEntities = new List<MetaMapEntity>();
-            StaticCollisionEntities = new List<MetaMapEntity>();
-            TriggerEntities = new List<MetaMapEntity>();
-            LivingEntities = new List<MetaMapEntity>();
-            OtherEntities = new List<MetaMapEntity>();
+            GroundEntities = new List<MetaEntity>();
+            StaticCollisionEntities = new List<MetaEntity>();
+            TriggerEntities = new List<MetaEntity>();
+            LivingEntities = new List<MetaEntity>();
+            OtherEntities = new List<MetaEntity>();
         }
     }
 }

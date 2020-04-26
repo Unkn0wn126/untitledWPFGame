@@ -57,9 +57,9 @@ namespace Engine.Models.Factories
             return scene;
         }
 
-        private static List<MetaMapEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, bool[,] staticCollisionsPositions)
+        private static List<MetaEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, bool[,] staticCollisionsPositions)
         {
-            MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
+            MetaEntity[,] metaMap = new MetaEntity[numOfObjectsOnX, numOfObjectsOnY];
             ComponentState current;
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
@@ -86,7 +86,7 @@ namespace Engine.Models.Factories
                         {
                             navmeshDirections |= NavmeshContinues.Down;
                         }
-                        metaMap[i, j] = new MetaMapEntity
+                        metaMap[i, j] = new MetaEntity
                         {
                             CollisionType = CollisionType.None,
                             Graphics = currImg,
@@ -102,7 +102,7 @@ namespace Engine.Models.Factories
                 }
             }
 
-            List<MetaMapEntity> output = new List<MetaMapEntity>();
+            List<MetaEntity> output = new List<MetaEntity>();
             foreach (var item in metaMap)
             {
                 if (item != null)
@@ -115,9 +115,9 @@ namespace Engine.Models.Factories
             return output;
         }
 
-        private static List<MetaMapEntity> GenerateStaticBlocks(bool[,] staticCollisionsPositions, int baseObjectSize)
+        private static List<MetaEntity> GenerateStaticBlocks(bool[,] staticCollisionsPositions, int baseObjectSize)
         {
-            MetaMapEntity[,] metaMap = new MetaMapEntity[staticCollisionsPositions.GetLength(0), staticCollisionsPositions.GetLength(1)];
+            MetaEntity[,] metaMap = new MetaEntity[staticCollisionsPositions.GetLength(0), staticCollisionsPositions.GetLength(1)];
             ComponentState current;
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
@@ -126,12 +126,12 @@ namespace Engine.Models.Factories
                     if (staticCollisionsPositions[i,j])
                     {
                         current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
-                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Cobblestone, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
+                        metaMap[i, j] = new MetaEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Cobblestone, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
                     }
                 }
             }
 
-            List<MetaMapEntity> output = new List<MetaMapEntity>();
+            List<MetaEntity> output = new List<MetaEntity>();
             foreach (var item in metaMap)
             {
                 if (item != null)
@@ -180,21 +180,21 @@ namespace Engine.Models.Factories
             return metaScene;
         }
 
-        private static MetaMapEntity GenerateDynamicEntities(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int xPos, int yPos)
+        private static MetaEntity GenerateDynamicEntities(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int xPos, int yPos)
         {
-            MetaMapEntity metaMapEntity = new MetaMapEntity();
+            MetaEntity metaMapEntity = new MetaEntity();
             ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
-            metaMapEntity = new MetaMapEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Enemy, Components = current, ZIndex = 3, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
+            metaMapEntity = new MetaEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Enemy, Components = current, ZIndex = 3, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
             metaMapEntity.Scripts = ScriptType.AiMovement;
             metaMapEntity.LifeComponent = new LifeComponent { Agility = 10, AttributePoints = 0, BattleClass = BattleClass.Swordsman, CurrentLevel = 1, CurrentXP = 0, Gender = Gender.Male, MaxHP = 100, HP = 100, Intelligence = 10, IsPlayer = false, MaxMP = 100, MaxStamina = 100, MP = 100, Name = "Prak", NextLevelXP = 100, Race = Race.Human, Stamina = 100, Strength = 10 };
             return metaMapEntity;
         }
 
-        private static MetaMapEntity GenerateMetaPlayer(ILifeComponent lifeComponent, int baseObjectSize, int xPos, int yPos)
+        private static MetaEntity GenerateMetaPlayer(ILifeComponent lifeComponent, int baseObjectSize, int xPos, int yPos)
         {
-            MetaMapEntity metaMapEntity = new MetaMapEntity();
+            MetaEntity metaMapEntity = new MetaEntity();
             ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent | ComponentState.RigidBodyComponent | ComponentState.LifeComponent;
-            metaMapEntity = new MetaMapEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Player, Components = current, ZIndex = 2, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
+            metaMapEntity = new MetaEntity { CollisionType = CollisionType.Solid | CollisionType.Dynamic, Graphics = ImgName.Player, Components = current, ZIndex = 2, PosX = xPos, PosY = yPos, SizeX = baseObjectSize, SizeY = baseObjectSize };
             metaMapEntity.Scripts = ScriptType.PlayerMovement;
             metaMapEntity.LifeComponent = lifeComponent == null ? new LifeComponent { IsPlayer = true} : lifeComponent;
             return metaMapEntity;
@@ -206,7 +206,7 @@ namespace Engine.Models.Factories
             IEntityManager manager = scene.EntityManager;
             foreach (var item in manager.GetAllEntities())
             {
-                MetaMapEntity currentEntity = EntityFactory.GenerateMetaEntityFromEntity(manager, item);
+                MetaEntity currentEntity = EntityFactory.GenerateMetaEntityFromEntity(manager, item);
 
                 DetermineEntityType(metaScene, currentEntity);
             }
@@ -219,7 +219,7 @@ namespace Engine.Models.Factories
             return metaScene;
         }
 
-        private static void DetermineEntityType(MetaScene metaScene, MetaMapEntity currentEntity)
+        private static void DetermineEntityType(MetaScene metaScene, MetaEntity currentEntity)
         {
             if (IsGroundEntity(currentEntity))
             {
@@ -244,12 +244,12 @@ namespace Engine.Models.Factories
             return (requiredValue & askedValue) == askedValue;
         }
 
-        private static bool IsGroundEntity(MetaMapEntity currentEntity)
+        private static bool IsGroundEntity(MetaEntity currentEntity)
         {
             return !IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent) && IsComponentRequired(currentEntity.Components, ComponentState.NavMeshComponent);
         }
 
-        private static bool IsStaticCollisionEntity(MetaMapEntity currentEntity)
+        private static bool IsStaticCollisionEntity(MetaEntity currentEntity)
         {
             return IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && !IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && currentEntity.LifeComponent == null;
         }

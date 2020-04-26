@@ -32,7 +32,7 @@ namespace Engine.Models.Factories.Entities
     }
     public static class EntityFactory
     {
-        public static uint GenerateEntity(MetaMapEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
+        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
         {
             uint entity = manager.AddEntity();
             DetermineComponents(entity, metaEntity, manager);
@@ -40,7 +40,7 @@ namespace Engine.Models.Factories.Entities
             return entity;
         }
 
-        private static void DetermineScripts(uint entity, MetaMapEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
+        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
         {
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
             {
@@ -53,7 +53,7 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
-        private static void DetermineComponents(uint entity, MetaMapEntity metaEntity, IEntityManager manager)
+        private static void DetermineComponents(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.TransformComponent))
             {
@@ -97,10 +97,10 @@ namespace Engine.Models.Factories.Entities
             return (input & searched) == searched;
         }
 
-        public static MetaMapEntity GenerateMetaEntityFromEntity(IEntityManager manager, uint item)
+        public static MetaEntity GenerateMetaEntityFromEntity(IEntityManager manager, uint item)
         {
             ComponentState required = 0;
-            MetaMapEntity currentEntity = new MetaMapEntity();
+            MetaEntity currentEntity = new MetaEntity();
             if (manager.EntityHasComponent<ITransformComponent>(item))
             {
                 required |= ComponentState.TransformComponent;
