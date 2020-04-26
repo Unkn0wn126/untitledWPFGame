@@ -50,6 +50,8 @@ namespace WPFGame
 
         private ImagePaths _imagePaths;
 
+        private DispatcherTimer _updateTimer;
+
         private bool _isTextureModeOn;
 
         private IScene _currentScene;
@@ -82,7 +84,6 @@ namespace WPFGame
 
         private readonly Uri _savesPath;
 
-        private DispatcherTimer _updateTimer;
 
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
@@ -508,7 +509,10 @@ namespace WPFGame
         /// <returns></returns>
         private float CalculateGraphicsCoordinate(float logicalPosition, float offset, float focusPos)
         {
-            return logicalPosition < focusPos ? offset - ((focusPos - logicalPosition) * _sizeMultiplier) : offset + ((logicalPosition - focusPos) * _sizeMultiplier);
+            return logicalPosition < focusPos ? 
+                offset - ((focusPos - logicalPosition) * _sizeMultiplier) 
+                : 
+                offset + ((logicalPosition - focusPos) * _sizeMultiplier);
         }
 
         /// <summary>

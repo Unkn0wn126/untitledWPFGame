@@ -7,6 +7,12 @@ using System.Windows.Input;
 
 namespace WPFGame
 {
+    /// <summary>
+    /// Helper class to transfer
+    /// graphics key events
+    /// to logic for further
+    /// processes
+    /// </summary>
     public class UserInputHandler
     {
         private readonly Dictionary<Key, GameKey> _keyCodes =
@@ -20,12 +26,22 @@ namespace WPFGame
             InitializeKeyCodes(gameConfig);
         }
 
+        /// <summary>
+        /// Updates the current key
+        /// dictionary based on the new
+        /// configuration
+        /// </summary>
+        /// <param name="gameConfig"></param>
         public void UpdateConfiguration(Configuration gameConfig)
         {
             _keyCodes.Clear();
             InitializeKeyCodes(gameConfig);
         }
 
+        /// <summary>
+        /// Initializes the keys dictionary
+        /// </summary>
+        /// <param name="gameConfig"></param>
         private void InitializeKeyCodes(Configuration gameConfig)
         {
             // Kind of like a state machine of pressed down keys
@@ -41,6 +57,11 @@ namespace WPFGame
             _keyCodes.Add(gameConfig.Space, GameKey.Space);
         }
 
+        /// <summary>
+        /// Handles the key pressed
+        /// event
+        /// </summary>
+        /// <param name="e"></param>
         public void HandleKeyPressed(Key e)
         {
             if (_keyCodes.ContainsKey(e))
@@ -49,6 +70,11 @@ namespace WPFGame
             }
         }
 
+        /// <summary>
+        /// Handles the key released
+        /// event
+        /// </summary>
+        /// <param name="e"></param>
         public void HandleKeyReleased(Key e)
         {
             if (_keyCodes.ContainsKey(e))

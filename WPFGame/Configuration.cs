@@ -6,6 +6,10 @@ using System.Windows.Input;
 
 namespace WPFGame
 {
+    /// <summary>
+    /// Class representing
+    /// the game configuration
+    /// </summary>
     public class Configuration
     {
         public ConfigResolution Resolution { get; set; }
@@ -44,6 +48,9 @@ namespace WPFGame
             Space = originalConfiguration.Space;
         }
 
+        /// <summary>
+        /// Removes all duplicate keys
+        /// </summary>
         public void PerformDuplicateCheck()
         {
             List<Key> keys = new List<Key> { Up, Down, Left, Right, Escape, Action, DetectiveMode, Back, Space };

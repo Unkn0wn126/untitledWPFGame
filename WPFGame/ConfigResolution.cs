@@ -4,6 +4,12 @@ using System.Text;
 
 namespace WPFGame
 {
+    /// <summary>
+    /// Helper class to
+    /// hold the current
+    /// resolution of
+    /// the configuration
+    /// </summary>
     public class ConfigResolution
     {
         public int Width { get; set; }

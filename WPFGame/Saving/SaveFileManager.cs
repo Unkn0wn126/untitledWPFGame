@@ -9,6 +9,11 @@ namespace WPFGame.Saving
 {
     public static class SaveFileManager
     {
+        /// <summary>
+        /// Saves the game to a given path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="save"></param>
         public static void SaveGame(string path, Save save)
         {
             using (FileStream fs = new FileStream(path, FileMode.Create))
@@ -18,6 +23,11 @@ namespace WPFGame.Saving
             }
         }
 
+        /// <summary>
+        /// Loads a game based on the file path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static Save LoadGame(string path)
         {
             Save save;

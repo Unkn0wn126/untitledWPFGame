@@ -17,15 +17,9 @@ namespace WPFGame
         {
             if (args != null && args.Length > 0)
             {
-                // ...
             }
             else
             {
-                // sound testing
-                //System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"./Resources/Sounds/arena_loop2.wav");
-                //player.Play();
-                //player.SoundLocation = @"./Resources/Sounds/arena_loop2.wav";
-
                 GameEngine engine = new GameEngine();
                 engine.StartRun();
             }

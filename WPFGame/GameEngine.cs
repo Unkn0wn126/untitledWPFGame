@@ -16,6 +16,11 @@ using TimeUtils;
 
 namespace WPFGame
 {
+    /// <summary>
+    /// Holds the graphics
+    /// and logic context
+    /// of the game
+    /// </summary>
     public class GameEngine
     {
         private IGame _logicEngine;
@@ -38,10 +43,12 @@ namespace WPFGame
             _logicEngine = new Game(_gameInputHandler, _gameTime);
 
             _graphicsEngine = new MainWindow(_imagePaths, _gameInputHandler, _logicEngine);
-            //CompositionTarget.Rendering += _graphicsEngine.UpdateGraphics;
             _logicThread = new Task(Update);
         }
 
+        /// <summary>
+        /// Starts the game
+        /// </summary>
         public void StartRun()
         {
             _app = new App();
@@ -54,6 +61,9 @@ namespace WPFGame
             _isRunning = false;
         }
 
+        /// <summary>
+        /// Updates the game logic
+        /// </summary>
         private void Update()
         {
             while (_isRunning)

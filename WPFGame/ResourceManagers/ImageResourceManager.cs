@@ -7,16 +7,17 @@ using System.Windows.Media.Imaging;
 
 namespace WPFGame.ResourceManagers
 {
+    /// <summary>
+    /// Helper class to
+    /// bridge logic to
+    /// graphics context
+    /// </summary>
     public class ImageResourceManager
     {
         private readonly Dictionary<ImgName, BitmapImage> _sprites = new Dictionary<ImgName, BitmapImage>();
         private readonly Dictionary<ImgName, Brush> _colors = new Dictionary<ImgName, Brush>();
-
-        private Random _rnd;
         public ImageResourceManager(ImagePaths imagePaths)
         {
-            _rnd = new Random();
-
             _sprites = new Dictionary<ImgName, BitmapImage>();
             _colors = new Dictionary<ImgName, Brush>();
 
@@ -24,6 +25,12 @@ namespace WPFGame.ResourceManagers
             LoadColors(imagePaths);
         }
 
+        /// <summary>
+        /// Loads bitmap image
+        /// values for the given
+        /// graphics components
+        /// </summary>
+        /// <param name="imagePaths"></param>
         private void LoadImages(ImagePaths imagePaths)
         {
             var paths = Enum.GetValues(typeof(ImgName));
@@ -33,21 +40,41 @@ namespace WPFGame.ResourceManagers
             }
         }        
         
+        /// <summary>
+        /// Loads the color values
+        /// for the given graphics
+        /// components
+        /// </summary>
+        /// <param name="imagePaths"></param>
         private void LoadColors(ImagePaths imagePaths)
         {
             var paths = Enum.GetValues(typeof(ImgName));
             foreach (var item in paths)
             {
-                //_colors.Add((ImgName)item, new SolidColorBrush(Color.FromRgb((byte)_rnd.Next(256), (byte)_rnd.Next(256), (byte)_rnd.Next(256))));
                 byte[] currColor = imagePaths.ColorSprites[(ImgName)item];
                 _colors.Add((ImgName)item, new SolidColorBrush(Color.FromRgb(currColor[0], currColor[1], currColor[2])));
             }
         }
+
+        /// <summary>
+        /// Returns the bitmap
+        /// image associated with
+        /// the given image name
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public BitmapImage GetImage(ImgName image)
         {
             return _sprites[image];
         }
 
+        /// <summary>
+        /// Returns color
+        /// associated with
+        /// the given image name
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public Brush GetColor(ImgName image)
         {
             return _colors[image];
