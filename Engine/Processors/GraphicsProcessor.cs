@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 namespace Engine.Processors
 {
+    /// <summary>
+    /// Handles entity visibility
+    /// updates for the graphics
+    /// engine
+    /// </summary>
     public class GraphicsProcessor : IProcessor
     {
         private Dictionary<ITransformComponent, IGraphicsComponent> _renderables;

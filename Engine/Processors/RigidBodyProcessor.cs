@@ -8,6 +8,10 @@ using System.Numerics;
 
 namespace Engine.Processors
 {
+    /// <summary>
+    /// Handles movement of entitie
+    /// through rigid body force change
+    /// </summary>
     public class RigidBodyProcessor : IProcessor
     {
         private IScene _context;
@@ -30,7 +34,7 @@ namespace Engine.Processors
             List<ITransformComponent> transforms = new List<ITransformComponent>();
             List<ICollisionComponent> collisions = new List<ICollisionComponent>();
             List<uint> useful = new List<uint>();
-
+            // get all entities with required components
             active.ForEach(x =>
             {
                 if (manager.EntityHasComponent<IRigidBodyComponent>(x) && 
@@ -97,9 +101,8 @@ namespace Engine.Processors
         private Vector2 UpdatePos(IRigidBodyComponent force, Vector2 transform, float lastFrameTime)
         {
             Vector2 newPos = transform;
-            //float deltaTime = GetDeltaTime(lastFrameTime);
-            newPos.X += force.ForceX /** deltaTime*/;
-            newPos.Y += force.ForceY /** deltaTime*/;
+            newPos.X += force.ForceX;
+            newPos.Y += force.ForceY;
 
             return newPos;
         }

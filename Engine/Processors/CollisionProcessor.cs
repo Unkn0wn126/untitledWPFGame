@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Engine.Processors
 {
+    /// <summary>
+    /// Handles collision calculations
+    /// </summary>
     public class CollisionProcessor : IProcessor
     {
 

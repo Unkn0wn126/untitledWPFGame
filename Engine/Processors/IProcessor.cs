@@ -6,7 +6,7 @@ using System.Text;
 namespace Engine.Processors
 {
     /// <summary>
-    /// This should take care of the logic...
+    /// Interface for logic processing
     /// </summary>
     public interface IProcessor
     {

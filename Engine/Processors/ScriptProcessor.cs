@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace Engine.Processors
 {
+    /// <summary>
+    /// Handles processing of
+    /// scripts associated with entities
+    /// </summary>
     public class ScriptProcessor : IProcessor
     {
         private IScene _context;
@@ -25,6 +29,7 @@ namespace Engine.Processors
 
             List<List<IScriptComponent>> scripts = new List<List<IScriptComponent>>();
 
+            // first get all the script components to be updated
             active.ForEach(x =>
             {
                 if (manager.EntityHasComponent<IScriptComponent>(x))
@@ -35,7 +40,7 @@ namespace Engine.Processors
 
             scripts.ForEach(x =>
             {
-                foreach (var item in x)
+                foreach (var item in x) // then update them
                 {
                     item.Update();
                 }
