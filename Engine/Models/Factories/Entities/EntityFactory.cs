@@ -40,11 +40,11 @@ namespace Engine.Models.Factories.Entities
         /// <param name="gameTime"></param>
         /// <param name="gameInput"></param>
         /// <returns></returns>
-        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
+        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange)
         {
             uint entity = manager.AddEntity();
             DetermineComponents(entity, metaEntity, manager);
-            DetermineScripts(entity, metaEntity, scene, manager, gameTime, gameInput);
+            DetermineScripts(entity, metaEntity, scene, manager, gameTime, gameInput, sceneChange);
             return entity;
         }
 
@@ -58,7 +58,7 @@ namespace Engine.Models.Factories.Entities
         /// <param name="manager"></param>
         /// <param name="gameTime"></param>
         /// <param name="gameInput"></param>
-        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
+        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange)
         {
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
             {
@@ -68,6 +68,10 @@ namespace Engine.Models.Factories.Entities
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.PlayerMovement))
             {
                 manager.AddComponentToEntity<IScriptComponent>(entity, new PlayerMovementScript(gameTime, gameInput, scene, entity, 2 * scene.BaseObjectSize));
+            }            
+            if (IsScriptRequired(metaEntity.Scripts, ScriptType.SceneChanger))
+            {
+                manager.AddComponentToEntity<IScriptComponent>(entity, new SceneChangeScript(scene, sceneChange, entity));
             }
         }
 
@@ -405,6 +409,10 @@ namespace Engine.Models.Factories.Entities
                     if (script.GetType() == typeof(PlayerMovementScript))
                     {
                         currentEntity.Scripts |= ScriptType.PlayerMovement;
+                    }                    
+                    if (script.GetType() == typeof(SceneChangeScript))
+                    {
+                        currentEntity.Scripts |= ScriptType.SceneChanger;
                     }
                 }
             }

@@ -6,8 +6,8 @@ namespace Engine.Models.Scenes
     public delegate void SceneChangeFinished();
     public interface ISceneManager
     {
-        public event SceneChangeStarted SceneChangeStarted;
-        public event SceneChangeFinished SceneChangeFinished;
+        event SceneChangeStarted SceneChangeStarted;
+        event SceneChangeFinished SceneChangeFinished;
         List<byte[]> MetaScenes { get; set; }
         IScene CurrentScene { get; set; }
         int CurrentIndex { get; set; }

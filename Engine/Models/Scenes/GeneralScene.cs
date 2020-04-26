@@ -10,6 +10,7 @@ namespace Engine.Models.Scenes
     /// </summary>
     public class GeneralScene : IScene
     {
+        public event SceneChange SceneChange;
         public IEntityManager EntityManager { get; set; }
         public ICamera SceneCamera { get; set; }
         public uint PlayerEntity { get; set; }
@@ -25,5 +26,6 @@ namespace Engine.Models.Scenes
             SceneCamera = camera;
             Coordinates = coordinates;
         }
+
     }
 }

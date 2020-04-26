@@ -46,24 +46,24 @@ namespace Engine.Processors
                 {
                     if (IsPairColliding(transforms[i], transforms[j]) && transforms[i] != transforms[j])
                     {
-                        if (!collisions[i].CollidingWith.Contains(useful[j]) && collisions[i].IsDynamic)
+                        if (!collisions[i].CollidingWith.Contains(useful[j]))
                         {
                             collisions[i].CollidingWith.Add(useful[j]);
                         }
                         
-                        if (!collisions[j].CollidingWith.Contains(useful[i]) && collisions[j].IsDynamic)
+                        if (!collisions[j].CollidingWith.Contains(useful[i]))
                         {
                             collisions[j].CollidingWith.Add(useful[i]);
                         }
                     }
                     else
                     {
-                        if (collisions[i].CollidingWith.Contains(useful[j]) && collisions[i].IsDynamic)
+                        if (collisions[i].CollidingWith.Contains(useful[j]))
                         {
                             collisions[i].CollidingWith.Remove(useful[j]);
                         }
 
-                        if (collisions[j].CollidingWith.Contains(useful[i]) && collisions[j].IsDynamic)
+                        if (collisions[j].CollidingWith.Contains(useful[i]))
                         {
                             collisions[j].CollidingWith.Remove(useful[i]);
                         }

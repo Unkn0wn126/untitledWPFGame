@@ -466,32 +466,35 @@ namespace Engine.Models.Factories
                 currentEntity.LifeComponent == null;
         }
 
-        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer)
+        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer, SceneChange sceneChange)
         {
             ICamera oldCamera = camera;
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
             ISpatialIndex grid = new Grid(metaScene.NumOfEntitiesOnX, metaScene.NumOfEntitiesOnY, cellSize);
-            IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid);
-            scene.NumOfEntitiesOnX = metaScene.NumOfEntitiesOnX;
-            scene.NumOfEntitiesOnY = metaScene.NumOfEntitiesOnY;
-            scene.BaseObjectSize = metaScene.BaseObjectSize;
-            scene.NumOfObjectsInCell = metaScene.NumOfObjectsInCell;
+            IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid)
+            {
+                NumOfEntitiesOnX = metaScene.NumOfEntitiesOnX,
+                NumOfEntitiesOnY = metaScene.NumOfEntitiesOnY,
+                BaseObjectSize = metaScene.BaseObjectSize,
+                NumOfObjectsInCell = metaScene.NumOfObjectsInCell
+            };
+            scene.SceneChange += sceneChange;
             foreach (var item in metaScene.GroundEntities)
             {
-                EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
+                EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
             }
             foreach (var item in metaScene.StaticCollisionEntities)
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
                 }
             }
             foreach (var item in metaScene.TriggerEntities)
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
                 }
             }
             foreach (var item in metaScene.LivingEntities)
@@ -503,7 +506,7 @@ namespace Engine.Models.Factories
                         item.LifeComponent = currentPlayer;
                     }
 
-                    uint curr = EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
+                    uint curr = EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
                     if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
                     {
                         scene.PlayerEntity = curr;
@@ -514,7 +517,7 @@ namespace Engine.Models.Factories
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
                 }
             }
 
