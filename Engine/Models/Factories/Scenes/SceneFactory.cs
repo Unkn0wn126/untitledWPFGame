@@ -224,6 +224,7 @@ namespace Engine.Models.Factories
 
             metaScene.LivingEntities = GenerateLivingEntities(staticCollisionsPositions, numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
             metaScene.LivingEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
+            metaScene.TriggerEntities = GenerateTriggerEntities(staticCollisionsPositions, numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
         }
 
         /// <summary>
@@ -259,6 +260,38 @@ namespace Engine.Models.Factories
         }
 
         /// <summary>
+        /// Generates a list of trigger
+        /// </summary>
+        /// <param name="staticCollisionsPositions"></param>
+        /// <param name="numOfObjectsOnX"></param>
+        /// <param name="numOfObjectsOnY"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <returns></returns>
+        private static List<MetaEntity> GenerateTriggerEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        {
+            List<MetaEntity> triggerEntities = new List<MetaEntity>();
+            int numOfEntities = numOfObjectsOnX / 2;
+            int currEntityXIndex = _rnd.Next(numOfObjectsOnX);
+            int currrEntityYIndex = _rnd.Next(numOfObjectsOnY);
+
+            for (int i = 0; i < numOfEntities; i++)
+            {
+                while (staticCollisionsPositions[currEntityXIndex, currrEntityYIndex])
+                {
+                    currEntityXIndex = _rnd.Next(numOfObjectsOnX);
+                    currrEntityYIndex = _rnd.Next(numOfObjectsOnY);
+                }
+
+                triggerEntities.Add(GenerateTriggerEntity(baseObjectSize, currEntityXIndex, currrEntityYIndex));
+
+                currEntityXIndex = _rnd.Next(numOfObjectsOnX);
+                currrEntityYIndex = _rnd.Next(numOfObjectsOnY);
+            }
+
+            return triggerEntities;
+        }
+
+        /// <summary>
         /// Generates a meta representation
         /// of a living entity
         /// </summary>
@@ -275,7 +308,7 @@ namespace Engine.Models.Factories
             { 
                 CollisionType = CollisionType.Solid | CollisionType.Dynamic, 
                 Graphics = ImgName.Enemy, Components = current, 
-                ZIndex = 3, 
+                ZIndex = 4, 
                 PosX = xPos, 
                 PosY = yPos, 
                 SizeX = baseObjectSize, 
@@ -290,6 +323,35 @@ namespace Engine.Models.Factories
                 Name = "Prak", NextLevelXP = 100, Race = Race.Human, Stamina = 100, 
                 Strength = 10 
             };
+            return metaMapEntity;
+        }
+
+
+        /// <summary>
+        /// Generates a meta representation
+        /// of a trigger entity
+        /// </summary>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="xPos"></param>
+        /// <param name="yPos"></param>
+        /// <returns></returns>
+        private static MetaEntity GenerateTriggerEntity(int baseObjectSize, int xPos, int yPos)
+        {
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent |
+                ComponentState.CollisionComponent;
+
+            MetaEntity metaMapEntity = new MetaEntity
+            {
+                CollisionType = CollisionType.None,
+                Graphics = ImgName.LocationTrigger, 
+                Components = current, 
+                ZIndex = 2, 
+                PosX = xPos, 
+                PosY = yPos, 
+                SizeX = baseObjectSize, 
+                SizeY = baseObjectSize 
+            };
+            metaMapEntity.Scripts = ScriptType.SceneChanger;
             return metaMapEntity;
         }
 
@@ -425,6 +487,13 @@ namespace Engine.Models.Factories
                     EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
                 }
             }
+            foreach (var item in metaScene.TriggerEntities)
+            {
+                if (item != null)
+                {
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
+                }
+            }
             foreach (var item in metaScene.LivingEntities)
             {
                 if (item != null)
@@ -439,6 +508,13 @@ namespace Engine.Models.Factories
                     {
                         scene.PlayerEntity = curr;
                     }
+                }
+            }
+            foreach (var item in metaScene.OtherEntities)
+            {
+                if (item != null)
+                {
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
                 }
             }
 
