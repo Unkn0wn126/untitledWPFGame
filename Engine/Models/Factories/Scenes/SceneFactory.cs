@@ -252,7 +252,7 @@ namespace Engine.Models.Factories
             return IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && !IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && currentEntity.LifeComponent == null;
         }
 
-        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime)
+        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer)
         {
             ICamera oldCamera = camera;
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
@@ -277,6 +277,11 @@ namespace Engine.Models.Factories
             {
                 if (item != null)
                 {
+                    if (item.LifeComponent != null && item.LifeComponent.IsPlayer && currentPlayer != null)
+                    {
+                        item.LifeComponent = currentPlayer;
+                    }
+
                     uint curr = EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput);
                     if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
                     {

@@ -28,6 +28,7 @@ using Engine.Models.Factories.Scenes;
 using WPFGame.UI.PauseMenu;
 using System.Windows.Threading;
 using WPFGame.UI.LoadingScreen;
+using System.Diagnostics;
 
 namespace WPFGame
 {
@@ -98,6 +99,9 @@ namespace WPFGame
             _session = session;
             InitializeImages();
             //InitializeCaching();
+
+            _session.SceneManager.SceneChangeStarted += ShowLoadingOverlay;
+            _session.SceneManager.SceneChangeFinished += UpdateSceneContext;
 
             _loadingScreen = new LoadingScreen();
 
@@ -185,9 +189,6 @@ namespace WPFGame
 
         private void InitializeGame()
         {
-            RemoveOverlay(_mainMenu);
-            ShowLoadingOverlay();
-
             Random rnd = new Random();
             int val = rnd.Next(10, 100);
 
@@ -208,15 +209,14 @@ namespace WPFGame
             }
 
             _session.InitializeGame(metaScenes);
-            _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
             SetWindowSize();
-            UpdateSceneContext();
+            //UpdateSceneContext();
 
             //ToggleMapHUD();
 
             if (_session.SceneManager.CurrentScene != null)
             {
-                _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
+                _currentCamera?.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
             }
         }
 
@@ -260,7 +260,7 @@ namespace WPFGame
             SaveCurrentConfig();
             if (_session.SceneManager.CurrentScene != null)
             {
-                _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
+                _currentCamera?.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
             }
         }
 
@@ -304,6 +304,8 @@ namespace WPFGame
 
         private void UpdateSceneContext()
         {
+            Trace.WriteLine("Running again");
+            //RemoveOverlay(_loadingScreen);
             _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
             _currentScene = _session.SceneManager.CurrentScene;
 
@@ -482,16 +484,16 @@ namespace WPFGame
 
         private void LoadGame(Uri path)
         {
-            RemoveOverlay(_mainMenu);
-            RemoveOverlay(_pauseMenu);
-            ShowLoadingOverlay();
+            //RemoveOverlay(_mainMenu);
+            //RemoveOverlay(_pauseMenu);
+            //ShowLoadingOverlay();
             string filename = path.ToString();
             Save save = SaveFileManager.LoadGame(filename);
 
-            _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
+            //_session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
             _session.InitializeGame(save.Scenes);
-            UpdateSceneContext();
-            _session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
+            //UpdateSceneContext();
+            //_session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
         }
 
         private void SaveGame(string path, Save save)
@@ -503,10 +505,12 @@ namespace WPFGame
         
         private void ShowLoadingOverlay()
         {
-            if (!GameGrid.Children.Contains(_loadingScreen))
-            {
-                GameGrid.Children.Add(_loadingScreen);
-            }
+            Trace.WriteLine("Not running");
+            //RemoveOverlay(_mainMenu);
+            //if (!GameGrid.Children.Contains(_loadingScreen))
+            //{
+            //    GameGrid.Children.Add(_loadingScreen);
+            //}
 
         }
         

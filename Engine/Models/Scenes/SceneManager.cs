@@ -1,10 +1,12 @@
 ﻿using Engine.Models.Cameras;
 using Engine.Models.Components;
+using Engine.Models.Components.Life;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
 using GameInputHandler;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TimeUtils;
@@ -18,6 +20,8 @@ namespace Engine.Models.Scenes
         private GameInput _gameInput;
         private GameTime _gameTime;
 
+        public event SceneChangeStarted SceneChangeStarted;
+        public event SceneChangeFinished SceneChangeFinished;
         public int CurrentIndex { get; set; }
 
         public SceneManager(GameInput gameInput, GameTime gameTime)
@@ -69,7 +73,8 @@ namespace Engine.Models.Scenes
         {
             CurrentIndex = 0;
             MetaScenes = newScenes;
-            CurrentScene = LoadNextScene();
+            CurrentScene = null;
+            LoadNextScene();
         }
 
         private MetaScene DeserializeMetaScene(int index)
@@ -103,14 +108,20 @@ namespace Engine.Models.Scenes
             throw new NotImplementedException();
         }
 
-        public IScene LoadNextScene()
+        public void LoadNextScene()
         {
+            SceneChangeStarted.Invoke();
             MetaScene searched = DeserializeMetaScene(CurrentIndex);
 
             CurrentIndex++;
-            CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime);
+            ILifeComponent currentPlayer = null;
+            if (CurrentScene != null)
+            {
+                currentPlayer = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(CurrentScene.PlayerEntity);
+            }
+            CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime, currentPlayer);
             CurrentScene.SceneCamera.UpdateFocusPoint(CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(CurrentScene.PlayerEntity));
-            return CurrentScene;
+            SceneChangeFinished.Invoke();
         }
     }
 }
