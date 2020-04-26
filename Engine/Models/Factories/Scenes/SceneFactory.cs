@@ -12,7 +12,6 @@ using GameInputHandler;
 using ResourceManagers.Images;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using TimeUtils;
 
 namespace Engine.Models.Factories
@@ -25,47 +24,25 @@ namespace Engine.Models.Factories
     {
         private static Random _rnd = new Random();
 
+        /// <summary>
+        /// Generates ground meta entities
+        /// </summary>
+        /// <param name="numOfObjectsOnX"></param>
+        /// <param name="numOfObjectsOnY"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="staticCollisionsPositions"></param>
+        /// <returns></returns>
         private static List<MetaEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, bool[,] staticCollisionsPositions)
         {
             MetaEntity[,] metaMap = new MetaEntity[numOfObjectsOnX, numOfObjectsOnY];
-            ComponentState current;
+
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
                 for (int j = 0; j < metaMap.GetLength(1); j++)
                 {
                     if (!staticCollisionsPositions[i, j])
                     {
-                        ImgName currImg = (ImgName)_rnd.Next(1, 4);
-                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.NavMeshComponent;
-                        NavmeshContinues navmeshDirections = 0;
-                        if (j > 1 && !staticCollisionsPositions[i, j - 1])
-                        {
-                            navmeshDirections |= NavmeshContinues.Left;
-                        }                        
-                        if (j < metaMap.GetLength(1) - 1 && !staticCollisionsPositions[i, j + 1])
-                        {
-                            navmeshDirections |= NavmeshContinues.Right;
-                        }                        
-                        if (i > 1 && !staticCollisionsPositions[i - 1, j])
-                        {
-                            navmeshDirections |= NavmeshContinues.Up;
-                        }                        
-                        if (i < metaMap.GetLength(0) - 1 && !staticCollisionsPositions[i + 1, j])
-                        {
-                            navmeshDirections |= NavmeshContinues.Down;
-                        }
-                        metaMap[i, j] = new MetaEntity
-                        {
-                            CollisionType = CollisionType.None,
-                            Graphics = currImg,
-                            Components = current,
-                            ZIndex = 0,
-                            PosX = i * baseObjectSize,
-                            PosY = j * baseObjectSize,
-                            SizeX = baseObjectSize,
-                            SizeY = baseObjectSize,
-                            NavmeshContinuation = navmeshDirections
-                        };
+                        SetUpGroundEntity(metaMap, i, j, baseObjectSize, staticCollisionsPositions);
                     }
                 }
             }
@@ -73,25 +50,123 @@ namespace Engine.Models.Factories
             return ConvertMatrixToList(metaMap);
         }
 
+        /// <summary>
+        /// Creates new ground meta entity
+        /// and adds it to the matrix
+        /// </summary>
+        /// <param name="metaMap"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="staticCollisionsPositions"></param>
+        private static void SetUpGroundEntity(MetaEntity[,] metaMap, int i, int j, int baseObjectSize, bool[,] staticCollisionsPositions)
+        {
+            ComponentState current;
+            ImgName currImg = (ImgName)_rnd.Next(1, 4);
+            current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.NavMeshComponent;
+            NavmeshContinues navmeshDirections = DetermineNavmeshContinuation(metaMap, i, j, staticCollisionsPositions);
+            metaMap[i, j] = new MetaEntity
+            {
+                CollisionType = CollisionType.None,
+                Graphics = currImg,
+                Components = current,
+                ZIndex = 0,
+                PosX = i * baseObjectSize,
+                PosY = j * baseObjectSize,
+                SizeX = baseObjectSize,
+                SizeY = baseObjectSize,
+                NavmeshContinuation = navmeshDirections
+            };
+        }
+
+        /// <summary>
+        /// Determines which way does
+        /// the navmesh continue
+        /// </summary>
+        /// <param name="metaMap"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="staticCollisionsPositions"></param>
+        /// <returns></returns>
+        private static NavmeshContinues DetermineNavmeshContinuation(MetaEntity[,] metaMap, int i, int j, bool[,] staticCollisionsPositions)
+        {
+            NavmeshContinues navmeshDirections = 0;
+            if (j > 1 && !staticCollisionsPositions[i, j - 1])
+            {
+                navmeshDirections |= NavmeshContinues.Left;
+            }
+            if (j < metaMap.GetLength(1) - 1 && !staticCollisionsPositions[i, j + 1])
+            {
+                navmeshDirections |= NavmeshContinues.Right;
+            }
+            if (i > 1 && !staticCollisionsPositions[i - 1, j])
+            {
+                navmeshDirections |= NavmeshContinues.Up;
+            }
+            if (i < metaMap.GetLength(0) - 1 && !staticCollisionsPositions[i + 1, j])
+            {
+                navmeshDirections |= NavmeshContinues.Down;
+            }
+
+            return navmeshDirections;
+        }
+
+        /// <summary>
+        /// Generates the static collision
+        /// meta entities
+        /// </summary>
+        /// <param name="staticCollisionsPositions"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <returns></returns>
         private static List<MetaEntity> GenerateStaticBlocks(bool[,] staticCollisionsPositions, int baseObjectSize)
         {
             MetaEntity[,] metaMap = new MetaEntity[staticCollisionsPositions.GetLength(0), staticCollisionsPositions.GetLength(1)];
-            ComponentState current;
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
                 for (int j = 0; j < metaMap.GetLength(1); j++)
                 {
                     if (staticCollisionsPositions[i,j])
                     {
-                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
-                        metaMap[i, j] = new MetaEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Cobblestone, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
+                        SetUpStaticCollisionEntity(metaMap, baseObjectSize, i, j);
                     }
                 }
             }
 
             return ConvertMatrixToList(metaMap);
         }
+        /// <summary>
+        /// Creates a new static collision entity
+        /// and adds it to the matrix
+        /// </summary>
+        /// <param name="metaMap"></param>
+        /// <param name="staticCollisionsPositions"></param>
+        /// <param name="baseObjectSize"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        private static void SetUpStaticCollisionEntity(MetaEntity[,] metaMap, int baseObjectSize, int i, int j)
+        {
+            ComponentState current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
+            metaMap[i, j] = new MetaEntity
+            {
+                CollisionType = CollisionType.Solid,
+                Graphics = ImgName.Cobblestone,
+                Components = current,
+                ZIndex = 1,
+                PosX = i * baseObjectSize,
+                PosY = j * baseObjectSize,
+                SizeX = baseObjectSize,
+                SizeY = baseObjectSize
+            };
+        }
 
+        /// <summary>
+        /// Converts 2D array
+        /// of meta entities
+        /// to a list of
+        /// meta entities
+        /// </summary>
+        /// <param name="metaMap"></param>
+        /// <returns></returns>
         private static List<MetaEntity> ConvertMatrixToList(MetaEntity[,] metaMap)
         {
             List<MetaEntity> output = new List<MetaEntity>();

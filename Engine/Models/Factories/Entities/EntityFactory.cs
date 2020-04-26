@@ -226,18 +226,6 @@ namespace Engine.Models.Factories.Entities
         }
 
         /// <summary>
-        /// Determines if the navmesh
-        /// continues in a given direction
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="searched"></param>
-        /// <returns></returns>
-        private static bool NavmeshLeadsInDirection(NavmeshContinues input, NavmeshContinues searched)
-        {
-            return (input & searched) == searched;
-        }
-
-        /// <summary>
         /// Generates a meta entity
         /// from an entity
         /// </summary>
@@ -430,7 +418,7 @@ namespace Engine.Models.Factories.Entities
         /// <param name="requiredValue"></param>
         /// <param name="askedValue"></param>
         /// <returns></returns>
-        private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
+        public static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
         {
             return (requiredValue & askedValue) == askedValue;
         }
@@ -443,7 +431,7 @@ namespace Engine.Models.Factories.Entities
         /// <param name="requiredValue"></param>
         /// <param name="askedValue"></param>
         /// <returns></returns>
-        private static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)
+        public static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)
         {
             return (requiredValue & askedValue) == askedValue;
         }
@@ -456,9 +444,21 @@ namespace Engine.Models.Factories.Entities
         /// <param name="requiredValue"></param>
         /// <param name="askedValue"></param>
         /// <returns></returns>
-        private static bool IsScriptRequired(ScriptType requiredValue, ScriptType askedValue)
+        public static bool IsScriptRequired(ScriptType requiredValue, ScriptType askedValue)
         {
             return (requiredValue & askedValue) == askedValue;
+        }
+
+        /// <summary>
+        /// Determines if the navmesh
+        /// continues in a given direction
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="searched"></param>
+        /// <returns></returns>
+        public static bool NavmeshLeadsInDirection(NavmeshContinues input, NavmeshContinues searched)
+        {
+            return (input & searched) == searched;
         }
     }
 }
