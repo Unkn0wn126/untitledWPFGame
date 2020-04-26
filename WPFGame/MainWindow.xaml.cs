@@ -38,9 +38,9 @@ namespace WPFGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IGame _session;
+        private readonly IGame _session;
 
-        private UserInputHandler _inputHandler;
+        private readonly UserInputHandler _inputHandler;
 
         // image to render to
         private RenderTargetBitmap bitmap;
@@ -72,7 +72,7 @@ namespace WPFGame
         private int _sizeMultiplier;
 
         private Configuration _gameConfiguration;
-        private string _configPath = @"./Configuration/GameConfig.xml";
+        private readonly string _configPath; 
 
         private ProcessMenuButtonClick _pauseResumeAction;
         private ProcessMenuButtonClick _pauseLoadMainAction;
@@ -83,12 +83,14 @@ namespace WPFGame
         private ProcessSaveActionButtonClick _saveGameAction;
         private ProcessSaveActionButtonClick _loadGameAction;
 
-        private Uri _savesPath;
+        private readonly Uri _savesPath;
 
         private DispatcherTimer _updateTimer;
 
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
+            _configPath = @"./Configuration/GameConfig.xml";
+            _savesPath = new Uri(@"./Saves", UriKind.Relative);
             _imagePaths = imagePaths;
             _isTextureModeOn = true;
 
@@ -133,7 +135,6 @@ namespace WPFGame
         /// </summary>
         private void InitializeSaveMenusActions()
         {
-            _savesPath = new Uri(@"./Saves", UriKind.Relative);
             _saveGameAction = new ProcessSaveActionButtonClick(SaveGame);
             _loadGameAction = new ProcessSaveActionButtonClick(LoadGame);
         }
