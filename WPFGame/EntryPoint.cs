@@ -1,28 +1,19 @@
-﻿#define TRACE
-using Engine.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Timers;
-using System.Windows;
-using System.Windows.Media;
+﻿using System;
 
 namespace WPFGame
 {
+    /// <summary>
+    /// Custom entry point
+    /// to separate the logic
+    /// from the graphics more
+    /// </summary>
     public class EntryPoint
     {
         [STAThread]
         public static void Main(string[] args)
         {
-            if (args != null && args.Length > 0)
-            {
-            }
-            else
-            {
-                GameEngine engine = new GameEngine();
-                engine.StartRun();
-            }
+            GameEngine engine = new GameEngine();
+            engine.StartRun();
         }
     }
 }

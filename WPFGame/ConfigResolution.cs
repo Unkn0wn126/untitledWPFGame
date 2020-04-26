@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WPFGame
+﻿namespace WPFGame
 {
     /// <summary>
     /// Helper class to

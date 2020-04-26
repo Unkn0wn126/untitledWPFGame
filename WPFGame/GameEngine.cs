@@ -1,17 +1,7 @@
-﻿using Engine.Models.GameStateMachine;
-using Engine.ViewModels;
+﻿using Engine.ViewModels;
 using GameInputHandler;
 using ResourceManagers.Images;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Threading;
 using TimeUtils;
 
 namespace WPFGame
