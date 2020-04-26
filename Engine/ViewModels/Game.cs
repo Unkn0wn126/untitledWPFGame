@@ -2,15 +2,8 @@
 using Engine.Models.Scenes;
 using Engine.Processors;
 using GameInputHandler;
-using System;
 using System.Collections.Generic;
 using TimeUtils;
-using Engine.Models.Factories;
-using Engine.Models.Factories.Scenes;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using Engine.Models.Components;
-using System.Diagnostics;
 
 namespace Engine.ViewModels
 {
@@ -29,12 +22,6 @@ namespace Engine.ViewModels
         private GameInput _gameInputHandler;
         public ISceneManager SceneManager { get; set; }
 
-
-        /*
-         * does not need: imgPaths, xRes, yRes
-         * may need: gameInputHandler, gameTime from parameter
-         * will need scene manager
-         */
         public Game(GameInput gameInputHandler, GameTime gameTime)
         {
             _gameTime = gameTime;
@@ -52,20 +39,29 @@ namespace Engine.ViewModels
             SceneManager.SceneChangeFinished += SetStateToRunning;
         }
 
+        /// <summary>
+        /// Sets game state to loading
+        /// </summary>
         private void SetStateToLoading()
         {
             State.CurrentState = GameState.Loading;
         }
 
+        /// <summary>
+        /// Sets game state to running
+        /// </summary>
         private void SetStateToRunning()
         {
             UpdateProcessorContext();
             State.CurrentState = GameState.Running;
         }
 
+        /// <summary>
+        /// Updates the processor context
+        /// </summary>
         public void UpdateProcessorContext()
         {
-            CheckProcessorInitialization();
+            InitializeProcessors();
             _graphicsProcessor.ChangeContext(SceneManager.CurrentScene);
 
             _processors.ForEach(x =>
@@ -85,13 +81,13 @@ namespace Engine.ViewModels
 
             if (State.IsRunning())
             {
-                //timeElapsed += _gameTime.DeltaTimeInSeconds;
+                timeElapsed += _gameTime.DeltaTimeInSeconds;
 
-                //if (timeElapsed >= 8)
-                //{
-                //    SceneManager.LoadNextScene();
-                //    timeElapsed = 0;
-                //}
+                if (timeElapsed >= 8)
+                {
+                    SceneManager.LoadNextScene();
+                    timeElapsed = 0;
+                }
 
                 SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
 
@@ -111,7 +107,10 @@ namespace Engine.ViewModels
             _graphicsProcessor?.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
         }
 
-        private void CheckProcessorInitialization()
+        /// <summary>
+        /// Initializes processors
+        /// </summary>
+        private void InitializeProcessors()
         {
             if (_graphicsProcessor == null)
             {
@@ -125,31 +124,14 @@ namespace Engine.ViewModels
             }
         }
 
+        /// <summary>
+        /// Initializes a new game instance
+        /// </summary>
+        /// <param name="metaScenes"></param>
         public void InitializeGame(List<byte[]> metaScenes)
         {
             SceneManager.UpdateScenes(metaScenes);
-
-            if (_graphicsProcessor == null)
-            {
-                _graphicsProcessor = new GraphicsProcessor(SceneManager.CurrentScene);
-            }
-            else
-            {
-                _graphicsProcessor.ChangeContext(SceneManager.CurrentScene);
-            }
-
-            if (_processors.Count == 0)
-            {
-                _processors.Add(new CollisionProcessor(SceneManager.CurrentScene));
-                _processors.Add(new RigidBodyProcessor(SceneManager.CurrentScene));
-                _processors.Add(new ScriptProcessor(SceneManager.CurrentScene));
-            }
-            else
-            {
-                UpdateProcessorContext();
-            }
-
-
+            UpdateProcessorContext();
         }
     }
 }

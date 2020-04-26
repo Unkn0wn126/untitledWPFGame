@@ -87,6 +87,9 @@ namespace WPFGame
 
         private DispatcherTimer _updateTimer;
 
+        private bool _shouldDisplayLoadingOverlay = false;
+        private bool _shouldUpdateSceneContext = false;
+
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
             _imagePaths = imagePaths;
@@ -100,8 +103,8 @@ namespace WPFGame
             InitializeImages();
             //InitializeCaching();
 
-            _session.SceneManager.SceneChangeStarted += ShowLoadingOverlay;
-            _session.SceneManager.SceneChangeFinished += UpdateSceneContext;
+            _session.SceneManager.SceneChangeStarted += delegate { _shouldDisplayLoadingOverlay = true; };
+            _session.SceneManager.SceneChangeFinished += delegate { _shouldUpdateSceneContext = true; };
 
             _loadingScreen = new LoadingScreen();
 
@@ -286,7 +289,6 @@ namespace WPFGame
 
         private void SetWindowSize()
         {
-            ConfigResolution resolution = new ConfigResolution();
             _xRes = _gameConfiguration.Resolution.Width;
             _yRes = _gameConfiguration.Resolution.Height;
 
@@ -322,6 +324,8 @@ namespace WPFGame
             {
                 _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
             }
+
+            _shouldUpdateSceneContext = false;
         }
 
         /// <summary>
@@ -341,18 +345,17 @@ namespace WPFGame
         /// <param name="e"></param>
         public void UpdateGraphics(object sender, EventArgs e)
         {
+            if (_shouldDisplayLoadingOverlay)
+            {
+                ShowLoadingOverlay();
+            }
+
+            if (_shouldUpdateSceneContext)
+            {
+                UpdateSceneContext();
+            }
             if (_session.State.IsRunning())
             {
-                if (GameGrid.Children.Contains(_mainMenu))
-                {
-                    GameGrid.Children.Remove(_mainMenu);
-                }
-                if (GameGrid.Children.Contains(_pauseMenu))
-                {
-                    GameGrid.Children.Remove(_pauseMenu);
-                    _pauseMenu.RestoreDefaultState();
-                }
-
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();
@@ -442,6 +445,10 @@ namespace WPFGame
             _inputHandler.HandleKeyPressed(e.Key);
         }
 
+        /// <summary>
+        /// Saves the current game
+        /// </summary>
+        /// <param name="path"></param>
         private void SaveGame(Uri path)
         {
             string filename = path.ToString();
@@ -453,6 +460,10 @@ namespace WPFGame
             SaveFileManager.SaveGame(filename, save);
         }
 
+        /// <summary>
+        /// Loads a saved game
+        /// </summary>
+        /// <param name="path"></param>
         private void LoadGame(Uri path)
         {
             string filename = path.ToString();
@@ -469,6 +480,8 @@ namespace WPFGame
             }
             RemoveOverlay(_mainMenu);
             RemoveOverlay(_pauseMenu);
+
+            _shouldDisplayLoadingOverlay = false;
         }
         
         private void Window_KeyUp(object sender, KeyEventArgs e)
