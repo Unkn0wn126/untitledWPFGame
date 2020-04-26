@@ -38,6 +38,10 @@ namespace ResourceManagers.Images
             InitColors();
         }
 
+        /// <summary>
+        /// Assigns the image values
+        /// to the image names
+        /// </summary>
         private void InitImages()
         {
             ImageSprites = new Dictionary<ImgName, Uri>();
@@ -53,6 +57,10 @@ namespace ResourceManagers.Images
             ImageSprites.Add(ImgName.LocationTrigger, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
         }
 
+        /// <summary>
+        /// Assigns the color values
+        /// to the image names
+        /// </summary>
         private void InitColors()
         {
             ColorSprites = new Dictionary<ImgName, byte[]>();

@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.PauseMenu.PauseDefaultMenu
@@ -25,7 +15,9 @@ namespace WPFGame.UI.PauseMenu.PauseDefaultMenu
         private ProcessMenuButtonClick _saveGameAction;
         private ProcessMenuButtonClick _settingsAction;
         private ProcessMenuButtonClick _quitGameAction;
-        public DefaultPauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessMenuButtonClick settingsAction, ProcessMenuButtonClick loadGameAction, ProcessMenuButtonClick saveGameAction)
+        public DefaultPauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, 
+            ProcessMenuButtonClick quitGameAction, ProcessMenuButtonClick settingsAction, 
+            ProcessMenuButtonClick loadGameAction, ProcessMenuButtonClick saveGameAction)
         {
             InitializeComponent();
             _resumeAction = resumeAction;
