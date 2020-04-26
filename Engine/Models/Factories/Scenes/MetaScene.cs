@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Engine.Models.Factories.Entities;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Engine.Models.Factories.Scenes
 {

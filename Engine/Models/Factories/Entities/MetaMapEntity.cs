@@ -2,11 +2,10 @@
 using Engine.Models.Components.Life;
 using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.Script;
-using Engine.Models.Factories.Entities;
 using ResourceManagers.Images;
 using System;
 
-namespace Engine.Models.Factories.Scenes
+namespace Engine.Models.Factories.Entities
 {
     /// <summary>
     /// A blueprint for
