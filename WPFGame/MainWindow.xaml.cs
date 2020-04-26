@@ -120,7 +120,7 @@ namespace WPFGame
             GameImage.Source = bitmap;
 
             _mapHUD = new MapPlayerInfo();
-            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(InitializeGame), new ProcessSettingsApplyButtonClick(UpadteCurrentConfig), _gameConfiguration, _loadGameAction, _savesPath);
+            _mainMenu = new MainMenu(new ProcessMenuButtonClick(CloseGame), new ProcessMenuButtonClick(GenerateGame), new ProcessSettingsApplyButtonClick(UpadteCurrentConfig), _gameConfiguration, _loadGameAction, _savesPath);
             InitializePauseMenuActions();
             _pauseMenu = new PauseMenu(_pauseResumeAction, _pauseLoadMainAction, _pauseQuitAction, _pauseApplyAction, _gameConfiguration, _loadGameAction, _saveGameAction, _savesPath);
 
@@ -187,7 +187,7 @@ namespace WPFGame
             }
         }
 
-        private void InitializeGame()
+        private void GenerateGame()
         {
             Random rnd = new Random();
             int val = rnd.Next(10, 100);
@@ -208,9 +208,15 @@ namespace WPFGame
                 }
             }
 
+            InitializeGame(metaScenes);
+        }
+
+        private void InitializeGame(List<byte[]> metaScenes)
+        {
+            ShowLoadingOverlay();
+
             _session.InitializeGame(metaScenes);
             SetWindowSize();
-            //UpdateSceneContext();
 
             //ToggleMapHUD();
 
@@ -229,6 +235,10 @@ namespace WPFGame
             if (control == _pauseMenu)
             {
                 _pauseMenu.RestoreDefaultState();
+            }
+            else if (control == _mainMenu)
+            {
+                _mainMenu.RestoreDefaultState();
             }
         }
 
@@ -304,8 +314,7 @@ namespace WPFGame
 
         private void UpdateSceneContext()
         {
-            Trace.WriteLine("Running again");
-            //RemoveOverlay(_loadingScreen);
+            RemoveOverlay(_loadingScreen);
             _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
             _currentScene = _session.SceneManager.CurrentScene;
 
@@ -313,14 +322,6 @@ namespace WPFGame
             {
                 _currentCamera.UpdateFocusPoint(_session.SceneManager.CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(_session.SceneManager.CurrentScene.PlayerEntity));
             }
-        }
-
-        private void InitializeCaching()
-        {
-            var cache = new BitmapCache();
-            cache.RenderAtScale = 0.5; // render at half the resolution for now
-            cache.SnapsToDevicePixels = false;
-            _drawingVisual.CacheMode = cache;
         }
 
         /// <summary>
@@ -340,11 +341,7 @@ namespace WPFGame
         /// <param name="e"></param>
         public void UpdateGraphics(object sender, EventArgs e)
         {
-            if (_session.State.IsLoading() && !GameGrid.Children.Contains(_mainMenu))
-            {
-                ShowLoadingOverlay();
-            }
-            else if (_session.State.IsRunning())
+            if (_session.State.IsRunning())
             {
                 if (GameGrid.Children.Contains(_mainMenu))
                 {
@@ -356,13 +353,9 @@ namespace WPFGame
                     _pauseMenu.RestoreDefaultState();
                 }
 
-                RemoveOverlay(_loadingScreen);
-
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();
-
-                //DrawBackground(drawingContext);
 
                 // need to update the camera to know what is visible
                 _session.UpdateGraphics();
@@ -430,20 +423,6 @@ namespace WPFGame
 
         }
 
-        /// <summary>
-        /// Draws a black background on the "scene"
-        /// </summary>
-        /// <param name="drawingContext"></param>
-        private void DrawBackground(DrawingContext drawingContext)
-        {
-            // to have a black background as a default
-            _rectangle.X = 0;
-            _rectangle.Y = 0;
-            _rectangle.Width = _xRes;
-            _rectangle.Height = _yRes;
-            drawingContext.DrawRectangle(Brushes.Black, null, _rectangle);
-        }
-
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             // Temporairly here to show pause menu
@@ -453,14 +432,6 @@ namespace WPFGame
                 {
                     TogglePauseMenu();
                 }
-            }
-            switch (e.Key)
-            {
-                case Key.D1:
-                    LoadConfig();
-                    SetWindowSize();
-                    _inputHandler.UpdateConfiguration(_gameConfiguration);
-                    break;
             }
 
             if (e.Key == Key.F)
@@ -473,45 +444,31 @@ namespace WPFGame
 
         private void SaveGame(Uri path)
         {
-                string filename = path.ToString();
-                Save save = new Save();
-                var sceneManager = _session.SceneManager;
+            string filename = path.ToString();
+            Save save = new Save();
+            var sceneManager = _session.SceneManager;
 
-                save.Scenes = sceneManager.GetScenesToSave();
-                save.CurrentIndex = sceneManager.CurrentIndex;
-                SaveGame(filename, save);
+            save.Scenes = sceneManager.GetScenesToSave();
+            save.CurrentIndex = sceneManager.CurrentIndex;
+            SaveFileManager.SaveGame(filename, save);
         }
 
         private void LoadGame(Uri path)
         {
-            //RemoveOverlay(_mainMenu);
-            //RemoveOverlay(_pauseMenu);
-            //ShowLoadingOverlay();
             string filename = path.ToString();
             Save save = SaveFileManager.LoadGame(filename);
 
-            //_session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Loading;
-            _session.InitializeGame(save.Scenes);
-            //UpdateSceneContext();
-            //_session.State.CurrentState = Engine.Models.GameStateMachine.GameState.Running;
+            InitializeGame(save.Scenes);
         }
-
-        private void SaveGame(string path, Save save)
-        {
-            SaveFileManager.SaveGame(path, save);
-        }
-
-        private bool loadingOverlayActive = false;
         
         private void ShowLoadingOverlay()
         {
-            Trace.WriteLine("Not running");
-            //RemoveOverlay(_mainMenu);
-            //if (!GameGrid.Children.Contains(_loadingScreen))
-            //{
-            //    GameGrid.Children.Add(_loadingScreen);
-            //}
-
+            if (!GameGrid.Children.Contains(_loadingScreen))
+            {
+                GameGrid.Children.Add(_loadingScreen);
+            }
+            RemoveOverlay(_mainMenu);
+            RemoveOverlay(_pauseMenu);
         }
         
         private void Window_KeyUp(object sender, KeyEventArgs e)

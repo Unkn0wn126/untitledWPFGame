@@ -54,6 +54,19 @@ namespace WPFGame.UI.MainMenu
             _defaultMenu.SetValue(Grid.ColumnProperty, 1);
         }
 
+        public void RestoreDefaultState()
+        {
+            MainGrid.Children.RemoveRange(0, MainGrid.Children.Count);
+            LoadDefault();
+        }
+
+        private void LoadDefault()
+        {
+            MainGrid.Children.Add(_defaultMenu);
+            _defaultMenu.SetValue(Grid.RowProperty, 1);
+            _defaultMenu.SetValue(Grid.ColumnProperty, 1);
+        }
+
         public void UpdateConfig(Configuration originalConfiguration)
         {
             _currentConfig = originalConfiguration;
