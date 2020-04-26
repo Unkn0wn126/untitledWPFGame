@@ -40,11 +40,11 @@ namespace Engine.Models.Factories.Entities
         /// <param name="gameTime"></param>
         /// <param name="gameInput"></param>
         /// <returns></returns>
-        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange)
+        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
             uint entity = manager.AddEntity();
             DetermineComponents(entity, metaEntity, manager);
-            DetermineScripts(entity, metaEntity, scene, manager, gameTime, gameInput, sceneChange);
+            DetermineScripts(entity, metaEntity, scene, manager, gameTime, gameInput, sceneChange, battleInitialize);
             return entity;
         }
 
@@ -58,12 +58,12 @@ namespace Engine.Models.Factories.Entities
         /// <param name="manager"></param>
         /// <param name="gameTime"></param>
         /// <param name="gameInput"></param>
-        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange)
+        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
             {
                 // TODO: get the speed from LifeComponent
-                manager.AddComponentToEntity<IScriptComponent>(entity, new AiMovementScript(gameTime, scene, entity, 1 * scene.BaseObjectSize));
+                manager.AddComponentToEntity<IScriptComponent>(entity, new AiMovementScript(gameTime, scene, entity, 1 * scene.BaseObjectSize, battleInitialize));
             }
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.PlayerMovement))
             {

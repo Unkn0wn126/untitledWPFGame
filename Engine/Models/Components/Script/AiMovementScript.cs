@@ -27,8 +27,11 @@ namespace Engine.Models.Components.Script
 
         private MapAIStateMachine _state;
 
-        public AiMovementScript(GameTime gameTime, IScene context, uint npc, float baseVelocity)
+        private BattleInitialization _battleInitialize;
+
+        public AiMovementScript(GameTime gameTime, IScene context, uint npc, float baseVelocity, BattleInitialization battleInitialize)
         {
+            _battleInitialize = battleInitialize;
             _gameTime = gameTime;
             _baseVelocity = baseVelocity;
             _npc = npc;
@@ -42,7 +45,7 @@ namespace Engine.Models.Components.Script
             _random = new Random();
             _direction = _random.Next(6);
 
-            _state = new MapAIStateMachine(gameTime, _context, npc, _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_npc), _context.EntityManager.GetComponentOfType<ITransformComponent>(_npc), _context.EntityManager.GetComponentOfType<ICollisionComponent>(_npc), baseVelocity);
+            _state = new MapAIStateMachine(gameTime, _context, npc, _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_npc), _context.EntityManager.GetComponentOfType<ITransformComponent>(_npc), _context.EntityManager.GetComponentOfType<ICollisionComponent>(_npc), baseVelocity, battleInitialize);
         }
 
         public void Update()

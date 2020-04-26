@@ -466,7 +466,7 @@ namespace Engine.Models.Factories
                 currentEntity.LifeComponent == null;
         }
 
-        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer, SceneChange sceneChange)
+        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
             ICamera oldCamera = camera;
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
@@ -481,20 +481,20 @@ namespace Engine.Models.Factories
             scene.SceneChange += sceneChange;
             foreach (var item in metaScene.GroundEntities)
             {
-                EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
+                EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange, battleInitialize);
             }
             foreach (var item in metaScene.StaticCollisionEntities)
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange, battleInitialize);
                 }
             }
             foreach (var item in metaScene.TriggerEntities)
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange, battleInitialize);
                 }
             }
             foreach (var item in metaScene.LivingEntities)
@@ -506,7 +506,7 @@ namespace Engine.Models.Factories
                         item.LifeComponent = currentPlayer;
                     }
 
-                    uint curr = EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
+                    uint curr = EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange, battleInitialize);
                     if (item.LifeComponent != null && item.LifeComponent.IsPlayer)
                     {
                         scene.PlayerEntity = curr;
@@ -517,7 +517,7 @@ namespace Engine.Models.Factories
             {
                 if (item != null)
                 {
-                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange);
+                    EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange, battleInitialize);
                 }
             }
 

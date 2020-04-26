@@ -1,6 +1,7 @@
 ﻿using Engine.Models.Components.RigidBody;
 using Engine.Models.Scenes;
 using System;
+using System.Diagnostics;
 using TimeUtils;
 
 namespace Engine.Models.Components.Script.AIState
@@ -38,8 +39,11 @@ namespace Engine.Models.Components.Script.AIState
         private ITransformComponent _ownerTransform;
         private ITransformComponent _targetTransform;
 
-        public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, ITransformComponent ownerTransform, ICollisionComponent ownerCollision, float baseVelocity)
+        private BattleInitialization _battleInitialize;
+
+        public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, ITransformComponent ownerTransform, ICollisionComponent ownerCollision, float baseVelocity, BattleInitialization battleInitialize)
         {
+            _battleInitialize = battleInitialize;
             _context = context;
             _ownerRigidBody = rigidBody;
             _ownerTransform = ownerTransform;
@@ -102,6 +106,11 @@ namespace Engine.Models.Components.Script.AIState
                 _ownerRigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
             if (Math.Abs(diffX) <= 0)
                 _ownerRigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
+
+            if (_ownerCollision.CollidingWith.Contains(Target))
+            {
+                _battleInitialize.Invoke(Owner);
+            }
         }
 
         private void WalkAround()

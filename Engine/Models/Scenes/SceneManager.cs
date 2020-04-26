@@ -1,4 +1,5 @@
-﻿using Engine.Models.Cameras;
+﻿using Engine.Coordinates;
+using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Components.Life;
 using Engine.Models.Factories;
@@ -22,8 +23,12 @@ namespace Engine.Models.Scenes
         public event SceneChangeStarted SceneChangeStarted;
         public event SceneChangeFinished SceneChangeFinished;
         public event GameWon GameWon;
+        public event BattleInitialization BattleInitialize;
 
         public int CurrentIndex { get; set; }
+
+        private uint _enemyEntityToRemove;
+        private bool _removeEnemyEntity;
 
         public SceneManager(GameInput gameInput, GameTime gameTime)
         {
@@ -126,9 +131,35 @@ namespace Engine.Models.Scenes
             return current;
         }
 
-        public IScene LoadBattleScene()
+        private void PrepareBattleScene(uint enemy)
         {
-            throw new NotImplementedException();
+            _enemyEntityToRemove = enemy;
+            _removeEnemyEntity = true;
+            ILifeComponent playerLife = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(CurrentScene.PlayerEntity);
+            ILifeComponent enemyLife = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(enemy);
+
+            LoadBattleScene(playerLife, enemyLife);
+        }
+
+        public void LoadBattleScene(ILifeComponent player, ILifeComponent enemy)
+        {
+            SceneChangeStarted.Invoke();
+            MetaScenes[CurrentIndex - 1] = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
+            ISpatialIndex grid = new Grid(2, 2, 2);
+            IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid);
+            uint playerID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+            uint enemyID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+
+            scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(playerID, new GraphicsComponent(ResourceManagers.Images.ImgName.Player));
+            scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(enemyID, new GraphicsComponent(ResourceManagers.Images.ImgName.Enemy));
+            
+            scene.EntityManager.AddComponentToEntity<ILifeComponent>(playerID, player);
+            scene.EntityManager.AddComponentToEntity<ILifeComponent>(enemyID, enemy);
+
+            scene.PlayerEntity = playerID;
+
+            CurrentScene = scene;
+            SceneChangeFinished.Invoke();
         }
 
         /// <summary>
@@ -150,7 +181,7 @@ namespace Engine.Models.Scenes
             {
                 currentPlayer = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(CurrentScene.PlayerEntity);
             }
-            CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime, currentPlayer, LoadNextScene);
+            CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime, currentPlayer, LoadNextScene, new BattleInitialization(PrepareBattleScene));
             CurrentScene.SceneCamera.UpdateFocusPoint(CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(CurrentScene.PlayerEntity));
             SceneChangeFinished.Invoke();
         }

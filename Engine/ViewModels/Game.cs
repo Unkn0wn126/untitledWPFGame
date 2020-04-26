@@ -21,6 +21,7 @@ namespace Engine.ViewModels
         private GameTime _gameTime;
         private GameInput _gameInputHandler;
         public ISceneManager SceneManager { get; set; }
+        public bool UpdateInProgress { get; set; }
 
         public Game(GameInput gameInputHandler, GameTime gameTime)
         {
@@ -79,6 +80,7 @@ namespace Engine.ViewModels
 
             if (State.IsRunning())
             {
+                UpdateInProgress = true;
                 SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
 
                 foreach (var x in _processors)
@@ -86,6 +88,8 @@ namespace Engine.ViewModels
                     if (State.IsRunning())
                         x.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
                 }
+
+                UpdateInProgress = false;
             }
         }
 
