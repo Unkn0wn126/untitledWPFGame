@@ -20,6 +20,12 @@ namespace GameInputHandler
         DetectiveMode = 1 << 7,
         Space = 1 << 8
     }
+
+    /// <summary>
+    /// Helper class
+    /// to keep track
+    /// of pressed keys
+    /// </summary>
     public class GameInput
     {
         public GameKey CurrentKeyValue { get; set; }

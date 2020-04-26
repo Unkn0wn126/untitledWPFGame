@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace TimeUtils
 {
+    /// <summary>
+    /// Helper class to keep
+    /// track of real time
+    /// </summary>
     public class GameTime
     {
         private long _prevFrame;
         private long _currFrame;
-
-        //private Stopwatch _stopwatch;
 
         public float DeltaTimeInMilliseconds { get; private set; }
         public float DeltaTimeInSeconds { get; private set; }
@@ -19,6 +20,10 @@ namespace TimeUtils
             _currFrame = Environment.TickCount;
         }
 
+        /// <summary>
+        /// Updates the time between
+        /// two last ticks
+        /// </summary>
         public void UpdateDeltaTime()
         {
             _currFrame = Environment.TickCount;
