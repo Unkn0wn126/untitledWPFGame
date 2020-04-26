@@ -17,7 +17,7 @@ namespace WPFGame
         public Key Right { get; set; }
         public Key Escape { get; set; }
         public Key Action { get; set; }
-        public Key Action2 { get; set; }
+        public Key DetectiveMode { get; set; }
         public Key Back { get; set; }
         public Key Space { get; set; }
 
@@ -39,14 +39,14 @@ namespace WPFGame
             Right = originalConfiguration.Right;
             Escape = originalConfiguration.Escape;
             Action = originalConfiguration.Action;
-            Action2 = originalConfiguration.Action2;
+            DetectiveMode = originalConfiguration.DetectiveMode;
             Back = originalConfiguration.Back;
             Space = originalConfiguration.Space;
         }
 
         public void PerformDuplicateCheck()
         {
-            List<Key> keys = new List<Key> { Up, Down, Left, Right, Escape, Action, Action2, Back, Space };
+            List<Key> keys = new List<Key> { Up, Down, Left, Right, Escape, Action, DetectiveMode, Back, Space };
             for (int i = 0; i < keys.Count; i++)
             {
                 for (int j = i + 1; j < keys.Count; j++)
@@ -64,7 +64,7 @@ namespace WPFGame
             Right = keys[3];
             Escape = keys[4];
             Action = keys[5];
-            Action2 = keys[6];
+            DetectiveMode = keys[6];
             Back = keys[7];
             Space = keys[8];
         }

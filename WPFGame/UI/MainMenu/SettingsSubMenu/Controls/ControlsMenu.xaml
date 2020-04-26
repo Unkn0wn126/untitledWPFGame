@@ -62,9 +62,9 @@
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
-                        Action2
+                        Detective Mode
                         </TextBlock>
-                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="Action2CB"></ComboBox>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="DetectiveModeCB"></ComboBox>
                     </UniformGrid>
                     <UniformGrid Columns="2" Margin="0, 5, 0, 5">
                         <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">

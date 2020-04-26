@@ -17,7 +17,7 @@ namespace GameInputHandler
         Right = 1 << 4,
         Action = 1 << 5,
         Back = 1 << 6,
-        Action2 = 1 << 7,
+        DetectiveMode = 1 << 7,
         Space = 1 << 8
     }
     public class GameInput

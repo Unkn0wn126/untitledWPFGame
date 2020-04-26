@@ -56,7 +56,7 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             LeftCB.SelectedItem = _currentConfiguration.Left;
             RightCB.SelectedItem = _currentConfiguration.Right;
             ActionCB.SelectedItem = _currentConfiguration.Action;
-            Action2CB.SelectedItem = _currentConfiguration.Action2;
+            DetectiveModeCB.SelectedItem = _currentConfiguration.DetectiveMode;
             EscapeCB.SelectedItem = _currentConfiguration.Escape;
             BackCB.SelectedItem = _currentConfiguration.Back;
             SpaceCB.SelectedItem = _currentConfiguration.Space;
@@ -69,7 +69,7 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             LeftCB.ItemsSource = _possibleKeys;
             RightCB.ItemsSource = _possibleKeys;
             ActionCB.ItemsSource = _possibleKeys;
-            Action2CB.ItemsSource = _possibleKeys;
+            DetectiveModeCB.ItemsSource = _possibleKeys;
             EscapeCB.ItemsSource = _possibleKeys;
             BackCB.ItemsSource = _possibleKeys;
             SpaceCB.ItemsSource = _possibleKeys;
@@ -88,7 +88,7 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             _currentConfiguration.Left = (Key)LeftCB.SelectedItem;
             _currentConfiguration.Right = (Key)RightCB.SelectedItem;
             _currentConfiguration.Action = (Key)ActionCB.SelectedItem;
-            _currentConfiguration.Action2 = (Key)Action2CB.SelectedItem;
+            _currentConfiguration.DetectiveMode = (Key)DetectiveModeCB.SelectedItem;
             _currentConfiguration.Escape = (Key)EscapeCB.SelectedItem;
             _currentConfiguration.Back = (Key)BackCB.SelectedItem;
             _currentConfiguration.Space = (Key)SpaceCB.SelectedItem;

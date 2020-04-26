@@ -36,7 +36,7 @@ namespace WPFGame
             _keyCodes.Add(gameConfig.Right, GameKey.Right);
             _keyCodes.Add(gameConfig.Escape, GameKey.Escape);
             _keyCodes.Add(gameConfig.Action, GameKey.Action);
-            _keyCodes.Add(gameConfig.Action2, GameKey.Action2);
+            _keyCodes.Add(gameConfig.DetectiveMode, GameKey.DetectiveMode);
             _keyCodes.Add(gameConfig.Back, GameKey.Back);
             _keyCodes.Add(gameConfig.Space, GameKey.Space);
         }
@@ -46,7 +46,6 @@ namespace WPFGame
             if (_keyCodes.ContainsKey(e))
             {
                 _gameInputHandler.CurrentKeyValue |= _keyCodes[e];
-                //Trace.WriteLine($"Pressing, value is: {_gameInputHandler.CurrentKeyValue}");
             }
         }
 
@@ -55,7 +54,6 @@ namespace WPFGame
             if (_keyCodes.ContainsKey(e))
             {
                 _gameInputHandler.CurrentKeyValue &= ~_keyCodes[e];
-                //Trace.WriteLine($"Releasing, value is: {_gameInputHandler.CurrentKeyValue}");
             }
         }
     }

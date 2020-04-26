@@ -37,6 +37,7 @@ namespace WPFGame
         private readonly IGame _session;
 
         private readonly UserInputHandler _inputHandler;
+        private readonly GameInput _gameInput;
 
         // image to render to
         private RenderTargetBitmap bitmap;
@@ -85,6 +86,7 @@ namespace WPFGame
 
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
         {
+            _gameInput = gameInputHandler;
             _configPath = @"./Configuration/GameConfig.xml";
             _savesPath = new Uri(@"./Saves", UriKind.Relative);
             _imagePaths = imagePaths;
@@ -539,20 +541,26 @@ namespace WPFGame
         /// <param name="e"></param>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
-            {
-                if (!GameGrid.Children.Contains(_mainMenu))
-                {
-                    TogglePauseMenu();
-                }
-            }
+            _inputHandler.HandleKeyPressed(e.Key);
 
-            if (e.Key == Key.F)
+            HandleSpecialKeyActions();
+        }
+
+        /// <summary>
+        /// Allows to trigger
+        /// pause menu or
+        /// detective mode
+        /// </summary>
+        private void HandleSpecialKeyActions()
+        {
+            if ((_gameInput.CurrentKeyValue & GameKey.DetectiveMode) == GameKey.DetectiveMode)
             {
                 _isTextureModeOn = !_isTextureModeOn;
             }
-
-            _inputHandler.HandleKeyPressed(e.Key);
+            if ((_gameInput.CurrentKeyValue & GameKey.Escape) == GameKey.Escape)
+            {
+                TogglePauseMenu();
+            }
         }
 
         /// <summary>
