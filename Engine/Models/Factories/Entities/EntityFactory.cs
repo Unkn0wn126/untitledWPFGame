@@ -6,14 +6,10 @@ using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Components.Sound;
-using Engine.Models.Factories.Scenes;
 using Engine.Models.Scenes;
 using GameInputHandler;
-using ResourceManagers.Images;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 using TimeUtils;
 
 namespace Engine.Models.Factories.Entities
@@ -32,6 +28,18 @@ namespace Engine.Models.Factories.Entities
     }
     public static class EntityFactory
     {
+        /// <summary>
+        /// Generates new entity based
+        /// on the provided meta entity
+        /// and inserts it into the
+        /// scene entity manager
+        /// </summary>
+        /// <param name="metaEntity"></param>
+        /// <param name="scene"></param>
+        /// <param name="manager"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="gameInput"></param>
+        /// <returns></returns>
         public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
         {
             uint entity = manager.AddEntity();
@@ -40,6 +48,16 @@ namespace Engine.Models.Factories.Entities
             return entity;
         }
 
+        /// <summary>
+        /// Determines what type of scripts
+        /// will the entity need
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="scene"></param>
+        /// <param name="manager"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="gameInput"></param>
         private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput)
         {
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
@@ -53,19 +71,36 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Determines what type of components
+        /// will the entity need
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void DetermineComponents(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.TransformComponent))
             {
-                manager.AddComponentToEntity<ITransformComponent>(entity, new TransformComponent(new Vector2(metaEntity.PosX, metaEntity.PosY), metaEntity.SizeX, metaEntity.SizeY, new Vector2(0, 0), metaEntity.ZIndex));
+                manager.AddComponentToEntity<ITransformComponent>(entity, 
+                    new TransformComponent(
+                        new Vector2(metaEntity.PosX, metaEntity.PosY), 
+                        metaEntity.SizeX, metaEntity.SizeY, 
+                        new Vector2(0, 0), metaEntity.ZIndex
+                        ));
             }
             if (IsComponentRequired(metaEntity.Components, ComponentState.CollisionComponent))
             {
-                manager.AddComponentToEntity<ICollisionComponent>(entity, new CollisionComponent(IsCollisionType(metaEntity.CollisionType, CollisionType.Solid), IsCollisionType(metaEntity.CollisionType, CollisionType.Dynamic)));
+                manager.AddComponentToEntity<ICollisionComponent>(entity, 
+                    new CollisionComponent(
+                        IsCollisionType(metaEntity.CollisionType, CollisionType.Solid), 
+                        IsCollisionType(metaEntity.CollisionType, CollisionType.Dynamic)
+                        ));
             }
             if (IsComponentRequired(metaEntity.Components, ComponentState.GraphicsComponent))
             {
-                manager.AddComponentToEntity<IGraphicsComponent>(entity, new GraphicsComponent(metaEntity.Graphics));
+                manager.AddComponentToEntity<IGraphicsComponent>(entity, 
+                    new GraphicsComponent(metaEntity.Graphics));
             }
             if (IsComponentRequired(metaEntity.Components, ComponentState.RigidBodyComponent))
             {
@@ -97,13 +132,39 @@ namespace Engine.Models.Factories.Entities
             return (input & searched) == searched;
         }
 
+        /// <summary>
+        /// Generates a meta entity
+        /// from an entity
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public static MetaEntity GenerateMetaEntityFromEntity(IEntityManager manager, uint item)
         {
-            ComponentState required = 0;
             MetaEntity currentEntity = new MetaEntity();
+
+            SetUpMetaTransform(manager, item, currentEntity);
+            SetUpMetaLife(manager, item, currentEntity);
+            SetUpMetaGraphics(manager, item, currentEntity);
+            SetUpMetaCollision(manager, item, currentEntity);
+            SetUpMetaRigidBody(manager, item, currentEntity);
+            SetUpMetaScripts(manager, item, currentEntity);
+
+            return currentEntity;
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has transform component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaTransform(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
             if (manager.EntityHasComponent<ITransformComponent>(item))
             {
-                required |= ComponentState.TransformComponent;
+                currentEntity.Components |= ComponentState.TransformComponent;
                 ITransformComponent currTransform = manager.GetComponentOfType<ITransformComponent>(item);
                 currentEntity.PosX = currTransform.Position.X;
                 currentEntity.PosY = currTransform.Position.Y;
@@ -111,19 +172,52 @@ namespace Engine.Models.Factories.Entities
                 currentEntity.SizeY = currTransform.ScaleY;
                 currentEntity.ZIndex = currTransform.ZIndex;
             }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has life component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaLife(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
             if (manager.EntityHasComponent<ILifeComponent>(item))
             {
-                required |= ComponentState.LifeComponent;
+                currentEntity.Components |= ComponentState.LifeComponent;
                 currentEntity.LifeComponent = manager.GetComponentOfType<ILifeComponent>(item);
             }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has graphics component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaGraphics(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
             if (manager.EntityHasComponent<IGraphicsComponent>(item))
             {
-                required |= ComponentState.GraphicsComponent;
+                currentEntity.Components |= ComponentState.GraphicsComponent;
                 currentEntity.Graphics = manager.GetComponentOfType<IGraphicsComponent>(item).CurrentImageName;
             }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has collision component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaCollision(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
             if (manager.EntityHasComponent<ICollisionComponent>(item))
             {
-                required |= ComponentState.CollisionComponent;
+                currentEntity.Components |= ComponentState.CollisionComponent;
                 ICollisionComponent currCollision = manager.GetComponentOfType<ICollisionComponent>(item);
                 currentEntity.CollisionType = 0;
                 if (currCollision.IsDynamic)
@@ -133,13 +227,34 @@ namespace Engine.Models.Factories.Entities
                 if (currCollision.IsSolid)
                 {
                     currentEntity.CollisionType |= CollisionType.Solid;
-
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has rigid body component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaRigidBody(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
             if (manager.EntityHasComponent<IRigidBodyComponent>(item))
             {
-                required |= ComponentState.RigidBodyComponent;
+                currentEntity.Components |= ComponentState.RigidBodyComponent;
             }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has script components
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaScripts(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
             if (manager.EntityHasComponent<IScriptComponent>(item))
             {
                 var scripts = manager.GetEntityScriptComponents(item);
@@ -156,22 +271,42 @@ namespace Engine.Models.Factories.Entities
                     }
                 }
             }
-
-            currentEntity.Components = required;
-
-            return currentEntity;
         }
 
+        /// <summary>
+        /// Checks the value of the flags
+        /// to determine if given type
+        /// of collision is required
+        /// </summary>
+        /// <param name="requiredValue"></param>
+        /// <param name="askedValue"></param>
+        /// <returns></returns>
         private static bool IsCollisionType(CollisionType requiredValue, CollisionType askedValue)
         {
             return (requiredValue & askedValue) == askedValue;
         }
 
+        /// <summary>
+        /// Checks the value of the flags
+        /// to determine if given type
+        /// of component is required
+        /// </summary>
+        /// <param name="requiredValue"></param>
+        /// <param name="askedValue"></param>
+        /// <returns></returns>
         private static bool IsComponentRequired(ComponentState requiredValue, ComponentState askedValue)
         {
             return (requiredValue & askedValue) == askedValue;
         }
 
+        /// <summary>
+        /// Checks the value of the flags
+        /// to determine if given type
+        /// of script is required
+        /// </summary>
+        /// <param name="requiredValue"></param>
+        /// <param name="askedValue"></param>
+        /// <returns></returns>
         private static bool IsScriptRequired(ScriptType requiredValue, ScriptType askedValue)
         {
             return (requiredValue & askedValue) == askedValue;

@@ -1,11 +1,6 @@
 ﻿using Engine.Models.Components.RigidBody;
 using Engine.Models.Scenes;
-using Engine.ViewModels;
 using GameInputHandler;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using TimeUtils;
 
 namespace Engine.Models.Components.Script
