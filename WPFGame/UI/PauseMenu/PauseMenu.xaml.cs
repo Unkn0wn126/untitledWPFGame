@@ -1,15 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.UI.MainMenu;
 using WPFGame.UI.MainMenu.LoadSaveSubMenu;
 using WPFGame.UI.MainMenu.SaveSaveSubMenu;
@@ -33,37 +23,74 @@ namespace WPFGame.UI.PauseMenu
         private SaveSaveMenu _saveSaveMenu;
 
         private Configuration _currentConfig;
-        public PauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, Configuration originalConfiguration, ProcessSaveActionButtonClick loadSaveAction, ProcessSaveActionButtonClick saveSaveAction, Uri saveFolder)
+        public PauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, 
+            ProcessMenuButtonClick quitGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, 
+            Configuration originalConfiguration, ProcessSaveActionButtonClick loadSaveAction, 
+            ProcessSaveActionButtonClick saveSaveAction, Uri saveFolder)
         {
             InitializeComponent();
             _currentConfig = originalConfiguration;
-            _loadSaveMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(loadSaveAction), saveFolder);
-            _saveSaveMenu = new SaveSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessSaveActionButtonClick(saveSaveAction), saveFolder);
-            _graphicsMenu = new GraphicsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
-            _controlsMenu = new ControlsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), settingsApplyAction, originalConfiguration);
-            _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), new ProcessMenuButtonClick(LoadGraphicsMenu), new ProcessMenuButtonClick(LoadControlsMenu));
+
+            _loadSaveMenu = new LoadSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), 
+                new ProcessSaveActionButtonClick(loadSaveAction), saveFolder);
+
+            _saveSaveMenu = new SaveSaveMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), 
+                new ProcessSaveActionButtonClick(saveSaveAction), saveFolder);
+
+            _graphicsMenu = new GraphicsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), 
+                settingsApplyAction, originalConfiguration);
+
+            _controlsMenu = new ControlsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), 
+                settingsApplyAction, originalConfiguration);
+
+            _settingsMenu = new SettingsMenu(new ProcessMenuBackButtonClick(LoadPreviousMenu), 
+                new ProcessMenuButtonClick(LoadGraphicsMenu), new ProcessMenuButtonClick(LoadControlsMenu));
+
             InitializeDefault(resumeAction, exitToMainAction, quitGameAction);
         }
 
+        /// <summary>
+        /// Updates the game configuration
+        /// context for this menu
+        /// </summary>
+        /// <param name="originalConfiguration"></param>
         public void UpdateConfig(Configuration originalConfiguration)
         {
             _currentConfig = originalConfiguration;
         }
 
+        /// <summary>
+        /// Restores the initial state
+        /// of this menu
+        /// </summary>
         public void RestoreDefaultState()
         {
             MainGrid.Children.RemoveRange(0, MainGrid.Children.Count);
             LoadDefault();
         }
 
+        /// <summary>
+        /// Initializes the default menu
+        /// for this section
+        /// </summary>
+        /// <param name="resumeAction"></param>
+        /// <param name="exitToMainAction"></param>
+        /// <param name="quitGameAction"></param>
         private void InitializeDefault(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, ProcessMenuButtonClick quitGameAction)
         {
-            _defaultMenu = new DefaultPauseMenu(resumeAction, exitToMainAction, quitGameAction, new ProcessMenuButtonClick(LoadSettingsMenu), new ProcessMenuButtonClick(LoadLoadGameMenu), new ProcessMenuButtonClick(LoadSaveGameMenu));
+            _defaultMenu = new DefaultPauseMenu(resumeAction, exitToMainAction, quitGameAction, 
+                new ProcessMenuButtonClick(LoadSettingsMenu), new ProcessMenuButtonClick(LoadLoadGameMenu), 
+                new ProcessMenuButtonClick(LoadSaveGameMenu));
+
             MainGrid.Children.Add(_defaultMenu);
             _defaultMenu.SetValue(Grid.RowProperty, 1);
             _defaultMenu.SetValue(Grid.ColumnProperty, 1);
         }
 
+        /// <summary>
+        /// Loads the default menu
+        /// of this section
+        /// </summary>
         private void LoadDefault()
         {
             MainGrid.Children.Add(_defaultMenu);
@@ -71,7 +98,9 @@ namespace WPFGame.UI.PauseMenu
             _defaultMenu.SetValue(Grid.ColumnProperty, 1);
         }
 
-
+        /// <summary>
+        /// Loads the load game menu
+        /// </summary>
         private void LoadLoadGameMenu()
         {
             MainGrid.Children.Remove(_defaultMenu);
@@ -81,6 +110,9 @@ namespace WPFGame.UI.PauseMenu
             _loadSaveMenu.UpdateSaveList();
         }
 
+        /// <summary>
+        /// Loads the save game menu
+        /// </summary>
         private void LoadSaveGameMenu()
         {
             MainGrid.Children.Remove(_defaultMenu);
