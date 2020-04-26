@@ -89,6 +89,15 @@ namespace Engine.Models.Factories.Entities
             SetUpLife(entity, metaEntity, manager);
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a transform component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpTransform(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.TransformComponent))
@@ -102,6 +111,15 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a collision component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpCollision(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.CollisionComponent))
@@ -114,6 +132,15 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a graphics component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpGraphics(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.GraphicsComponent))
@@ -123,6 +150,15 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a rigid body component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpRigidBody(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.RigidBodyComponent))
@@ -131,6 +167,15 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a sound component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpSound(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.SoundComponent))
@@ -139,6 +184,15 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a navmesh component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpNavmesh(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.NavMeshComponent))
@@ -154,6 +208,15 @@ namespace Engine.Models.Factories.Entities
             }
         }
 
+        /// <summary>
+        /// Based on the value from
+        /// the meta entity determines
+        /// if the entity should have
+        /// a life component
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="metaEntity"></param>
+        /// <param name="manager"></param>
         private static void SetUpLife(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
             if (IsComponentRequired(metaEntity.Components, ComponentState.LifeComponent))
@@ -190,6 +253,8 @@ namespace Engine.Models.Factories.Entities
             SetUpMetaGraphics(manager, item, currentEntity);
             SetUpMetaCollision(manager, item, currentEntity);
             SetUpMetaRigidBody(manager, item, currentEntity);
+            SetUpMetaSound(manager, item, currentEntity);
+            SetUpMetaNavmesh(manager, item, currentEntity);
             SetUpMetaScripts(manager, item, currentEntity);
 
             return currentEntity;
@@ -213,6 +278,48 @@ namespace Engine.Models.Factories.Entities
                 currentEntity.SizeX = currTransform.ScaleX;
                 currentEntity.SizeY = currTransform.ScaleY;
                 currentEntity.ZIndex = currTransform.ZIndex;
+            }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has sound component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaSound(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
+            if (manager.EntityHasComponent<ISoundComponent>(item))
+            {
+                currentEntity.Components |= ComponentState.SoundComponent;
+            }
+        }
+
+        /// <summary>
+        /// Determines if the entity
+        /// has navmesh component
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="item"></param>
+        /// <param name="currentEntity"></param>
+        private static void SetUpMetaNavmesh(IEntityManager manager, uint item, MetaEntity currentEntity)
+        {
+            if (manager.EntityHasComponent<INavmeshComponent>(item))
+            {
+                currentEntity.Components |= ComponentState.NavMeshComponent;
+                INavmeshComponent navmeshComponent = manager.GetComponentOfType<INavmeshComponent>(item);
+                if (navmeshComponent.LeadsDown)
+                    currentEntity.NavmeshContinuation |= NavmeshContinues.Down;
+
+                if (navmeshComponent.LeadsUp)
+                    currentEntity.NavmeshContinuation |= NavmeshContinues.Up;
+
+                if (navmeshComponent.LeadsLeft)
+                    currentEntity.NavmeshContinuation |= NavmeshContinues.Left;
+
+                if (navmeshComponent.LeadsRight)
+                    currentEntity.NavmeshContinuation |= NavmeshContinues.Right;
             }
         }
 
