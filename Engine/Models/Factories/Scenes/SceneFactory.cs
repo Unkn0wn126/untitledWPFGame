@@ -4,6 +4,7 @@ using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Components.Collision;
 using Engine.Models.Components.Life;
+using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
@@ -54,7 +55,7 @@ namespace Engine.Models.Factories
             return scene;
         }
 
-        private static List<MetaMapEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        private static List<MetaMapEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, bool[,] staticCollisionsPositions)
         {
             MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
             ComponentState current;
@@ -62,9 +63,40 @@ namespace Engine.Models.Factories
             {
                 for (int j = 0; j < metaMap.GetLength(1); j++)
                 {
-                    ImgName currImg = (ImgName)_rnd.Next(1, 4);
-                    current = ComponentState.GraphicsComponent | ComponentState.TransformComponent;
-                    metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.None, Graphics = currImg, Components = current, ZIndex = 0, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
+                    if (!staticCollisionsPositions[i, j])
+                    {
+                        ImgName currImg = (ImgName)_rnd.Next(1, 4);
+                        current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.NavMeshComponent;
+                        NavmeshContinues navmeshDirections = 0;
+                        if (j > 1 && !staticCollisionsPositions[i, j - 1])
+                        {
+                            navmeshDirections |= NavmeshContinues.Left;
+                        }                        
+                        if (j < metaMap.GetLength(1) - 1 && !staticCollisionsPositions[i, j + 1])
+                        {
+                            navmeshDirections |= NavmeshContinues.Right;
+                        }                        
+                        if (i > 1 && !staticCollisionsPositions[i - 1, j])
+                        {
+                            navmeshDirections |= NavmeshContinues.Up;
+                        }                        
+                        if (i < metaMap.GetLength(0) - 1 && !staticCollisionsPositions[i + 1, j])
+                        {
+                            navmeshDirections |= NavmeshContinues.Down;
+                        }
+                        metaMap[i, j] = new MetaMapEntity
+                        {
+                            CollisionType = CollisionType.None,
+                            Graphics = currImg,
+                            Components = current,
+                            ZIndex = 0,
+                            PosX = i * baseObjectSize,
+                            PosY = j * baseObjectSize,
+                            SizeX = baseObjectSize,
+                            SizeY = baseObjectSize,
+                            NavmeshContinuation = navmeshDirections
+                        };
+                    }
                 }
             }
 
@@ -81,25 +113,18 @@ namespace Engine.Models.Factories
             return output;
         }
 
-        private static List<MetaMapEntity> GenerateStaticBlocks(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, out List<int> vacantOnX, out List<int> vacantOnY)
+        private static List<MetaMapEntity> GenerateStaticBlocks(bool[,] staticCollisionsPositions, int baseObjectSize)
         {
-            vacantOnX = new List<int>();
-            vacantOnY = new List<int>();
-            MetaMapEntity[,] metaMap = new MetaMapEntity[numOfObjectsOnX, numOfObjectsOnY];
+            MetaMapEntity[,] metaMap = new MetaMapEntity[staticCollisionsPositions.GetLength(0), staticCollisionsPositions.GetLength(1)];
             ComponentState current;
             for (int i = 0; i < metaMap.GetLength(0); i++)
             {
                 for (int j = 0; j < metaMap.GetLength(1); j++)
                 {
-                    if ((i == 0 || i == metaMap.GetLength(0) - 1) || (j == 0 || j == metaMap.GetLength(1) - 1))  // generate edges of the map
+                    if (staticCollisionsPositions[i,j])
                     {
                         current = ComponentState.GraphicsComponent | ComponentState.TransformComponent | ComponentState.CollisionComponent;
-                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Rock, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
-                    }
-                    else
-                    {
-                        vacantOnX.Add(i);
-                        vacantOnY.Add(j);
+                        metaMap[i, j] = new MetaMapEntity { CollisionType = CollisionType.Solid, Graphics = ImgName.Cobblestone, Components = current, ZIndex = 1, PosX = i * baseObjectSize, PosY = j * baseObjectSize, SizeX = baseObjectSize, SizeY = baseObjectSize };
                     }
                 }
             }
@@ -124,24 +149,28 @@ namespace Engine.Models.Factories
             metaScene.NumOfEntitiesOnY = numOfObjectsOnY;
             metaScene.BaseObjectSize = baseObjectSize;
             metaScene.NumOfObjectsInCell = numOfObjectsInCell;
-            metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize);
-            List<int> vacantOnX;
-            List<int> vacantOnY;
-            metaScene.StaticCollisionEntities = GenerateStaticBlocks(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, out vacantOnX, out vacantOnY);
+            bool[,] staticCollisionsPositions = GenerateCollisions(numOfObjectsOnX, numOfObjectsOnY);
+
+            metaScene.GroundEntities = GenerateGround(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, staticCollisionsPositions);
+
+            metaScene.StaticCollisionEntities = GenerateStaticBlocks(staticCollisionsPositions, baseObjectSize);
 
             int numOfEnemies = numOfObjectsOnX / 2;//(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f));
+            int currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
+            int currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
 
-            int currX = vacantOnX[_rnd.Next(vacantOnX.Count)];
-            int currY = vacantOnY[_rnd.Next(vacantOnY.Count)];
             for (int i = 0; i < numOfEnemies; i++)
             {
-                int x = currX;
-                int y = currY;
+                while (staticCollisionsPositions[currEnemyXIndex, currEnemyYIndex])
+                {
+                    currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
+                    currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
+                }
 
-                metaScene.LivingEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, x, y));
+                metaScene.LivingEntities.Add(GenerateDynamicEntities(numOfObjectsOnX, numOfObjectsOnY, baseObjectSize, currEnemyXIndex, currEnemyYIndex));
 
-                currX = vacantOnX[_rnd.Next(vacantOnX.Count)];
-                currY = vacantOnY[_rnd.Next(vacantOnY.Count)];
+                currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
+                currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
             }
 
             metaScene.LivingEntities.Add(GenerateMetaPlayer(lifeComponent, baseObjectSize, 1, 1));
@@ -215,7 +244,7 @@ namespace Engine.Models.Factories
 
         private static bool IsGroundEntity(MetaMapEntity currentEntity)
         {
-            return !IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent);
+            return !IsComponentRequired(currentEntity.Components, ComponentState.CollisionComponent) && IsComponentRequired(currentEntity.Components, ComponentState.NavMeshComponent);
         }
 
         private static bool IsStaticCollisionEntity(MetaMapEntity currentEntity)
@@ -257,6 +286,138 @@ namespace Engine.Models.Factories
             }
 
             return scene;
+        }
+
+        public static bool[,] GenerateCollisions(int numOfObjectsOnX, int numOfObjectsOnY)
+        {
+            bool[,] map = new bool[numOfObjectsOnX, numOfObjectsOnY];
+            GenerateEdges(map);
+            GenerateCollisionsInside(map);
+            return map;
+        }
+
+        private static void GenerateCollisionsInside(bool[,] map)
+        {
+            int block = _rnd.Next(2);
+            Stack<Tuple<int, int>> vacantToCheck = new Stack<Tuple<int, int>>();
+            List<Tuple<int, int>> visitedIndexes = new List<Tuple<int, int>>();
+            for (int i = 1; i < map.GetLength(0) - 1; i++)
+            {
+                for (int j = 1; j < map.GetLength(1) - 1; j++)
+                {
+                    map[i, j] = block == 1 && (i != 1 && j != 1);
+                    if (!map[i, j])
+                    {
+                        vacantToCheck.Push(new Tuple<int, int>(i, j));
+                    }
+                    block = _rnd.Next(2);
+                }
+            }
+
+            while (vacantToCheck.Count > 0)
+            {
+                Tuple<int, int> tuple = vacantToCheck.Pop();
+                if (visitedIndexes.Find(x => x.Item1 == tuple.Item1 && x.Item2 == tuple.Item2) != null) // already visited?
+                {
+                    continue;
+                }
+
+                int numOfRows = map.GetLength(0);
+                int numOfCols = map.GetLength(1);
+
+                bool canGoLeft = tuple.Item2 > 2;
+                bool canGoRight = tuple.Item2 < map.GetLength(1) - 2;
+                bool canGoUp = tuple.Item1 > 2;
+                bool canGoDown = tuple.Item1 < map.GetLength(0) - 2;
+
+                List<int> possibleXCoords = new List<int>();
+                List<int> possibleYCoords = new List<int>();
+
+                if (canGoLeft)
+                    possibleYCoords.Add(tuple.Item2 - 1);
+                if (canGoRight)
+                    possibleYCoords.Add(tuple.Item2 + 1);
+                if (canGoUp)
+                    possibleXCoords.Add(tuple.Item1 - 1);
+                if (canGoDown)
+                    possibleXCoords.Add(tuple.Item1 + 1);
+
+                int nextXIndex = _rnd.Next(possibleXCoords.Count);
+                int nextYIndex = _rnd.Next(possibleYCoords.Count);
+
+                bool moveUpDown = canGoUp || canGoDown;
+                bool moveLeftRight = canGoLeft || canGoRight;
+
+                //if (moveUpDown && moveLeftRight)
+                //{
+                //    int randomNumber = _rnd.Next(3);
+                //    moveUpDown = randomNumber == 0 || randomNumber == 2;
+                //    moveLeftRight = randomNumber == 1 || randomNumber == 2;
+                //}
+
+                if (moveLeftRight)
+                {
+                    bool vacantFound = false;
+                    foreach (var item in possibleYCoords)
+                    {
+                        int currValue = _rnd.Next(2);
+                        bool addAnother = vacantFound && currValue == 1;
+                        if (map[tuple.Item1, item] && addAnother)
+                        {
+                            map[tuple.Item1, item] = false;
+                        }
+                        else
+                        {
+                            vacantFound = true;
+                        }
+
+                        if (!map[tuple.Item1, item])
+                        {
+                            vacantToCheck.Push(new Tuple<int, int>(tuple.Item1, item));
+                        }
+                    }
+
+                }
+                if (moveUpDown)
+                {
+
+                    bool vacantFound = false;
+                    foreach (var item in possibleXCoords)
+                    {
+                        int currValue = _rnd.Next(2);
+                        bool addAnother = vacantFound && currValue == 1;
+                        if (map[item, tuple.Item2] && addAnother)
+                        {
+                            map[item, tuple.Item2] = false;
+                        }
+                        else
+                        {
+                            vacantFound = true;
+                        }
+
+                        if (!map[item, tuple.Item2])
+                        {
+                            vacantToCheck.Push(new Tuple<int, int>(item, tuple.Item2));
+                        }
+                    }
+                }
+
+                visitedIndexes.Add(tuple);
+            }
+        }
+
+        private static void GenerateEdges(bool[,] map)
+        {
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (i == 0 || i == map.GetLength(0) - 1 || j == 0 || j == map.GetLength(1) - 1)
+                    {
+                        map[i, j] = true;
+                    }
+                }
+            }
         }
     }
 }

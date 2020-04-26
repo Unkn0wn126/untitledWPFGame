@@ -77,12 +77,24 @@ namespace Engine.Models.Factories.Entities
             }
             if (IsComponentRequired(metaEntity.Components, ComponentState.NavMeshComponent))
             {
-                manager.AddComponentToEntity<INavmeshComponent>(entity, new NavmeshComponent());
+                manager.AddComponentToEntity<INavmeshComponent>(entity, 
+                    new NavmeshComponent 
+                    { 
+                        LeadsUp = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Up),
+                        LeadsDown = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Down),
+                        LeadsLeft = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Left),
+                        LeadsRight = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Right),
+                    });
             }
             if (IsComponentRequired(metaEntity.Components, ComponentState.LifeComponent))
             {
                 manager.AddComponentToEntity(entity, metaEntity.LifeComponent);
             }
+        }
+
+        private static bool NavmeshLeadsInDirection(NavmeshContinues input, NavmeshContinues searched)
+        {
+            return (input & searched) == searched;
         }
 
         public static MetaMapEntity GenerateMetaEntityFromEntity(IEntityManager manager, uint item)

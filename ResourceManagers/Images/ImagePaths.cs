@@ -12,8 +12,8 @@ namespace ResourceManagers.Images
         None,
         Dirt,
         Grass,
-        Cobblestone,
         Rock,
+        Cobblestone,
         Player,
         Enemy,
         PlayerLeft,
@@ -59,8 +59,8 @@ namespace ResourceManagers.Images
             ColorSprites.Add(ImgName.None, new byte[3] { 255, 255, 255});
             ColorSprites.Add(ImgName.Dirt, new byte[3] { 51, 34, 23});
             ColorSprites.Add(ImgName.Grass, new byte[3] { 34, 51, 23});
-            ColorSprites.Add(ImgName.Cobblestone, new byte[3] { 23, 43, 40 });
-            ColorSprites.Add(ImgName.Rock, new byte[3] { 28, 28, 28 });
+            ColorSprites.Add(ImgName.Cobblestone, new byte[3] { 28, 28, 28 });
+            ColorSprites.Add(ImgName.Rock, new byte[3] { 23, 43, 40 });
             ColorSprites.Add(ImgName.Player, new byte[3] { 78, 71, 255});
             ColorSprites.Add(ImgName.Enemy, new byte[3] { 255, 25, 25 });
             ColorSprites.Add(ImgName.PlayerLeft, new byte[3] { 78, 71, 255 });
