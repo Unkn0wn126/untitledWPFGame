@@ -420,6 +420,7 @@ namespace WPFGame
         {
             Dispatcher.Invoke(() =>
             {
+                _isTextureModeOn = true;
                 RemoveOverlay(_loadingScreen);
                 _currentCamera = _session.SceneManager.CurrentScene?.SceneCamera;
                 _currentScene = _session.SceneManager.CurrentScene;
