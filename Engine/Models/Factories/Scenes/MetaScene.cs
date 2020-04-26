@@ -4,11 +4,22 @@ using System.Text;
 
 namespace Engine.Models.Factories.Scenes
 {
+    /// <summary>
+    /// Used to check the type
+    /// of the scene
+    /// </summary>
     public enum SceneType
     {
         General,
         Battle
     }
+
+    /// <summary>
+    /// Reduced version of the
+    /// normal scene to hold
+    /// in the memory or
+    /// save to file
+    /// </summary>
     [Serializable]
     public class MetaScene
     {

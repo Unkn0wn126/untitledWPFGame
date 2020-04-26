@@ -2,10 +2,8 @@
 using Engine.EntityManagers;
 using Engine.Models.Cameras;
 using Engine.Models.Components;
-using Engine.Models.Components.Collision;
 using Engine.Models.Components.Life;
 using Engine.Models.Components.Navmesh;
-using Engine.Models.Components.RigidBody;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
 using Engine.Models.Factories.Scenes;
@@ -19,6 +17,10 @@ using TimeUtils;
 
 namespace Engine.Models.Factories
 {
+    /// <summary>
+    /// Class for generating meta scenes
+    /// and actual scenes
+    /// </summary>
     public static class SceneFactory
     {
         private static Random _rnd = new Random();

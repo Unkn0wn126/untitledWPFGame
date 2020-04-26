@@ -1,8 +1,6 @@
 ﻿using Engine.Coordinates;
 using Engine.EntityManagers;
 using Engine.Models.Cameras;
-using Engine.Models.Components;
-using System;
 
 namespace Engine.Models.Scenes
 {

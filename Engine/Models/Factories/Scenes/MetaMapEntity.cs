@@ -5,11 +5,15 @@ using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
 using ResourceManagers.Images;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Engine.Models.Factories.Scenes
 {
+    /// <summary>
+    /// A blueprint for
+    /// an actual entity
+    /// with all the necessary
+    /// information for generation
+    /// </summary>
     [Serializable]
     public class MetaMapEntity
     {
