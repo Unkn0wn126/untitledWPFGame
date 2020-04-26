@@ -80,53 +80,95 @@ namespace Engine.Models.Factories.Entities
         /// <param name="manager"></param>
         private static void DetermineComponents(uint entity, MetaEntity metaEntity, IEntityManager manager)
         {
+            SetUpTransform(entity, metaEntity, manager);
+            SetUpCollision(entity, metaEntity, manager);
+            SetUpGraphics(entity, metaEntity, manager);
+            SetUpRigidBody(entity, metaEntity, manager);
+            SetUpSound(entity, metaEntity, manager);
+            SetUpNavmesh(entity, metaEntity, manager);
+            SetUpLife(entity, metaEntity, manager);
+        }
+
+        private static void SetUpTransform(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.TransformComponent))
             {
-                manager.AddComponentToEntity<ITransformComponent>(entity, 
+                manager.AddComponentToEntity<ITransformComponent>(entity,
                     new TransformComponent(
-                        new Vector2(metaEntity.PosX, metaEntity.PosY), 
-                        metaEntity.SizeX, metaEntity.SizeY, 
+                        new Vector2(metaEntity.PosX, metaEntity.PosY),
+                        metaEntity.SizeX, metaEntity.SizeY,
                         new Vector2(0, 0), metaEntity.ZIndex
                         ));
             }
+        }
+
+        private static void SetUpCollision(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.CollisionComponent))
             {
-                manager.AddComponentToEntity<ICollisionComponent>(entity, 
+                manager.AddComponentToEntity<ICollisionComponent>(entity,
                     new CollisionComponent(
-                        IsCollisionType(metaEntity.CollisionType, CollisionType.Solid), 
+                        IsCollisionType(metaEntity.CollisionType, CollisionType.Solid),
                         IsCollisionType(metaEntity.CollisionType, CollisionType.Dynamic)
                         ));
             }
+        }
+
+        private static void SetUpGraphics(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.GraphicsComponent))
             {
-                manager.AddComponentToEntity<IGraphicsComponent>(entity, 
+                manager.AddComponentToEntity<IGraphicsComponent>(entity,
                     new GraphicsComponent(metaEntity.Graphics));
             }
+        }
+
+        private static void SetUpRigidBody(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.RigidBodyComponent))
             {
                 manager.AddComponentToEntity<IRigidBodyComponent>(entity, new RigidBodyComponent());
             }
+        }
+
+        private static void SetUpSound(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.SoundComponent))
             {
                 manager.AddComponentToEntity<ISoundComponent>(entity, new SoundComponent());
             }
+        }
+
+        private static void SetUpNavmesh(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.NavMeshComponent))
             {
-                manager.AddComponentToEntity<INavmeshComponent>(entity, 
-                    new NavmeshComponent 
-                    { 
+                manager.AddComponentToEntity<INavmeshComponent>(entity,
+                    new NavmeshComponent
+                    {
                         LeadsUp = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Up),
                         LeadsDown = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Down),
                         LeadsLeft = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Left),
                         LeadsRight = NavmeshLeadsInDirection(metaEntity.NavmeshContinuation, NavmeshContinues.Right),
                     });
             }
+        }
+
+        private static void SetUpLife(uint entity, MetaEntity metaEntity, IEntityManager manager)
+        {
             if (IsComponentRequired(metaEntity.Components, ComponentState.LifeComponent))
             {
                 manager.AddComponentToEntity(entity, metaEntity.LifeComponent);
             }
         }
 
+        /// <summary>
+        /// Determines if the navmesh
+        /// continues in a given direction
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="searched"></param>
+        /// <returns></returns>
         private static bool NavmeshLeadsInDirection(NavmeshContinues input, NavmeshContinues searched)
         {
             return (input & searched) == searched;
