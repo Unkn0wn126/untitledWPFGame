@@ -6,7 +6,6 @@ using Engine.Models.Components;
 
 namespace Engine.Coordinates
 {
-    [Serializable]
     public class Grid : ISpatialIndex
     {
         private int _numOfCellsOnX;
