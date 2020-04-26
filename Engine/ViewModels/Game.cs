@@ -70,8 +70,6 @@ namespace Engine.ViewModels
             });
         }
 
-        private float timeElapsed = 0;
-
         /// <summary>
         /// Updates the game logic
         /// </summary>
@@ -81,17 +79,6 @@ namespace Engine.ViewModels
 
             if (State.IsRunning())
             {
-
-                //// temporary start
-                //timeElapsed += _gameTime.DeltaTimeInSeconds;
-
-                //if (timeElapsed >= 8)
-                //{
-                //    SceneManager.LoadNextScene();
-                //    timeElapsed = 0;
-                //}
-                //// temporary end
-
                 SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
 
                 foreach (var x in _processors)
@@ -131,9 +118,9 @@ namespace Engine.ViewModels
         /// Initializes a new game instance
         /// </summary>
         /// <param name="metaScenes"></param>
-        public void InitializeGame(List<byte[]> metaScenes)
+        public void InitializeGame(List<byte[]> metaScenes, int currentIndex)
         {
-            SceneManager.UpdateScenes(metaScenes);
+            SceneManager.UpdateScenes(metaScenes, currentIndex);
             UpdateProcessorContext();
         }
     }

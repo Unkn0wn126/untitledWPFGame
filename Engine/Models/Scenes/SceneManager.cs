@@ -21,6 +21,8 @@ namespace Engine.Models.Scenes
 
         public event SceneChangeStarted SceneChangeStarted;
         public event SceneChangeFinished SceneChangeFinished;
+        public event GameWon GameWon;
+
         public int CurrentIndex { get; set; }
 
         public SceneManager(GameInput gameInput, GameTime gameTime)
@@ -77,9 +79,9 @@ namespace Engine.Models.Scenes
         /// Basically loads a new game
         /// </summary>
         /// <param name="newScenes"></param>
-        public void UpdateScenes(List<byte[]> newScenes)
+        public void UpdateScenes(List<byte[]> newScenes, int currentIndex)
         {
-            CurrentIndex = 0;
+            CurrentIndex = currentIndex;
             MetaScenes = newScenes;
             CurrentScene = null;
             LoadNextScene();
@@ -134,6 +136,11 @@ namespace Engine.Models.Scenes
         /// </summary>
         public void LoadNextScene()
         {
+            if (CurrentIndex >= MetaScenes.Count)
+            {
+                GameWon.Invoke();
+                return;
+            }
             SceneChangeStarted.Invoke();
             MetaScene searched = DeserializeMetaScene(CurrentIndex);
 

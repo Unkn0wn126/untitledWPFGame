@@ -126,6 +126,7 @@ namespace WPFGame
 
             _session.SceneManager.SceneChangeStarted += ShowLoadingOverlay;
             _session.SceneManager.SceneChangeFinished += UpdateSceneContext;
+            _session.SceneManager.GameWon += ShowWinnerOverlay;
 
             _loadingScreen = new LoadingScreen();
 
@@ -266,16 +267,16 @@ namespace WPFGame
                 }
             }
 
-            InitializeGame(metaScenes);
+            InitializeGame(metaScenes, 0);
         }
 
         /// <summary>
         /// Initializes the game
         /// </summary>
         /// <param name="metaScenes"></param>
-        private void InitializeGame(List<byte[]> metaScenes)
+        private void InitializeGame(List<byte[]> metaScenes, int currentIndex)
         {
-            _session.InitializeGame(metaScenes);
+            _session.InitializeGame(metaScenes, currentIndex);
         }
 
         /// <summary>
@@ -601,7 +602,7 @@ namespace WPFGame
             string filename = path.ToString();
             Save save = SaveFileManager.LoadGame(filename);
 
-            InitializeGame(save.Scenes);
+            InitializeGame(save.Scenes, save.CurrentIndex);
         }
         
         /// <summary>
@@ -618,6 +619,18 @@ namespace WPFGame
                 }
                 RemoveOverlay(_mainMenu);
                 RemoveOverlay(_pauseMenu);
+            });
+        }
+
+        private void ShowWinnerOverlay()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (!GameGrid.Children.Contains(_mainMenu))
+                {
+                    _session.State.Pause();
+                    GameGrid.Children.Add(_mainMenu);
+                }
             });
         }
 
