@@ -38,13 +38,13 @@ namespace Engine.Models.Components.Script
 
         private void ChangeAvatar(IGraphicsComponent graphics, GameKey currValue)
         {
-            if ((currValue & GameKey.Left) == GameKey.Left)
-            {
-                graphics.CurrentImageName = ResourceManagers.Images.ImgName.PlayerLeft;
-            }
-            else if ((currValue & GameKey.Right) == GameKey.Right)
+            if ((currValue & GameKey.Right) == GameKey.Right)
             {
                 graphics.CurrentImageName = ResourceManagers.Images.ImgName.PlayerRight;
+            }
+            else if((currValue & GameKey.Left) == GameKey.Left)
+            {
+                graphics.CurrentImageName = ResourceManagers.Images.ImgName.PlayerLeft;
             }
             else
             {

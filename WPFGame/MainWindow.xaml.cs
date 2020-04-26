@@ -102,7 +102,7 @@ namespace WPFGame
             _loadingScreen = new LoadingScreen();
 
             _updateTimer = new DispatcherTimer();
-            _updateTimer.Interval = TimeSpan.FromMilliseconds(1/16f);
+            _updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 17);
             _updateTimer.Tick += UpdateGraphics;
 
             _updateTimer.Start();
@@ -360,7 +360,7 @@ namespace WPFGame
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();
 
-                DrawBackground(drawingContext);
+                //DrawBackground(drawingContext);
 
                 // need to update the camera to know what is visible
                 _session.UpdateGraphics();

@@ -15,7 +15,7 @@ namespace Engine.Models.Components.Script
     public class AiMovementScript : IScriptComponent
     {
         private float _baseVelocity;
-        private uint _player;
+        private uint _npc;
 
         private float _baseForceX;
         private float _baseForceY;
@@ -32,11 +32,11 @@ namespace Engine.Models.Components.Script
 
         private MapAIStateMachine _state;
 
-        public AiMovementScript(GameTime gameTime, IScene context, uint player, float baseVelocity)
+        public AiMovementScript(GameTime gameTime, IScene context, uint npc, float baseVelocity)
         {
             _gameTime = gameTime;
             _baseVelocity = baseVelocity;
-            _player = player;
+            _npc = npc;
             _context = context;
 
             _baseForceX = 0;
@@ -47,16 +47,13 @@ namespace Engine.Models.Components.Script
             _random = new Random();
             _direction = _random.Next(6);
 
-            _state = new MapAIStateMachine(gameTime, _context, player, _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player), _context.EntityManager.GetComponentOfType<ITransformComponent>(_player), baseVelocity);
+            _state = new MapAIStateMachine(gameTime, _context, npc, _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_npc), _context.EntityManager.GetComponentOfType<ITransformComponent>(_npc), _context.EntityManager.GetComponentOfType<ICollisionComponent>(_npc), baseVelocity);
         }
 
         public void Update()
         {
-            //_timer += _gameTime.DeltaTimeInSeconds;
-
-            //IRigidBodyComponent rigidBody = _context.EntityManager.GetComponentOfType<IRigidBodyComponent>(_player);
             var active = _context.EntityManager.GetAllActiveEntities();
-            var ownerTransform = _context.EntityManager.GetComponentOfType<ITransformComponent>(_player);
+            var ownerTransform = _context.EntityManager.GetComponentOfType<ITransformComponent>(_npc);
             _state.SetStateToWalk();
             foreach (var item in active)
             {

@@ -28,19 +28,24 @@ namespace Engine.Models.Components.Script.AIState
         private Random _random;
 
         private int _direction;
+
+        private int _waitTime;
         public uint Owner { get; set; }
         public uint Target { get; set; }
         private MapAIState _state;
 
         private IRigidBodyComponent _ownerRigidBody;
+        private ICollisionComponent _ownerCollision;
 
         private ITransformComponent _ownerTransform;
         private ITransformComponent _targetTransform;
 
-        public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, ITransformComponent ownerTransform, float baseVelocity)
+        public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, ITransformComponent ownerTransform, ICollisionComponent ownerCollision, float baseVelocity)
         {
+            _context = context;
             _ownerRigidBody = rigidBody;
             _ownerTransform = ownerTransform;
+            _ownerCollision = ownerCollision;
             _gameTime = gameTime;
             _baseVelocity = baseVelocity;
 
@@ -53,6 +58,7 @@ namespace Engine.Models.Components.Script.AIState
 
             _random = new Random();
             _direction = _random.Next(6);
+            _waitTime = _random.Next(10);
 
             _state = MapAIState.Walking;
         }
@@ -104,10 +110,30 @@ namespace Engine.Models.Components.Script.AIState
         {
             _timer += _gameTime.DeltaTimeInSeconds;
 
-            if (_timer >= 2)
+            if (_ownerCollision.CollidingWith.Count > 0)
+            {
+                foreach (var item in _ownerCollision.CollidingWith)
+                {
+                    ICollisionComponent current = _context.EntityManager.GetComponentOfType<ICollisionComponent>(item);
+                    if (current.IsSolid && !current.IsDynamic)
+                    {
+                        int originalDirection = _direction;
+                        while (_direction == originalDirection)
+                        {
+                            _direction = _random.Next(6);
+                        }
+
+                        _timer = 0;
+                        _waitTime = _random.Next(10);
+                    }
+                }
+            }
+
+            if (_timer >= _waitTime)
             {
                 _direction = _random.Next(6);
                 _timer = 0;
+                _waitTime = _random.Next(10);
             }
 
             _ownerRigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;

@@ -87,6 +87,7 @@ namespace Engine.Processors
                     }
                 });
 
+                Vector2.Normalize(newPos);
                 transforms[i].Position = newPos;
 
                 manager.Coordinates.Move(useful[i], oldPos, newPos);
