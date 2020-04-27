@@ -76,8 +76,13 @@ namespace Engine.Models.Scenes
         /// <returns></returns>
         public List<byte[]> GetScenesToSave()
         {
-            byte[] currentScene = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
-            MetaScenes[CurrentIndex - 1] = currentScene;
+            byte[] currentScene;
+            if (CurrentScene.SceneType != SceneType.Battle)
+            {
+                currentScene = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
+                MetaScenes[CurrentIndex - 1] = currentScene;
+            }
+
 
             return MetaScenes;
         }
@@ -146,7 +151,6 @@ namespace Engine.Models.Scenes
         public void LoadBattleScene(ILifeComponent player, ILifeComponent enemy)
         {
             SceneChangeStarted.Invoke();
-            MetaScenes[CurrentIndex - 1] = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
             ISpatialIndex grid = new Grid(2, 2, 2);
             IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
             uint playerID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
