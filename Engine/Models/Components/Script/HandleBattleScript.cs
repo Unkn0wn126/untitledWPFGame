@@ -14,11 +14,14 @@ namespace Engine.Models.Components.Script
         private BattleStateMachine _enemyBattleState;
         private Random _rnd;
 
-        GameEnd _onPlayerDead;
-        GameEnd _onPlayerWon;
+        private GameEnd _onPlayerDead;
+        private GameEnd _onPlayerWon;
 
-        public HandleBattleScript(ILifeComponent playerLife, ILifeComponent enemyLife, BattleStateMachine playerBattleState, BattleStateMachine enemyBattleState, GameEnd onPlayerDead, GameEnd onPlayerWon)
+        private MessageProcessor _messageProcessor;
+
+        public HandleBattleScript(ILifeComponent playerLife, ILifeComponent enemyLife, BattleStateMachine playerBattleState, BattleStateMachine enemyBattleState, GameEnd onPlayerDead, GameEnd onPlayerWon, MessageProcessor messageProcessor)
         {
+            _messageProcessor = messageProcessor;
             _onPlayerDead = onPlayerDead;
             _onPlayerWon = onPlayerWon;
             _playerLife = playerLife;
@@ -38,6 +41,7 @@ namespace Engine.Models.Components.Script
                 _playerBattleState.TurnDecided = false;
                 _enemyBattleState.IsOnTurn = false;
                 _enemyBattleState.TurnDecided = false;
+                _messageProcessor.Invoke($"{_playerLife.Name} starts the fight");
             }
             else
             {
@@ -45,26 +49,26 @@ namespace Engine.Models.Components.Script
                 _enemyBattleState.TurnDecided = false;
                 _playerBattleState.IsOnTurn = false;
                 _playerBattleState.TurnDecided = false;
+                _messageProcessor.Invoke($"{_enemyLife.Name} starts the fight");
             }
         }
 
         public void Update()
         {
-            Trace.WriteLine($"Player turn: {_playerBattleState.IsOnTurn}; Enemy turn: {_enemyBattleState.IsOnTurn}");
             if (CheckBattleEndConditions())
             {
                 return;
             }
             if (_playerBattleState.IsOnTurn && _playerBattleState.TurnDecided)
             {
-                _playerBattleState.ProcessState(_enemyLife);
+                _messageProcessor.Invoke(_playerBattleState.ProcessState(_enemyLife));
                 _playerBattleState.TurnDecided = false;
                 _enemyBattleState.IsOnTurn = true;
                 _enemyBattleState.TurnDecided = false;
             }
             else if (_enemyBattleState.IsOnTurn && _enemyBattleState.TurnDecided)
             {
-                _enemyBattleState.ProcessState(_playerLife);
+                _messageProcessor.Invoke(_enemyBattleState.ProcessState(_playerLife));
                 _enemyBattleState.TurnDecided = false;
                 _playerBattleState.IsOnTurn = true;
                 _playerBattleState.TurnDecided = false;

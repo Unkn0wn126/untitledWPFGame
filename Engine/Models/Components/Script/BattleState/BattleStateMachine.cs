@@ -42,13 +42,17 @@ namespace Engine.Models.Components.Script.BattleState
             _rnd = new Random();
         }
 
-        public void ProcessState(ILifeComponent target)
+        public string ProcessState(ILifeComponent target)
         {
             if (MovementType == MovementType.Heal)
             {
-                _owner.HP += (int)Math.Ceiling(_owner.Intelligence / 2f);
+                int healValue = (int)Math.Ceiling(_owner.Intelligence / 2f);
+                _owner.HP += healValue;
+                return $"{_owner.Name} healed by {healValue} HP";
             }
+
             IsOnTurn = false;
+            return $"Generic message";
         }
     }
 }

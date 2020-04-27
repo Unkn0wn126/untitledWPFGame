@@ -28,6 +28,7 @@ namespace Engine.Models.Scenes
         private IScene _returnWorldScene;
 
         public int CurrentIndex { get; set; }
+        public BattleSceneMediator BattleSceneMediator { get; set; }
 
         private uint _enemyEntityToRemove;
         private bool _removeEnemyEntity;
@@ -159,17 +160,20 @@ namespace Engine.Models.Scenes
                 uint enemyID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
                 uint battleManager = scene.EntityManager.AddEntity();
 
-                scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(playerID, new GraphicsComponent(ResourceManagers.Images.ImgName.Player));
-                scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(enemyID, new GraphicsComponent(ResourceManagers.Images.ImgName.Enemy));
+                IGraphicsComponent playerAvatar = new GraphicsComponent(ResourceManagers.Images.ImgName.Player);
+                IGraphicsComponent enemyAvatar = new GraphicsComponent(ResourceManagers.Images.ImgName.Enemy);
 
-                scene.EntityManager.AddComponentToEntity<ILifeComponent>(playerID, player);
-                scene.EntityManager.AddComponentToEntity<ILifeComponent>(enemyID, enemy);
+                scene.EntityManager.AddComponentToEntity(playerID, playerAvatar);
+                scene.EntityManager.AddComponentToEntity(enemyID, enemyAvatar);
+
+                scene.EntityManager.AddComponentToEntity(playerID, player);
+                scene.EntityManager.AddComponentToEntity(enemyID, enemy);
 
                 BattleStateMachine enemyBattleSceneState = new BattleStateMachine(enemy);
                 BattleStateMachine playerBattleSceneState = new BattleStateMachine(player);
-
+                UpdateBattleSceneMediator(playerAvatar, enemyAvatar, enemy, player, playerBattleSceneState);
                 scene.EntityManager.AddComponentToEntity<IScriptComponent>(enemyID, new AIBattleScript(enemyBattleSceneState));
-                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(LoadNextScene), new GameEnd(LoadNextScene)));
+                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(LoadNextScene), new GameEnd(LoadNextScene), BattleSceneMediator.MessageProcessor));
 
                 scene.PlayerEntity = playerID;
 
@@ -178,6 +182,15 @@ namespace Engine.Models.Scenes
                 CurrentScene = scene;
                 SceneChangeFinished.Invoke();
             }
+        }
+
+        private void UpdateBattleSceneMediator(IGraphicsComponent playerAvatar, IGraphicsComponent enemyAvatar, ILifeComponent enemyLife, ILifeComponent playerLife, BattleStateMachine playerBattleState)
+        {
+            BattleSceneMediator.PlayerAvatar = playerAvatar;
+            BattleSceneMediator.EnemyAvatar = enemyAvatar;
+            BattleSceneMediator.EnemyLife = enemyLife;
+            BattleSceneMediator.PlayerLife = playerLife;
+            BattleSceneMediator.PlayerBattleState = playerBattleState;
         }
 
         private void LoadBackWorld()

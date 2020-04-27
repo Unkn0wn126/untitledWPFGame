@@ -22,5 +22,10 @@ namespace WPFGame.UI.BattleScreen.LowerPart
         {
             InitializeComponent();
         }
+
+        public void UpdateLogTextBox(string message)
+        {
+            LogTextBox.Text += "\n" + message;
+        }
     }
 }

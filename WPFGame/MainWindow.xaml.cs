@@ -159,15 +159,18 @@ namespace WPFGame
         {
             InitializeMainMenu();
             InitializePauseMenu();
-            _battleScreen = new BattleScreenOverlay();
         }
 
         private void LoadBattleScreen()
         {
-            if (!GameGrid.Children.Contains(_battleScreen))
+            Dispatcher.Invoke(() =>
             {
-                GameGrid.Children.Add(_battleScreen);
-            }
+                _battleScreen.UpdateState();
+                if (!GameGrid.Children.Contains(_battleScreen))
+                {
+                    GameGrid.Children.Add(_battleScreen);
+                }
+            });
         }
 
         /// <summary>
@@ -281,6 +284,15 @@ namespace WPFGame
                 GameGrid.Children.Remove(control);
             }
             ResetMenus(control);
+            ResetBattleScreen(control);
+        }
+
+        private void ResetBattleScreen(UserControl control)
+        {
+            if (control == _battleScreen)
+            {
+                _battleScreen.ClearMessageLog();
+            }
         }
 
 
@@ -455,6 +467,8 @@ namespace WPFGame
             _imageResourceManager = new ImageResourceManager(_imagePaths);
 
             _rectangle = new Rect();
+
+            _battleScreen = new BattleScreenOverlay(_session.SceneManager.BattleSceneMediator, _imageResourceManager);
         }
 
         /// <summary>

@@ -37,6 +37,7 @@ namespace Engine.ViewModels
             };
 
             SceneManager = new SceneManager(_gameInputHandler, _gameTime);
+            SceneManager.BattleSceneMediator = new BattleSceneMediator();
 
             SceneManager.SceneChangeStarted += SetStateToLoading;
             SceneManager.SceneChangeFinished += InitializeContextUpdate;

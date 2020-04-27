@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Engine.Models.Scenes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFGame.ResourceManagers;
 using WPFGame.UI.BattleScreen.CommandConsole;
 using WPFGame.UI.BattleScreen.LifeStats;
 using WPFGame.UI.BattleScreen.LowerPart;
@@ -25,7 +27,10 @@ namespace WPFGame.UI.BattleScreen
         private LifeStatsOverlay _playerLifeStats;
         private LifeStatsOverlay _enemyLifeStats;
         private CommandConsoleOverlay _commandConsole;
-        public BattleScreenOverlay()
+        private ImageResourceManager _imageResourceManager;
+
+        private BattleSceneMediator _battleSceneMediator;
+        public BattleScreenOverlay(BattleSceneMediator battleSceneMediator, ImageResourceManager imageResourceManager)
         {
             InitializeComponent();
 
@@ -33,6 +38,43 @@ namespace WPFGame.UI.BattleScreen
             InitializePlayerLifeStats();
             InitializeEnemyLifeStats();
             InitializeCommandConsole();
+
+            _imageResourceManager = imageResourceManager;
+
+            _battleSceneMediator = battleSceneMediator;
+            _battleSceneMediator.MessageProcessor += UpdateLogMessages;
+
+            UpdateAvatars();
+        }
+
+        public void UpdateState()
+        {
+            UpdateAvatars();
+        }
+
+        public void ClearMessageLog()
+        {
+            _lowerPart.LogTextBox.Text = string.Empty;
+        }
+
+        private void UpdateAvatars()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (_battleSceneMediator.PlayerAvatar != null && _battleSceneMediator.EnemyAvatar != null)
+                {
+                    _lowerPart.PlayerImage.Source = _imageResourceManager.GetImage(_battleSceneMediator.PlayerAvatar.CurrentImageName);
+                    _lowerPart.EnemyImage.Source = _imageResourceManager.GetImage(_battleSceneMediator.EnemyAvatar.CurrentImageName);
+                }
+            });
+        }
+
+        private void UpdateLogMessages(string message)
+        {
+            Dispatcher.Invoke(() => 
+            {
+                _lowerPart.UpdateLogTextBox(message);
+            });
         }
 
         private void InitializeLowerPart()
