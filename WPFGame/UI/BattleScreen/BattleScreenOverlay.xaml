@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WPFGame.UI.BattleScreen"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid Background="Black" x:Name="MainGrid">
+    <Grid Background="White" x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="150"/>

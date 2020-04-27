@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:WPFGame.UI.BattleScreen.LifeStats"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
-    <Grid Background="White">
-        <ScrollViewer>
+    <Grid Background="White" Margin="10, 10">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <UniformGrid Columns="2">
                 <TextBlock>Name:</TextBlock>
                 <TextBlock>Placeholder</TextBlock>

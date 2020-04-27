@@ -608,7 +608,7 @@ namespace WPFGame
                 var sceneManager = _session.SceneManager;
 
                 save.Scenes = sceneManager.GetScenesToSave();
-                save.CurrentIndex = sceneManager.CurrentIndex;
+                save.CurrentIndex = sceneManager.CurrentIndex - 1;
                 SaveFileManager.SaveGame(filename, save);
             }
             catch (Exception e)
