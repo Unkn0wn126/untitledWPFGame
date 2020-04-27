@@ -103,6 +103,22 @@ namespace Engine.EntityManagers
 
         public void RemoveEntity(uint id)
         {
+            if (EntityHasComponent<ITransformComponent>(id))
+            {
+                Coordinates.Remove(id, GetComponentOfType<ITransformComponent>(id));
+            }
+            if (EntityHasComponent<ICollisionComponent>(id))
+            {
+                List<uint> collisionEntities = GetAllEntitiesPossessingComponent(typeof(ICollisionComponent));
+                foreach (var item in collisionEntities)
+                {
+                    ICollisionComponent current = GetComponentOfType<ICollisionComponent>(item);
+                    if (current.CollidingWith.Contains(id))
+                    {
+                        current.CollidingWith.Remove(id);
+                    }
+                }
+            }
             RemoveEntityComponents(id);
 
             _entities.Remove(id);

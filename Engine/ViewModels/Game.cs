@@ -4,6 +4,7 @@ using Engine.Models.Scenes;
 using Engine.Processors;
 using GameInputHandler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TimeUtils;
 
 namespace Engine.ViewModels
@@ -81,6 +82,8 @@ namespace Engine.ViewModels
             });
         }
 
+        private float timeElapsed;
+
         /// <summary>
         /// Updates the game logic
         /// </summary>
@@ -91,8 +94,18 @@ namespace Engine.ViewModels
             {
                 SetStateToRunning();
             }
+            if (State.CurrentState == GameState.Battle)
+            {
+                timeElapsed += _gameTime.DeltaTimeInSeconds;
+                if (timeElapsed >= 8)
+                {
+                    timeElapsed = 0;
+                    SceneManager.LoadNextScene();
+                }
+            }
             if (State.IsRunning())
             {
+
                 SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
 
                 foreach (var x in _processors)

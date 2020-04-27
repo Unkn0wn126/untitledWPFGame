@@ -25,6 +25,8 @@ namespace Engine.Models.Scenes
         public event GameWon GameWon;
         public event BattleInitialization BattleInitialize;
 
+        private IScene _returnWorldScene;
+
         public int CurrentIndex { get; set; }
 
         private uint _enemyEntityToRemove;
@@ -158,7 +160,20 @@ namespace Engine.Models.Scenes
 
             scene.PlayerEntity = playerID;
 
+            _returnWorldScene = CurrentScene;
+
             CurrentScene = scene;
+            SceneChangeFinished.Invoke();
+        }
+
+        private void LoadBackWorld()
+        {
+            SceneChangeStarted.Invoke();
+            if (_removeEnemyEntity)
+            {
+                _returnWorldScene.EntityManager.RemoveEntity(_enemyEntityToRemove);
+            }
+            CurrentScene = _returnWorldScene;
             SceneChangeFinished.Invoke();
         }
 
@@ -167,6 +182,11 @@ namespace Engine.Models.Scenes
         /// </summary>
         public void LoadNextScene()
         {
+            if (CurrentScene?.SceneType == SceneType.Battle)
+            {
+                LoadBackWorld();
+                return;
+            }
             if (CurrentIndex >= MetaScenes.Count)
             {
                 GameWon.Invoke();

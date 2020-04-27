@@ -83,5 +83,13 @@ namespace Engine.Coordinates
             }
 
         }
+
+        public void Remove(uint unit, ITransformComponent entityTransform)
+        {
+            int cellX = (int)(entityTransform.Position.X / _cellSize);
+            int cellY = (int)(entityTransform.Position.Y / _cellSize);
+
+            Cells[cellX][cellY].Remove(unit);
+        }
     }
 }

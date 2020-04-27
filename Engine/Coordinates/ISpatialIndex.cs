@@ -10,5 +10,6 @@ namespace Engine.Coordinates
         void Add(uint unit, Vector2 position);
         List<uint> GetObjectsInRadius(ITransformComponent focus, int cellRadius);
         void Move(uint unit, Vector2 oldPos, Vector2 newPos);
+        void Remove(uint unit, ITransformComponent entityTransform);
     }
 }
