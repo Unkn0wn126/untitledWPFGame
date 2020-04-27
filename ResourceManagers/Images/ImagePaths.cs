@@ -53,7 +53,7 @@ namespace ResourceManagers.Images
             ImageSprites.Add(ImgName.Enemy, new Uri(@"./Resources/Images/enemy.png", UriKind.Relative));
             ImageSprites.Add(ImgName.PlayerLeft, new Uri(@"./Resources/Images/player_left.png", UriKind.Relative));
             ImageSprites.Add(ImgName.PlayerRight, new Uri(@"./Resources/Images/player_right.png", UriKind.Relative));
-            ImageSprites.Add(ImgName.LocationTrigger, new Uri(@"./Resources/Images/rock.jpg", UriKind.Relative));
+            ImageSprites.Add(ImgName.LocationTrigger, new Uri(@"./Resources/Images/rock_trigger.png", UriKind.Relative));
         }
 
         /// <summary>

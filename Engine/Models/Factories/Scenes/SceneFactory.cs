@@ -270,7 +270,7 @@ namespace Engine.Models.Factories
         private static List<MetaEntity> GenerateTriggerEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
         {
             List<MetaEntity> triggerEntities = new List<MetaEntity>();
-            int numOfEntities = numOfObjectsOnX / 2;
+            int numOfEntities = 1;
             int currEntityXIndex = _rnd.Next(3, numOfObjectsOnX);
             int currrEntityYIndex = _rnd.Next(3, numOfObjectsOnY);
 

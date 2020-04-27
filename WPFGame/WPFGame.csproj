@@ -56,6 +56,9 @@
     <None Update="Resources\Images\rock.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\Images\rock_trigger.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\Sounds\arena_loop2.ogg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
