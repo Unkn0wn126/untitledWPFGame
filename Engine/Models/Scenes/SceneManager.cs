@@ -5,7 +5,6 @@ using Engine.Models.Components.Life;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
 using GameInputHandler;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -22,8 +21,7 @@ namespace Engine.Models.Scenes
 
         public event SceneChangeStarted SceneChangeStarted;
         public event SceneChangeFinished SceneChangeFinished;
-        public event GameWon GameWon;
-        public event BattleInitialization BattleInitialize;
+        public event GameEnd GameWon;
 
         private IScene _returnWorldScene;
 
@@ -177,8 +175,34 @@ namespace Engine.Models.Scenes
             {
                 _returnWorldScene.EntityManager.RemoveEntity(_enemyEntityToRemove);
             }
+            ILifeComponent player = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(CurrentScene.PlayerEntity);
+            player.CurrentXP += 50;
+            ILifeComponent currentWorldPlayer = _returnWorldScene.EntityManager.GetComponentOfType<ILifeComponent>(_returnWorldScene.PlayerEntity);
+            UpdatePlayerStats(currentWorldPlayer, player);
             CurrentScene = _returnWorldScene;
+
             SceneChangeFinished.Invoke();
+        }
+
+        private void UpdatePlayerStats(ILifeComponent oldStats, ILifeComponent newStats)
+        {
+            oldStats.IsPlayer = newStats.IsPlayer;
+            oldStats.Name = newStats.Name;
+            oldStats.Gender = newStats.Gender;
+            oldStats.Race = newStats.Race;
+            oldStats.BattleClass = newStats.BattleClass;
+            oldStats.Strength = newStats.Strength;
+            oldStats.Agility = newStats.Agility;
+            oldStats.Intelligence = newStats.Intelligence;
+            oldStats.MaxStamina = newStats.MaxStamina;
+            oldStats.MaxHP = newStats.MaxHP;
+            oldStats.HP = newStats.HP;
+            oldStats.MaxMP = newStats.MaxMP;
+            oldStats.MP = newStats.MP;
+            oldStats.AttributePoints = newStats.AttributePoints;
+            oldStats.CurrentXP = newStats.CurrentXP;
+            oldStats.CurrentLevel = newStats.CurrentLevel;
+            oldStats.NextLevelXP = newStats.NextLevelXP;
         }
 
         /// <summary>
