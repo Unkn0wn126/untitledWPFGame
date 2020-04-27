@@ -83,7 +83,7 @@ namespace Engine.Models.Components.Life
                 if (_currentXp >= NextLevelXP)
                 {
                     CurrentLevel++;
-                    NextLevelXP += CurrentLevel * 10;
+                    NextLevelXP += CurrentLevel * 100;
                     AttributePoints += 2;
                 }
             } 
@@ -109,9 +109,9 @@ namespace Engine.Models.Components.Life
             MaxMP = 100;
             MP = 100;
             AttributePoints = 0;
+            NextLevelXP = 0;
             CurrentXP = 0;
-            CurrentLevel = 1;
-            NextLevelXP = CurrentLevel * 10;
+            CurrentLevel = 0;
         }
     }
 }

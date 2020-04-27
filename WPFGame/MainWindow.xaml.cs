@@ -27,6 +27,7 @@ using WPFGame.UI.LoadingScreen;
 using WPFGame.UI.BattleScreen;
 using WPFGame.UI.DeathScreen;
 using WPFGame.UI.WinnerScreen;
+using Engine.Models.Components.Life;
 
 namespace WPFGame
 {
@@ -222,10 +223,7 @@ namespace WPFGame
         private void LoadMainMenu()
         {
             RemoveOverlay(_pauseMenu);
-            if (!GameGrid.Children.Contains(_mainMenu))
-            {
-                GameGrid.Children.Add(_mainMenu);
-            }
+            AddOverlay(_mainMenu);
         }
 
         /// <summary>
@@ -234,7 +232,6 @@ namespace WPFGame
         private void TogglePauseMenu()
         {
             _session.State.TogglePause();
-            //ToggleMapHUD();
             if (!GameGrid.Children.Contains(_pauseMenu))
             {
                 GameGrid.Children.Add(_pauseMenu);
@@ -260,7 +257,7 @@ namespace WPFGame
                 var binaryFormatter = new BinaryFormatter();
                 for (int i = 0; i < 10; i++)
                 {
-                    MetaScene metaScene = SceneFactory.CreateMetaScene(null, val, val, 1, 5);
+                    MetaScene metaScene = SceneFactory.CreateMetaScene(new LifeComponent() { IsPlayer = true}, val, val, 1, 5);
                     binaryFormatter.Serialize(stream, metaScene);
                     current = stream.ToArray();
                     metaScenes.Add(current);

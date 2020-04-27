@@ -107,6 +107,11 @@ namespace Engine.Models.Components.Script.BattleState
             return _owner.HP <= _owner.MaxHP / 4f;
         }
 
+        public bool IsCloseToExhaustion()
+        {
+            return _owner.Stamina <= _owner.MaxStamina / 4f;
+        }
+
         private string ReplenishHP()
         {
             float baseMPCost = DetermineHealCost();

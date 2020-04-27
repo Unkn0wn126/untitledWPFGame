@@ -23,6 +23,7 @@
     <Folder Include="Resources\Images\" />
     <Folder Include="Resources\Sounds\" />
     <Folder Include="UI\MainMenu\Resources\" />
+    <Folder Include="UI\GameCreationMenu\" />
   </ItemGroup>
 
   <ItemGroup>

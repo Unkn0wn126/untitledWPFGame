@@ -37,6 +37,10 @@ namespace Engine.Models.Components.Script
                 while (!IsMovementValid((MovementType)initialAction))
                 {
                     initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
+                    if ((MovementType)initialAction == MovementType.None && !_ownerState.IsCloseToExhaustion())
+                    {
+                        initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
+                    }
                 }
 
                 _ownerState.MovementType = (MovementType)initialAction;

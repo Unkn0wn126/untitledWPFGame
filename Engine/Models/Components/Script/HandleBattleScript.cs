@@ -89,7 +89,7 @@ namespace Engine.Models.Components.Script
             else if (_enemyLife.HP <= 0)
             {
                 // Level the player up after victory
-                _playerLife.CurrentXP += _enemyLife.CurrentXP;
+                _playerLife.CurrentXP += _enemyLife.CurrentLevel * 50;
                 _onPlayerWon.Invoke();
                 return true;
             }
