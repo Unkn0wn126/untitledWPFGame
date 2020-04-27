@@ -146,7 +146,7 @@ namespace Engine.Models.Scenes
             SceneChangeStarted.Invoke();
             MetaScenes[CurrentIndex - 1] = SerializeMetaScene(SceneFactory.GenerateMetaSceneFromScene(CurrentScene));
             ISpatialIndex grid = new Grid(2, 2, 2);
-            IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid);
+            IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
             uint playerID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
             uint enemyID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
 

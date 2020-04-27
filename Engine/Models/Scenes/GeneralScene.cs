@@ -1,6 +1,7 @@
 ﻿using Engine.Coordinates;
 using Engine.EntityManagers;
 using Engine.Models.Cameras;
+using Engine.Models.Factories.Scenes;
 
 namespace Engine.Models.Scenes
 {
@@ -10,7 +11,7 @@ namespace Engine.Models.Scenes
     /// </summary>
     public class GeneralScene : IScene
     {
-        public event SceneChange SceneChange;
+        public SceneType SceneType { get; set; }
         public IEntityManager EntityManager { get; set; }
         public ICamera SceneCamera { get; set; }
         public uint PlayerEntity { get; set; }
@@ -20,8 +21,9 @@ namespace Engine.Models.Scenes
         public int NumOfEntitiesOnY { get; set; }
         public ISpatialIndex Coordinates { get; set; }
 
-        public GeneralScene(ICamera camera, IEntityManager entityManager, ISpatialIndex coordinates)
+        public GeneralScene(ICamera camera, IEntityManager entityManager, ISpatialIndex coordinates, SceneType sceneType)
         {
+            SceneType = sceneType;
             EntityManager = entityManager;
             SceneCamera = camera;
             Coordinates = coordinates;

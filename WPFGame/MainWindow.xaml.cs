@@ -24,6 +24,7 @@ using Engine.Models.Factories.Scenes;
 using WPFGame.UI.PauseMenu;
 using System.Windows.Threading;
 using WPFGame.UI.LoadingScreen;
+using WPFGame.UI.BattleScreen;
 
 namespace WPFGame
 {
@@ -59,6 +60,7 @@ namespace WPFGame
         private MainMenu _mainMenu;
         private PauseMenu _pauseMenu;
         private LoadingScreen _loadingScreen;
+        private BattleScreenOverlay _battleScreen;
 
         Rect _rectangle;
 
@@ -157,6 +159,15 @@ namespace WPFGame
         {
             InitializeMainMenu();
             InitializePauseMenu();
+            _battleScreen = new BattleScreenOverlay();
+        }
+
+        private void LoadBattleScreen()
+        {
+            if (!GameGrid.Children.Contains(_battleScreen))
+            {
+                GameGrid.Children.Add(_battleScreen);
+            }
         }
 
         /// <summary>
@@ -455,6 +466,14 @@ namespace WPFGame
         {
             if (_session.State.IsRunning())
             {
+                if (_session.State.CurrentState == Engine.Models.GameStateMachine.GameState.Battle)
+                {
+                    LoadBattleScreen();
+                }
+                else
+                {
+                    RemoveOverlay(_battleScreen);
+                }
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();

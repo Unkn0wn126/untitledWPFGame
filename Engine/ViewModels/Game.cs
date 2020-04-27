@@ -1,4 +1,5 @@
-﻿using Engine.Models.GameStateMachine;
+﻿using Engine.Models.Factories.Scenes;
+using Engine.Models.GameStateMachine;
 using Engine.Models.Scenes;
 using Engine.Processors;
 using GameInputHandler;
@@ -60,7 +61,10 @@ namespace Engine.ViewModels
         {
             UpdateProcessorContext();
             _contextNeedsUpdate = false;
-            State.CurrentState = GameState.Running;
+
+            State.CurrentState = 
+                SceneManager.CurrentScene.SceneType == SceneType.General ? 
+                GameState.Running : GameState.Battle;
         }
 
         /// <summary>

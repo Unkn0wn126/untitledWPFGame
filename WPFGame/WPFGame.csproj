@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="UI\BattleScreen\BattleScreenOverlay.xaml~RF3106e607.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.csproj" />
     <ProjectReference Include="..\GameInputHandler\GameInputHandler.csproj" />
     <ProjectReference Include="..\ResourceManagers\ResourceManagers.csproj" />

@@ -471,14 +471,14 @@ namespace Engine.Models.Factories
             ICamera oldCamera = camera;
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
             ISpatialIndex grid = new Grid(metaScene.NumOfEntitiesOnX, metaScene.NumOfEntitiesOnY, cellSize);
-            IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid)
+            IScene scene = new GeneralScene(new Camera(oldCamera.Width, oldCamera.Height), new EntityManager(grid), grid, metaScene.Type)
             {
                 NumOfEntitiesOnX = metaScene.NumOfEntitiesOnX,
                 NumOfEntitiesOnY = metaScene.NumOfEntitiesOnY,
                 BaseObjectSize = metaScene.BaseObjectSize,
                 NumOfObjectsInCell = metaScene.NumOfObjectsInCell
             };
-            scene.SceneChange += sceneChange;
+
             foreach (var item in metaScene.GroundEntities)
             {
                 EntityFactory.GenerateEntity(item, scene, scene.EntityManager, gameTime, gameInput, sceneChange, battleInitialize);

@@ -9,6 +9,7 @@
         Running,
         Paused,
         Menu,
+        Battle,
         Loading
     }
 
@@ -63,7 +64,7 @@
         /// <returns></returns>
         public bool IsRunning()
         {
-            return CurrentState == GameState.Running;
+            return CurrentState == GameState.Running || CurrentState == GameState.Battle;
         }
 
         /// <summary>
