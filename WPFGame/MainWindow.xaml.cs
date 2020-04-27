@@ -93,10 +93,10 @@ namespace WPFGame
             _imagePaths = imagePaths;
             _isTextureModeOn = true;
             _session = session;
-            LoadConfig();
-            _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             InitializeComponent();
+            LoadConfig();
+            _inputHandler = new UserInputHandler(gameInputHandler, _gameConfiguration);
 
             FinishInitialization();
         }
@@ -324,14 +324,22 @@ namespace WPFGame
         /// </summary>
         private void LoadConfig()
         {
-            _gameConfiguration = new Configuration();
-            using (FileStream fs2 = new FileStream(_configPath, FileMode.Open))
+            try
             {
-                XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
-                _gameConfiguration = serializer.Deserialize(fs2) as Configuration;
+                _gameConfiguration = new Configuration();
+                using (FileStream fs2 = new FileStream(_configPath, FileMode.Open))
+                {
+                    XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
+                    _gameConfiguration = serializer.Deserialize(fs2) as Configuration;
+                }
+
+                _gameConfiguration.PerformDuplicateCheck();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
 
-            _gameConfiguration.PerformDuplicateCheck();
         }
 
         /// <summary>
@@ -365,12 +373,21 @@ namespace WPFGame
         /// </summary>
         private void SaveCurrentConfig()
         {
-            using (FileStream fs = new FileStream(_configPath, FileMode.Create))
+            try
             {
-                XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
+                using (FileStream fs = new FileStream(_configPath, FileMode.Create))
+                {
+                    XmlSerializer serializer = new XmlSerializer(_gameConfiguration.GetType());
 
-                serializer.Serialize(fs, _gameConfiguration);
+                    serializer.Serialize(fs, _gameConfiguration);
+                }
             }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+
         }
 
         /// <summary>
@@ -585,13 +602,22 @@ namespace WPFGame
         /// <param name="path"></param>
         private void SaveGame(Uri path)
         {
-            string filename = path.ToString();
-            Save save = new Save();
-            var sceneManager = _session.SceneManager;
+            try
+            {
+                string filename = path.ToString();
+                Save save = new Save();
+                var sceneManager = _session.SceneManager;
 
-            save.Scenes = sceneManager.GetScenesToSave();
-            save.CurrentIndex = sceneManager.CurrentIndex;
-            SaveFileManager.SaveGame(filename, save);
+                save.Scenes = sceneManager.GetScenesToSave();
+                save.CurrentIndex = sceneManager.CurrentIndex;
+                SaveFileManager.SaveGame(filename, save);
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+
         }
 
         /// <summary>
@@ -600,10 +626,19 @@ namespace WPFGame
         /// <param name="path"></param>
         private void LoadGame(Uri path)
         {
-            string filename = path.ToString();
-            Save save = SaveFileManager.LoadGame(filename);
+            try
+            {
+                string filename = path.ToString();
+                Save save = SaveFileManager.LoadGame(filename);
 
-            InitializeGame(save.Scenes, save.CurrentIndex);
+                InitializeGame(save.Scenes, save.CurrentIndex);
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+
         }
         
         /// <summary>
