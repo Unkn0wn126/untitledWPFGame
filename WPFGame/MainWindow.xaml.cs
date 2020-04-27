@@ -17,7 +17,6 @@ using System.IO;
 using System.Xml.Serialization;
 using Engine.Saving;
 using WPFGame.Saving;
-using WPFGame.UI.HUD;
 using WPFGame.UI.MainMenu;
 using System.Runtime.Serialization.Formatters.Binary;
 using Engine.Models.Factories;
@@ -57,7 +56,6 @@ namespace WPFGame
         private IScene _currentScene;
         private ICamera _currentCamera;
 
-        private MapPlayerInfo _mapHUD;
         private MainMenu _mainMenu;
         private PauseMenu _pauseMenu;
         private LoadingScreen _loadingScreen;
@@ -157,7 +155,6 @@ namespace WPFGame
         /// </summary>
         private void InitializeOverlays()
         {
-            _mapHUD = new MapPlayerInfo();
             InitializeMainMenu();
             InitializePauseMenu();
         }
@@ -204,7 +201,6 @@ namespace WPFGame
         private void LoadMainMenu()
         {
             RemoveOverlay(_pauseMenu);
-            RemoveOverlay(_mapHUD);
             if (!GameGrid.Children.Contains(_mainMenu))
             {
                 GameGrid.Children.Add(_mainMenu);
@@ -224,22 +220,6 @@ namespace WPFGame
             }
             else
                 RemoveOverlay(_pauseMenu);
-        }
-
-        /// <summary>
-        /// Toggles the player HUD
-        /// on the map
-        /// </summary>
-        private void ToggleMapHUD()
-        {
-            if (!GameGrid.Children.Contains(_mapHUD))
-            {
-                GameGrid.Children.Add(_mapHUD);
-            }
-            else
-            {
-                GameGrid.Children.Remove(_mapHUD);
-            }
         }
 
         /// <summary>

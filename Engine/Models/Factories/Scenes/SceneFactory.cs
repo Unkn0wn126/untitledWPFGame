@@ -238,22 +238,22 @@ namespace Engine.Models.Factories
         private static List<MetaEntity> GenerateLivingEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
         {
             List<MetaEntity> livingEntities = new List<MetaEntity>();
-            int numOfEnemies = numOfObjectsOnX / 2;//(int)((numOfObjectsOnX / 4f) * (numOfObjectsOnY / 4f));
-            int currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
-            int currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
+            int numOfEnemies = numOfObjectsOnX / 2;
+            int currEnemyXIndex = _rnd.Next(3, numOfObjectsOnX);
+            int currEnemyYIndex = _rnd.Next(3, numOfObjectsOnY);
 
             for (int i = 0; i < numOfEnemies; i++)
             {
                 while (staticCollisionsPositions[currEnemyXIndex, currEnemyYIndex])
                 {
-                    currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
-                    currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
+                    currEnemyXIndex = _rnd.Next(3, numOfObjectsOnX);
+                    currEnemyYIndex = _rnd.Next(3, numOfObjectsOnY);
                 }
 
                 livingEntities.Add(GenerateLivingEntity(baseObjectSize, currEnemyXIndex, currEnemyYIndex));
 
-                currEnemyXIndex = _rnd.Next(numOfObjectsOnX);
-                currEnemyYIndex = _rnd.Next(numOfObjectsOnY);
+                currEnemyXIndex = _rnd.Next(3, numOfObjectsOnX);
+                currEnemyYIndex = _rnd.Next(3, numOfObjectsOnY);
             }
 
             return livingEntities;
@@ -271,21 +271,21 @@ namespace Engine.Models.Factories
         {
             List<MetaEntity> triggerEntities = new List<MetaEntity>();
             int numOfEntities = numOfObjectsOnX / 2;
-            int currEntityXIndex = _rnd.Next(numOfObjectsOnX);
-            int currrEntityYIndex = _rnd.Next(numOfObjectsOnY);
+            int currEntityXIndex = _rnd.Next(3, numOfObjectsOnX);
+            int currrEntityYIndex = _rnd.Next(3, numOfObjectsOnY);
 
             for (int i = 0; i < numOfEntities; i++)
             {
                 while (staticCollisionsPositions[currEntityXIndex, currrEntityYIndex])
                 {
-                    currEntityXIndex = _rnd.Next(numOfObjectsOnX);
-                    currrEntityYIndex = _rnd.Next(numOfObjectsOnY);
+                    currEntityXIndex = _rnd.Next(3, numOfObjectsOnX);
+                    currrEntityYIndex = _rnd.Next(3, numOfObjectsOnY);
                 }
 
                 triggerEntities.Add(GenerateTriggerEntity(baseObjectSize, currEntityXIndex, currrEntityYIndex));
 
-                currEntityXIndex = _rnd.Next(numOfObjectsOnX);
-                currrEntityYIndex = _rnd.Next(numOfObjectsOnY);
+                currEntityXIndex = _rnd.Next(3, numOfObjectsOnX);
+                currrEntityYIndex = _rnd.Next(3, numOfObjectsOnY);
             }
 
             return triggerEntities;
