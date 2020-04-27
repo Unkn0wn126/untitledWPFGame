@@ -173,7 +173,7 @@ namespace Engine.Models.Scenes
                 BattleStateMachine enemyBattleSceneState = new BattleStateMachine(enemy);
                 BattleStateMachine playerBattleSceneState = new BattleStateMachine(player);
                 UpdateBattleSceneMediator(playerAvatar, enemyAvatar, enemy, player, playerBattleSceneState);
-                scene.EntityManager.AddComponentToEntity<IScriptComponent>(enemyID, new AIBattleScript(enemyBattleSceneState));
+                scene.EntityManager.AddComponentToEntity<IScriptComponent>(enemyID, new AIBattleScript(enemyBattleSceneState, _gameTime));
                 scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(EndGame), new GameEnd(LoadNextScene), BattleSceneMediator.MessageProcessor));
 
                 scene.PlayerEntity = playerID;

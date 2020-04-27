@@ -2,39 +2,59 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeUtils;
 
 namespace Engine.Models.Components.Script
 {
     public class AIBattleScript : IScriptComponent
     {
-        private BattleStateMachine _ownerState;
-        private Random _rnd;
+        private readonly BattleStateMachine _ownerState;
+        private GameTime _gameTime;
+        private readonly Random _rnd;
+        private bool _strategySet;
+        private float _timeElapsed;
 
         private List<int> _possibleMovements;
-        public AIBattleScript(BattleStateMachine ownerState)
+        public AIBattleScript(BattleStateMachine ownerState, GameTime gameTime)
         {
             _rnd = new Random();
+            _gameTime = gameTime;
             _ownerState = ownerState;
             _possibleMovements = new List<int>((int[])(Enum.GetValues(typeof(MovementType))));
             _possibleMovements.Remove((int)MovementType.Heal);
         }
+
         public void Update()
         {
-            int initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
-            if (_ownerState.IsCloseToDeath() && _rnd.Next(101) <= 25)
+            if (!_strategySet)
             {
-                initialAction = (int)MovementType.Heal;
+                int initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
+                if (_ownerState.IsCloseToDeath() && _rnd.Next(101) <= 25)
+                {
+                    initialAction = (int)MovementType.Heal;
+                }
+
+                while (!IsMovementValid((MovementType)initialAction))
+                {
+                    initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
+                }
+
+                _ownerState.MovementType = (MovementType)initialAction;
+                SetAttackDirection(_ownerState.MovementType);
+                SetAttackType(_ownerState.AttackDirection);
+                _strategySet = true;
+            }
+            else
+            {
+                _timeElapsed += _gameTime.DeltaTimeInSeconds;
             }
 
-            while (!IsMovementValid((MovementType)initialAction))
+            if (_timeElapsed >= 1)
             {
-                initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
+                _strategySet = false;
+                _timeElapsed = 0;
+                _ownerState.TurnDecided = true;
             }
-
-            _ownerState.MovementType = (MovementType)initialAction;
-            SetAttackDirection(_ownerState.MovementType);
-            SetAttackType(_ownerState.AttackDirection);
-            _ownerState.TurnDecided = true;
         }
 
         private bool IsMovementValid(MovementType movementType)
