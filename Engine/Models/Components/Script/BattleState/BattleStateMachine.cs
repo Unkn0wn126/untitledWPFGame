@@ -21,6 +21,7 @@ namespace Engine.Models.Components.Script.BattleState
     }
     public enum MovementType
     {
+        None,
         Attack,
         Heal
     }
@@ -44,15 +45,24 @@ namespace Engine.Models.Components.Script.BattleState
 
         public string ProcessState(ILifeComponent target)
         {
+            string returnMessage;
             if (MovementType == MovementType.Heal)
             {
                 int healValue = (int)Math.Ceiling(_owner.Intelligence / 2f);
                 _owner.HP += healValue;
-                return $"{_owner.Name} healed by {healValue} HP";
+                returnMessage = $"{_owner.Name} healed by {healValue} HP";
+            }
+            else if (MovementType == MovementType.None)
+            {
+                returnMessage = $"{_owner.Name} is passing this round";
+            }
+            else
+            {
+                returnMessage = $"Generic message";
             }
 
             IsOnTurn = false;
-            return $"Generic message";
+            return returnMessage;
         }
     }
 }

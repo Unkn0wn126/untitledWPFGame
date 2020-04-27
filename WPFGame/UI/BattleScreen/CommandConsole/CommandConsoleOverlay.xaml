@@ -6,14 +6,6 @@
              xmlns:local="clr-namespace:WPFGame.UI.BattleScreen.CommandConsole"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="150">
-    <Grid Background="AliceBlue">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <UniformGrid Columns="1">
-                <Button Margin="0, 10">Up</Button>
-                <Button Margin="0, 10">Down</Button>
-                <Button Margin="0, 10">Left</Button>
-                <Button Margin="0, 10">Right</Button>
-            </UniformGrid>
-        </ScrollViewer>
+    <Grid Background="AliceBlue" x:Name="MainGrid">
     </Grid>
 </UserControl>

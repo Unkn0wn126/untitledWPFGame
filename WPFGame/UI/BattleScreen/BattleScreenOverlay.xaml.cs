@@ -33,16 +33,16 @@ namespace WPFGame.UI.BattleScreen
         public BattleScreenOverlay(BattleSceneMediator battleSceneMediator, ImageResourceManager imageResourceManager)
         {
             InitializeComponent();
+            _imageResourceManager = imageResourceManager;
+
+            _battleSceneMediator = battleSceneMediator;
+            _battleSceneMediator.MessageProcessor += UpdateLogMessages;
 
             InitializeLowerPart();
             InitializePlayerLifeStats();
             InitializeEnemyLifeStats();
             InitializeCommandConsole();
 
-            _imageResourceManager = imageResourceManager;
-
-            _battleSceneMediator = battleSceneMediator;
-            _battleSceneMediator.MessageProcessor += UpdateLogMessages;
 
             UpdateAvatars();
         }
@@ -104,7 +104,7 @@ namespace WPFGame.UI.BattleScreen
 
         private void InitializeCommandConsole()
         {
-            _commandConsole = new CommandConsoleOverlay();
+            _commandConsole = new CommandConsoleOverlay(_battleSceneMediator);
             MainGrid.Children.Add(_commandConsole);
             _commandConsole.SetValue(Grid.RowProperty, 1);
             _commandConsole.SetValue(Grid.ColumnProperty, 1);

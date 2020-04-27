@@ -19,6 +19,7 @@
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto"
             IsReadOnly="True"
+            Margin="10, 10"
             Grid.Column="1"/>
         <Image x:Name="PlayerImage" Grid.Column="0"></Image>
         <Image x:Name="EnemyImage" Grid.Column="2"></Image>

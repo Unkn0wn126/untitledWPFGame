@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="WPFGame.UI.BattleScreen.CommandConsole.AttackTypeMenu.AttackTypeSubMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFGame.UI.BattleScreen.CommandConsole.AttackTypeMenu"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="150">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <UniformGrid Columns="1">
+                <Button Margin="0, 10">Light</Button>
+                <Button Margin="0, 10">Heavy</Button>
+                <Button Margin="0, 10">Cancel</Button>
+            </UniformGrid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
