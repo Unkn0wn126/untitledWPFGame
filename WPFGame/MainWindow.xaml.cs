@@ -28,6 +28,7 @@ using WPFGame.UI.BattleScreen;
 using WPFGame.UI.DeathScreen;
 using WPFGame.UI.WinnerScreen;
 using Engine.Models.Components.Life;
+using WPFGame.UI.GameCreationMenu;
 
 namespace WPFGame
 {
@@ -66,6 +67,7 @@ namespace WPFGame
         private BattleScreenOverlay _battleScreen;
         private DeathScreenOverlay _deathScreen;
         private WinnerScreenOverlay _winnerScreen;
+        private GameCreationBaseMenu _gameCreationMenu;
 
         Rect _rectangle;
 
@@ -153,7 +155,7 @@ namespace WPFGame
         private void InitializeMainMenu()
         {
             ProcessMenuButtonClick closeGameAction = new ProcessMenuButtonClick(CloseGame);
-            ProcessMenuButtonClick generateGameAction = new ProcessMenuButtonClick(GenerateGame);
+            ProcessMenuButtonClick generateGameAction = new ProcessMenuButtonClick(LoadMapGenerationMenu);
             ProcessSettingsApplyButtonClick updateCurrentConfigAction = new ProcessSettingsApplyButtonClick(UpadteCurrentConfig);
             _mainMenu = new MainMenu(closeGameAction, generateGameAction, updateCurrentConfigAction, _gameConfiguration, _loadGameAction, _savesPath);
         }
@@ -163,10 +165,18 @@ namespace WPFGame
         /// </summary>
         private void InitializeOverlays()
         {
+            _gameCreationMenu = new GameCreationBaseMenu(new ProcessMenuButtonClick(CloseGameGeneration), new GameCreationFinalizer(GenerateGame));
             InitializeMainMenu();
             InitializePauseMenu();
             _winnerScreen = new WinnerScreenOverlay();
             _deathScreen = new DeathScreenOverlay();
+        }
+
+        private void CloseGameGeneration()
+        {
+            RemoveOverlay(_gameCreationMenu);
+            _gameCreationMenu.RestoreDefaultState();
+            AddOverlay(_mainMenu);
         }
 
         private void LoadBattleScreen()
@@ -186,8 +196,10 @@ namespace WPFGame
         /// </summary>
         private void InitializeGameRenderLoop()
         {
-            _updateTimer = new DispatcherTimer();
-            _updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 17);
+            _updateTimer = new DispatcherTimer
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 17)
+            };
             _updateTimer.Tick += UpdateGraphics;
 
             _updateTimer.Start();
@@ -231,6 +243,13 @@ namespace WPFGame
         /// </summary>
         private void TogglePauseMenu()
         {
+            if (GameGrid.Children.Contains(_mainMenu) || 
+                GameGrid.Children.Contains(_gameCreationMenu) ||
+                GameGrid.Children.Contains(_winnerScreen) ||
+                GameGrid.Children.Contains(_deathScreen))
+            {
+                return;
+            }
             _session.State.TogglePause();
             if (!GameGrid.Children.Contains(_pauseMenu))
             {
@@ -240,14 +259,21 @@ namespace WPFGame
                 RemoveOverlay(_pauseMenu);
         }
 
+        private void LoadMapGenerationMenu()
+        {
+            AddOverlay(_gameCreationMenu);
+        }
+
         /// <summary>
         /// Generates a new game
         /// </summary>
-        private void GenerateGame()
+        private void GenerateGame(GameGenerationInfo gameGenerationInfo)
         {
+            RemoveOverlay(_gameCreationMenu);
             ShowLoadingOverlay();
             Random rnd = new Random();
-            int val = rnd.Next(10, 100);
+            int numOnX = rnd.Next(gameGenerationInfo.MinOnX, gameGenerationInfo.MaxOnX + 1);
+            int numOnY = rnd.Next(gameGenerationInfo.MinOnY, gameGenerationInfo.MaxOnY + 1);
 
             // Scene generation should take place elsewhere
             List<byte[]> metaScenes = new List<byte[]>();
@@ -255,13 +281,16 @@ namespace WPFGame
             {
                 byte[] current;
                 var binaryFormatter = new BinaryFormatter();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < gameGenerationInfo.NumberOfLevels; i++)
                 {
-                    MetaScene metaScene = SceneFactory.CreateMetaScene(new LifeComponent() { IsPlayer = true}, val, val, 1, 5);
+                    MetaScene metaScene = SceneFactory.CreateMetaScene(new LifeComponent() { IsPlayer = true}, numOnX, numOnY, 1, 5);
                     binaryFormatter.Serialize(stream, metaScene);
                     current = stream.ToArray();
                     metaScenes.Add(current);
                     stream.SetLength(0);
+
+                    numOnX = rnd.Next(gameGenerationInfo.MinOnX, gameGenerationInfo.MaxOnX + 1);
+                    numOnY = rnd.Next(gameGenerationInfo.MinOnY, gameGenerationInfo.MaxOnY + 1);
                 }
             }
 
