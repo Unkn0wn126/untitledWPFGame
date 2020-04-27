@@ -2,6 +2,7 @@
 using Engine.Models.Components.Script.BattleState;
 using Engine.Models.Scenes;
 using System;
+using System.Diagnostics;
 
 namespace Engine.Models.Components.Script
 {
@@ -30,8 +31,8 @@ namespace Engine.Models.Components.Script
 
         private void SetStartingStates()
         {
-            int whoStarts = _rnd.Next(2);
-            if (whoStarts == 0)
+            int whoStarts = _rnd.Next(41);
+            if (whoStarts <= 20)
             {
                 _playerBattleState.IsOnTurn = true;
                 _playerBattleState.TurnDecided = false;
@@ -49,6 +50,7 @@ namespace Engine.Models.Components.Script
 
         public void Update()
         {
+            Trace.WriteLine($"Player turn: {_playerBattleState.IsOnTurn}; Enemy turn: {_enemyBattleState.IsOnTurn}");
             if (CheckBattleEndConditions())
             {
                 return;
@@ -57,11 +59,15 @@ namespace Engine.Models.Components.Script
             {
                 _playerBattleState.ProcessState(_enemyLife);
                 _playerBattleState.TurnDecided = false;
+                _enemyBattleState.IsOnTurn = true;
+                _enemyBattleState.TurnDecided = false;
             }
             else if (_enemyBattleState.IsOnTurn && _enemyBattleState.TurnDecided)
             {
                 _enemyBattleState.ProcessState(_playerLife);
                 _enemyBattleState.TurnDecided = false;
+                _playerBattleState.IsOnTurn = true;
+                _playerBattleState.TurnDecided = false;
             }
         }
 

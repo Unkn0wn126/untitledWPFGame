@@ -16,6 +16,9 @@ namespace Engine.Models.Components.Script
         }
         public void Update()
         {
+            int initialAction = _rnd.Next(Enum.GetValues(typeof(MovementType)).Length);
+            _ownerState.MovementType = (MovementType)initialAction;
+            _ownerState.TurnDecided = true;
         }
     }
 }
