@@ -20,16 +20,33 @@ namespace WPFGame.UI.BattleScreen.CommandConsole.MovementTypeMenu
     public partial class MovementTypeSubMenu : UserControl
     {
         private ProcessMenuButtonClick _passButtonAction;
-        public MovementTypeSubMenu(ProcessMenuButtonClick passButtonAction)
+        private ProcessMenuButtonClick _healButtonAction;
+        private ProcessMenuButtonClick _attackButtonAction;
+
+        public MovementTypeSubMenu(ProcessMenuButtonClick passButtonAction, 
+            ProcessMenuButtonClick healButtonAction, 
+            ProcessMenuButtonClick attackButtonAction)
         {
             InitializeComponent();
 
             _passButtonAction = passButtonAction;
+            _healButtonAction = healButtonAction;
+            _attackButtonAction = attackButtonAction;
         }
 
         private void OnPassButtonClick(object sender, RoutedEventArgs e)
         {
             _passButtonAction.Invoke();
+        }
+
+        private void OnAttackButtonClick(object sender, RoutedEventArgs e)
+        {
+            _attackButtonAction.Invoke();
+        }
+
+        private void OnHealButtonClick(object sender, RoutedEventArgs e)
+        {
+            _healButtonAction.Invoke();
         }
     }
 }

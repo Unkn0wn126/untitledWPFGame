@@ -8,10 +8,10 @@
              d:DesignHeight="450" d:DesignWidth="150">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <UniformGrid Columns="1">
-                <Button Margin="0, 10">Attack</Button>
-                <Button Margin="0, 10">Heal</Button>
-                <Button Margin="0, 10" Click="OnPassButtonClick">Pass</Button>
+            <UniformGrid Columns="1" VerticalAlignment="Center">
+                <Button Margin="10, 10" Click="OnAttackButtonClick">Attack</Button>
+                <Button Margin="10, 10" Click="OnHealButtonClick">Heal</Button>
+                <Button Margin="10, 10" Click="OnPassButtonClick">Pass</Button>
             </UniformGrid>
         </ScrollViewer>
     </Grid>

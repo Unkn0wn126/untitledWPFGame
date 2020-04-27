@@ -8,12 +8,12 @@
              d:DesignHeight="450" d:DesignWidth="150">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <UniformGrid Columns="1">
-                <Button Margin="0, 10">Up</Button>
-                <Button Margin="0, 10">Down</Button>
-                <Button Margin="0, 10">Left</Button>
-                <Button Margin="0, 10">Right</Button>
-                <Button Margin="0, 10">Cancel</Button>
+            <UniformGrid Columns="1"  VerticalAlignment="Center">
+                <Button Margin="10, 10" Click="OnHeadButtonClick">Head</Button>
+                <Button Margin="10, 10" Click="OnLeftButtonClick">Left</Button>
+                <Button Margin="10, 10" Click="OnRightButtonClick">Right</Button>
+                <Button Margin="10, 10" Click="OnBottomButtonClick">Bottom</Button>
+                <Button Margin="10, 10" Click="OnCancelButtonClick">Cancel</Button>
             </UniformGrid>
         </ScrollViewer>
     </Grid>

@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.BattleScreen.CommandConsole.AttackDirectionMenu
 {
@@ -18,9 +19,47 @@ namespace WPFGame.UI.BattleScreen.CommandConsole.AttackDirectionMenu
     /// </summary>
     public partial class AttackDirectionSubMenu : UserControl
     {
-        public AttackDirectionSubMenu()
+        private ProcessMenuButtonClick _headAction;
+        private ProcessMenuButtonClick _leftAction;
+        private ProcessMenuButtonClick _rightAction;
+        private ProcessMenuButtonClick _bottomAction;
+        private ProcessMenuBackButtonClick _cancelAction;
+        public AttackDirectionSubMenu(ProcessMenuButtonClick headAction, 
+            ProcessMenuButtonClick leftAction, ProcessMenuButtonClick rightAction, 
+            ProcessMenuButtonClick bottomAction, ProcessMenuBackButtonClick cancelAction)
         {
             InitializeComponent();
+
+            _headAction = headAction;
+            _leftAction = leftAction;
+            _rightAction = rightAction;
+            _bottomAction = bottomAction;
+            _cancelAction = cancelAction;
+        }
+
+        private void OnHeadButtonClick(object sender, RoutedEventArgs e)
+        {
+            _headAction.Invoke();
+        }
+
+        private void OnBottomButtonClick(object sender, RoutedEventArgs e)
+        {
+            _leftAction.Invoke();
+        }
+
+        private void OnLeftButtonClick(object sender, RoutedEventArgs e)
+        {
+            _rightAction.Invoke();
+        }
+
+        private void OnRightButtonClick(object sender, RoutedEventArgs e)
+        {
+            _bottomAction.Invoke();
+        }
+
+        private void OnCancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            _cancelAction.Invoke(this);
         }
     }
 }
