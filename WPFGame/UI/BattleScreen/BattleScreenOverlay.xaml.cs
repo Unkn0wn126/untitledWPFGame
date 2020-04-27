@@ -44,12 +44,22 @@ namespace WPFGame.UI.BattleScreen
             InitializeCommandConsole();
 
 
-            UpdateAvatars();
+            UpdateState();
         }
 
         public void UpdateState()
         {
             UpdateAvatars();
+            UpdateLifeStats();
+        }
+
+        private void UpdateLifeStats()
+        {
+            Dispatcher.Invoke(() => 
+            {
+                _playerLifeStats.UpdateStats(_battleSceneMediator.PlayerLife);
+                _enemyLifeStats.UpdateStats(_battleSceneMediator.EnemyLife);
+            });
         }
 
         public void ClearMessageLog()
@@ -75,6 +85,8 @@ namespace WPFGame.UI.BattleScreen
             {
                 _lowerPart.UpdateLogTextBox(message);
             });
+
+            UpdateLifeStats();
         }
 
         private void InitializeLowerPart()

@@ -29,6 +29,10 @@ namespace Engine.Models.Components.Life
                 {
                     _stamina = MaxStamina;
                 }
+                else
+                {
+                    _stamina = value;
+                }
             } 
         }
         public int MaxHP { get; set; }

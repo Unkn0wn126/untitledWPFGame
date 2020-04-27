@@ -1,8 +1,10 @@
-﻿using Engine.Models.Scenes;
+﻿using Engine.Models.Components.Script.BattleState;
+using Engine.Models.Scenes;
 using System.Windows.Controls;
 using WPFGame.UI.BattleScreen.CommandConsole.AttackDirectionMenu;
 using WPFGame.UI.BattleScreen.CommandConsole.AttackTypeMenu;
 using WPFGame.UI.BattleScreen.CommandConsole.MovementTypeMenu;
+using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.BattleScreen.CommandConsole
 {
@@ -22,10 +24,16 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             InitializeComponent();
             _battleSceneMediator = battleSceneMediator;
             _attackDirectionSubMenu = new AttackDirectionSubMenu();
-            _movementTypeSubMenu = new MovementTypeSubMenu();
+            _movementTypeSubMenu = new MovementTypeSubMenu(new ProcessMenuButtonClick(SetMovementStateToPass));
             _attackTypeSubMenu = new AttackTypeSubMenu();
 
             RestoreDefaultState();
+        }
+
+        private void SetMovementStateToPass()
+        {
+            _battleSceneMediator.PlayerBattleState.MovementType = MovementType.None;
+            _battleSceneMediator.PlayerBattleState.TurnDecided = true;
         }
 
         private void RemoveComponent(UserControl component)

@@ -220,6 +220,7 @@ namespace Engine.Models.Scenes
             oldStats.Agility = newStats.Agility;
             oldStats.Intelligence = newStats.Intelligence;
             oldStats.MaxStamina = newStats.MaxStamina;
+            oldStats.Stamina = newStats.Stamina;
             oldStats.MaxHP = newStats.MaxHP;
             oldStats.HP = newStats.HP;
             oldStats.MaxMP = newStats.MaxMP;

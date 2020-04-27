@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.BattleScreen.CommandConsole.MovementTypeMenu
 {
@@ -18,9 +19,17 @@ namespace WPFGame.UI.BattleScreen.CommandConsole.MovementTypeMenu
     /// </summary>
     public partial class MovementTypeSubMenu : UserControl
     {
-        public MovementTypeSubMenu()
+        private ProcessMenuButtonClick _passButtonAction;
+        public MovementTypeSubMenu(ProcessMenuButtonClick passButtonAction)
         {
             InitializeComponent();
+
+            _passButtonAction = passButtonAction;
+        }
+
+        private void OnPassButtonClick(object sender, RoutedEventArgs e)
+        {
+            _passButtonAction.Invoke();
         }
     }
 }

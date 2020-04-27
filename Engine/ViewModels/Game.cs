@@ -83,8 +83,6 @@ namespace Engine.ViewModels
             });
         }
 
-        private float timeElapsed;
-
         /// <summary>
         /// Updates the game logic
         /// </summary>
@@ -94,15 +92,6 @@ namespace Engine.ViewModels
             if (_contextNeedsUpdate)
             {
                 SetStateToRunning();
-            }
-            if (State.CurrentState == GameState.Battle)
-            {
-                timeElapsed += _gameTime.DeltaTimeInSeconds;
-                if (timeElapsed >= 8)
-                {
-                    timeElapsed = 0;
-                    SceneManager.LoadNextScene();
-                }
             }
             if (State.IsRunning())
             {

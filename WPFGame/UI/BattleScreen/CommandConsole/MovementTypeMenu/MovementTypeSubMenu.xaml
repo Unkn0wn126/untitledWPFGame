@@ -11,7 +11,7 @@
             <UniformGrid Columns="1">
                 <Button Margin="0, 10">Attack</Button>
                 <Button Margin="0, 10">Heal</Button>
-                <Button Margin="0, 10">Pass</Button>
+                <Button Margin="0, 10" Click="OnPassButtonClick">Pass</Button>
             </UniformGrid>
         </ScrollViewer>
     </Grid>
