@@ -464,16 +464,14 @@ namespace WPFGame
         /// <param name="e"></param>
         public void UpdateGraphics(object sender, EventArgs e)
         {
-            if (_session.State.IsRunning())
+            if (_session.State.CurrentState == Engine.Models.GameStateMachine.GameState.Battle)
             {
-                if (_session.State.CurrentState == Engine.Models.GameStateMachine.GameState.Battle)
-                {
-                    LoadBattleScreen();
-                }
-                else
-                {
-                    RemoveOverlay(_battleScreen);
-                }
+                LoadBattleScreen();
+            }
+            else if (_session.State.IsRunning())
+            {
+                RemoveOverlay(_battleScreen);
+
                 // redrawing a bitmap image should be faster
                 bitmap.Clear();
                 var drawingContext = _drawingVisual.RenderOpen();
@@ -497,8 +495,9 @@ namespace WPFGame
             Vector2 focusPos = _currentCamera.FocusPoint.Position;
             int index = 0;
             List<ITransformComponent> transformComponents = _currentCamera.VisibleTransforms;
+            List<IGraphicsComponent> visibleObjects = _currentCamera.VisibleObjects;
 
-            foreach (var item in _currentCamera.VisibleObjects)
+            foreach (var item in visibleObjects)
             {
                 // conversion of logical coordinates to graphical ones
                 float graphicX = CalculateGraphicsCoordinate(

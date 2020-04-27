@@ -378,7 +378,8 @@ namespace Engine.Models.Factories
                 PosX = xPos, 
                 PosY = yPos, 
                 SizeX = baseObjectSize, 
-                SizeY = baseObjectSize
+                SizeY = baseObjectSize,
+                LifeComponent = lifeComponent
             };
 
             metaMapEntity.Scripts = ScriptType.PlayerMovement;
@@ -433,9 +434,17 @@ namespace Engine.Models.Factories
             {
                 metaScene.StaticCollisionEntities.Add(currentEntity);
             }
-            else
+            else if (IsTriggerEntity(currentEntity))
+            {
+                metaScene.TriggerEntities.Add(currentEntity);
+            }
+            else if(IsLivingEntity(currentEntity))
             {
                 metaScene.LivingEntities.Add(currentEntity);
+            }
+            else
+            {
+                metaScene.OtherEntities.Add(currentEntity);
             }
         }
 
@@ -463,6 +472,35 @@ namespace Engine.Models.Factories
         {
             return EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && 
                 !EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && 
+                currentEntity.LifeComponent == null;
+        }
+
+
+        /// <summary>
+        /// Based on the components
+        /// determines if the entity
+        /// is living entity
+        /// </summary>
+        /// <param name="currentEntity"></param>
+        /// <returns></returns>
+        private static bool IsLivingEntity(MetaEntity currentEntity)
+        {
+            return EntityFactory.IsComponentRequired(currentEntity.Components, ComponentState.LifeComponent) 
+                && EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.Solid) && 
+                EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.Dynamic) && 
+                currentEntity.LifeComponent != null;
+        }
+
+        /// <summary>
+        /// Based on the components
+        /// determines if the entity
+        /// is trigger entity
+        /// </summary>
+        /// <param name="currentEntity"></param>
+        /// <returns></returns>
+        private static bool IsTriggerEntity(MetaEntity currentEntity)
+        {
+            return EntityFactory.IsCollisionType(currentEntity.CollisionType, CollisionType.None) &&
                 currentEntity.LifeComponent == null;
         }
 

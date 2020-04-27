@@ -38,9 +38,13 @@ namespace Engine.Models.Components.Life
                 {
                     _hp = 0;
                 }
-                if (value > MaxHP)
+                else if (value > MaxHP)
                 {
                     _hp = MaxHP;
+                }
+                else
+                {
+                    _hp = value;
                 }
             } 
         }
@@ -51,9 +55,13 @@ namespace Engine.Models.Components.Life
                 {
                     _mp = 0;
                 }
-                if (value > MaxMP)
+                else if (value > MaxMP)
                 {
                     _mp = MaxMP;
+                }
+                else
+                {
+                    _mp = value;
                 }
             } 
         }
@@ -62,5 +70,28 @@ namespace Engine.Models.Components.Life
         public int CurrentXP { get; set; }
         public int NextLevelXP { get; set; }
         public int CurrentLevel { get; set; }
+
+        public LifeComponent()
+        {
+            IsPlayer = false;
+            Name = "NoName";
+            Gender = Gender.Male;
+            Race = Race.Human;
+            BattleClass = BattleClass.Swordsman;
+            Strength = 10;
+            Stamina = 10;
+            Agility = 10;
+            Intelligence = 10;
+            MaxStamina = 100;
+            Stamina = 100;
+            MaxHP = 100;
+            HP = 100;
+            MaxMP = 100;
+            MP = 100;
+            AttributePoints = 0;
+            CurrentXP = 0;
+            CurrentLevel = 1;
+            NextLevelXP = CurrentLevel * 10;
+        }
     }
 }

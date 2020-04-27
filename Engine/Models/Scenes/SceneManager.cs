@@ -2,6 +2,8 @@
 using Engine.Models.Cameras;
 using Engine.Models.Components;
 using Engine.Models.Components.Life;
+using Engine.Models.Components.Script;
+using Engine.Models.Components.Script.BattleState;
 using Engine.Models.Factories;
 using Engine.Models.Factories.Scenes;
 using GameInputHandler;
@@ -148,24 +150,34 @@ namespace Engine.Models.Scenes
 
         public void LoadBattleScene(ILifeComponent player, ILifeComponent enemy)
         {
-            SceneChangeStarted.Invoke();
-            ISpatialIndex grid = new Grid(2, 2, 2);
-            IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
-            uint playerID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
-            uint enemyID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+            if (CurrentScene.SceneType != SceneType.Battle)
+            {
+                SceneChangeStarted.Invoke();
+                ISpatialIndex grid = new Grid(2, 2, 2);
+                IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
+                uint playerID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+                uint enemyID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+                uint battleManager = scene.EntityManager.AddEntity();
 
-            scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(playerID, new GraphicsComponent(ResourceManagers.Images.ImgName.Player));
-            scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(enemyID, new GraphicsComponent(ResourceManagers.Images.ImgName.Enemy));
-            
-            scene.EntityManager.AddComponentToEntity<ILifeComponent>(playerID, player);
-            scene.EntityManager.AddComponentToEntity<ILifeComponent>(enemyID, enemy);
+                scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(playerID, new GraphicsComponent(ResourceManagers.Images.ImgName.Player));
+                scene.EntityManager.AddComponentToEntity<IGraphicsComponent>(enemyID, new GraphicsComponent(ResourceManagers.Images.ImgName.Enemy));
 
-            scene.PlayerEntity = playerID;
+                scene.EntityManager.AddComponentToEntity<ILifeComponent>(playerID, player);
+                scene.EntityManager.AddComponentToEntity<ILifeComponent>(enemyID, enemy);
 
-            _returnWorldScene = CurrentScene;
+                BattleStateMachine enemyBattleSceneState = new BattleStateMachine(enemy);
+                BattleStateMachine playerBattleSceneState = new BattleStateMachine(player);
 
-            CurrentScene = scene;
-            SceneChangeFinished.Invoke();
+                scene.EntityManager.AddComponentToEntity<IScriptComponent>(enemyID, new AIBattleScript(enemyBattleSceneState));
+                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(LoadNextScene), new GameEnd(LoadNextScene)));
+
+                scene.PlayerEntity = playerID;
+
+                _returnWorldScene = CurrentScene;
+
+                CurrentScene = scene;
+                SceneChangeFinished.Invoke();
+            }
         }
 
         private void LoadBackWorld()
