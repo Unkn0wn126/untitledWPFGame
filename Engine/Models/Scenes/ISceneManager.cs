@@ -12,6 +12,7 @@ namespace Engine.Models.Scenes
         event SceneChangeStarted SceneChangeStarted;
         event SceneChangeFinished SceneChangeFinished;
         event GameEnd GameWon;
+        event GameEnd GameLost;
         BattleSceneMediator BattleSceneMediator { get; set; }
         List<byte[]> MetaScenes { get; set; }
         IScene CurrentScene { get; set; }

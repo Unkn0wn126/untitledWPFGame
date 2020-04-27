@@ -9,9 +9,9 @@
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <UniformGrid Columns="1" VerticalAlignment="Center">
-                <Button Margin="10, 10" Click="OnAttackButtonClick">Attack</Button>
-                <Button Margin="10, 10" Click="OnHealButtonClick">Heal</Button>
-                <Button Margin="10, 10" Click="OnPassButtonClick">Pass</Button>
+                <Button Margin="10, 10" Click="OnAttackButtonClick" x:Name="AttackButton">Attack</Button>
+                <Button Margin="10, 10" Click="OnHealButtonClick" x:Name="HealButton">Heal</Button>
+                <Button Margin="10, 10" Click="OnPassButtonClick" x:Name="PassButton">Pass</Button>
             </UniformGrid>
         </ScrollViewer>
     </Grid>

@@ -25,7 +25,11 @@ namespace WPFGame.UI.BattleScreen.LowerPart
 
         public void UpdateLogTextBox(string message)
         {
-            LogTextBox.Text += "\n" + message;
+            LogTextBox.Text += message;
+            if (message.Length > 0)
+            {
+                LogTextBox.Text += "\n####################";
+            }
             LogTextBox.ScrollToEnd();
         }
     }

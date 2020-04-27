@@ -10,6 +10,7 @@ namespace Engine.Models.Components.Life
         private int _stamina;
         private int _hp;
         private int _mp;
+        private int _currentXp;
         public bool IsPlayer { get; set; }
         public string Name { get; set; }
         public Gender Gender { get; set; }
@@ -71,7 +72,22 @@ namespace Engine.Models.Components.Life
         }
 
         public int AttributePoints { get; set; }
-        public int CurrentXP { get; set; }
+        public int CurrentXP { 
+            get 
+            {
+                return _currentXp;
+            } 
+            set 
+            {
+                _currentXp = value;
+                if (_currentXp >= NextLevelXP)
+                {
+                    CurrentLevel++;
+                    NextLevelXP += CurrentLevel * 10;
+                    AttributePoints += 2;
+                }
+            } 
+        }
         public int NextLevelXP { get; set; }
         public int CurrentLevel { get; set; }
 

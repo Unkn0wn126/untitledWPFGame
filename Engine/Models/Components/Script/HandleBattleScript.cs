@@ -61,17 +61,21 @@ namespace Engine.Models.Components.Script
             }
             if (_playerBattleState.IsOnTurn && _playerBattleState.TurnDecided)
             {
-                _messageProcessor.Invoke(_playerBattleState.ProcessState(_enemyLife));
+                _messageProcessor.Invoke("\n" + _playerBattleState.ProcessState(_enemyLife));
                 _playerBattleState.TurnDecided = false;
                 _enemyBattleState.IsOnTurn = true;
                 _enemyBattleState.TurnDecided = false;
             }
             else if (_enemyBattleState.IsOnTurn && _enemyBattleState.TurnDecided)
             {
-                _messageProcessor.Invoke(_enemyBattleState.ProcessState(_playerLife));
+                _messageProcessor.Invoke("\n" + _enemyBattleState.ProcessState(_playerLife));
                 _enemyBattleState.TurnDecided = false;
                 _playerBattleState.IsOnTurn = true;
                 _playerBattleState.TurnDecided = false;
+            }
+            else
+            {
+                _messageProcessor.Invoke(string.Empty);
             }
         }
 
@@ -84,6 +88,8 @@ namespace Engine.Models.Components.Script
             }
             else if (_enemyLife.HP <= 0)
             {
+                // Level the player up after victory
+                _playerLife.CurrentXP += _enemyLife.CurrentXP;
                 _onPlayerWon.Invoke();
                 return true;
             }

@@ -25,6 +25,8 @@ using WPFGame.UI.PauseMenu;
 using System.Windows.Threading;
 using WPFGame.UI.LoadingScreen;
 using WPFGame.UI.BattleScreen;
+using WPFGame.UI.DeathScreen;
+using WPFGame.UI.WinnerScreen;
 
 namespace WPFGame
 {
@@ -61,6 +63,8 @@ namespace WPFGame
         private PauseMenu _pauseMenu;
         private LoadingScreen _loadingScreen;
         private BattleScreenOverlay _battleScreen;
+        private DeathScreenOverlay _deathScreen;
+        private WinnerScreenOverlay _winnerScreen;
 
         Rect _rectangle;
 
@@ -127,6 +131,7 @@ namespace WPFGame
             _session.SceneManager.SceneChangeStarted += ShowLoadingOverlay;
             _session.SceneManager.SceneChangeFinished += UpdateSceneContext;
             _session.SceneManager.GameWon += ShowWinnerOverlay;
+            _session.SceneManager.GameLost += ShowDeathOverlay;
 
             _loadingScreen = new LoadingScreen();
 
@@ -159,6 +164,8 @@ namespace WPFGame
         {
             InitializeMainMenu();
             InitializePauseMenu();
+            _winnerScreen = new WinnerScreenOverlay();
+            _deathScreen = new DeathScreenOverlay();
         }
 
         private void LoadBattleScreen()
@@ -596,6 +603,12 @@ namespace WPFGame
             {
                 TogglePauseMenu();
             }
+            if ((_gameInput.CurrentKeyValue & GameKey.Space) == GameKey.Space)
+            {
+                RemoveOverlay(_winnerScreen);
+                RemoveOverlay(_deathScreen);
+                AddOverlay(_mainMenu);
+            }
         }
 
         /// <summary>
@@ -670,16 +683,30 @@ namespace WPFGame
             });
         }
 
+        private void ShowDeathOverlay()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _session.State.Pause();
+                AddOverlay(_deathScreen);
+            });
+        }
+
         private void ShowWinnerOverlay()
         {
             Dispatcher.Invoke(() =>
             {
-                if (!GameGrid.Children.Contains(_mainMenu))
-                {
-                    _session.State.Pause();
-                    GameGrid.Children.Add(_mainMenu);
-                }
+                _session.State.Pause();
+                AddOverlay(_winnerScreen);
             });
+        }
+
+        private void AddOverlay(UserControl control)
+        {
+            if (!GameGrid.Children.Contains(control))
+            {
+                GameGrid.Children.Add(control);
+            }
         }
 
     }

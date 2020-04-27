@@ -38,6 +38,13 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             RestoreDefaultState();
         }
 
+        public void UpdateButtonAvailability()
+        {
+            _movementTypeSubMenu.AttackButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn && _battleSceneMediator.PlayerBattleState.CanAttack();
+            _movementTypeSubMenu.HealButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn && _battleSceneMediator.PlayerBattleState.CanHeal();
+            _movementTypeSubMenu.PassButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn;
+        }
+
         private void LoadPreviousMenu(UserControl control)
         {
             if (control == _attackDirectionSubMenu)

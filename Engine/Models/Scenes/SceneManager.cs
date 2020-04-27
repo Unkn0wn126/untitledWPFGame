@@ -24,6 +24,7 @@ namespace Engine.Models.Scenes
         public event SceneChangeStarted SceneChangeStarted;
         public event SceneChangeFinished SceneChangeFinished;
         public event GameEnd GameWon;
+        public event GameEnd GameLost;
 
         private IScene _returnWorldScene;
 
@@ -173,7 +174,7 @@ namespace Engine.Models.Scenes
                 BattleStateMachine playerBattleSceneState = new BattleStateMachine(player);
                 UpdateBattleSceneMediator(playerAvatar, enemyAvatar, enemy, player, playerBattleSceneState);
                 scene.EntityManager.AddComponentToEntity<IScriptComponent>(enemyID, new AIBattleScript(enemyBattleSceneState));
-                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(LoadNextScene), new GameEnd(LoadNextScene), BattleSceneMediator.MessageProcessor));
+                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(EndGame), new GameEnd(LoadNextScene), BattleSceneMediator.MessageProcessor));
 
                 scene.PlayerEntity = playerID;
 
@@ -182,6 +183,12 @@ namespace Engine.Models.Scenes
                 CurrentScene = scene;
                 SceneChangeFinished.Invoke();
             }
+        }
+
+        private void EndGame()
+        {
+            SceneChangeStarted.Invoke();
+            GameLost.Invoke();
         }
 
         private void UpdateBattleSceneMediator(IGraphicsComponent playerAvatar, IGraphicsComponent enemyAvatar, ILifeComponent enemyLife, ILifeComponent playerLife, BattleStateMachine playerBattleState)
@@ -201,7 +208,6 @@ namespace Engine.Models.Scenes
                 _returnWorldScene.EntityManager.RemoveEntity(_enemyEntityToRemove);
             }
             ILifeComponent player = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(CurrentScene.PlayerEntity);
-            player.CurrentXP += 50;
             ILifeComponent currentWorldPlayer = _returnWorldScene.EntityManager.GetComponentOfType<ILifeComponent>(_returnWorldScene.PlayerEntity);
             UpdatePlayerStats(currentWorldPlayer, player);
             CurrentScene = _returnWorldScene;

@@ -53,6 +53,14 @@ namespace WPFGame.UI.BattleScreen
             UpdateLifeStats();
         }
 
+        private void UpdateActionAvailability()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _commandConsole.UpdateButtonAvailability();
+            });
+        }
+
         private void UpdateLifeStats()
         {
             Dispatcher.Invoke(() => 
@@ -87,6 +95,7 @@ namespace WPFGame.UI.BattleScreen
             });
 
             UpdateLifeStats();
+            UpdateActionAvailability();
         }
 
         private void InitializeLowerPart()

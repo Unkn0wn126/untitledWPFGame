@@ -42,7 +42,7 @@ namespace WPFGame.UI.BattleScreen.LifeStats
             }
         }
 
-        private float GetPercentalValue(int whole, int part) => (float)(part / whole) * 100;
+        private float GetPercentalValue(int whole, int part) => (float) part / whole * 100;
 
         private string GetNameOfRace(Race race)
         {
