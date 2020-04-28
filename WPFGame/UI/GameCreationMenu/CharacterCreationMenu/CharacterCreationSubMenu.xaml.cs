@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Engine.Models.Components.Life;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -28,6 +29,31 @@ namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
             _acceptButtonAction = acceptButtonAction;
             GameGenerationInfo = gameGenerationInfo;
             _backButtonAction = cancelButtonAction;
+
+            InitializeGenderCombobox();
+            InitializeRaceCombobox();
+            InitializeBattleClassCombobox();
+        }
+
+        private void InitializeGenderCombobox()
+        {
+            List<string> genderValues = new List<string>(Enum.GetNames(typeof(Gender)));
+            GenderCB.ItemsSource = genderValues;
+            GenderCB.SelectedIndex = 0;
+        }
+
+        private void InitializeRaceCombobox()
+        {
+            List<string> raceValues = new List<string>(Enum.GetNames(typeof(Race)));
+            RaceCB.ItemsSource = raceValues;
+            RaceCB.SelectedIndex = 0;
+        }
+
+        private void InitializeBattleClassCombobox()
+        {
+            List<string> battleClassValues = new List<string>(Enum.GetNames(typeof(BattleClass)));
+            BattleClassCB.ItemsSource = battleClassValues;
+            BattleClassCB.SelectedIndex = 0;
         }
 
         private void OnButtonBackClick(object sender, RoutedEventArgs e)
@@ -37,7 +63,19 @@ namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
 
         private void OnButtonAcceptClick(object sender, RoutedEventArgs e)
         {
+            GameGenerationInfo.PlayerName = TextBlockName.Text;
+            GameGenerationInfo.PlayerGender = Enum.Parse<Gender>(GenderCB.SelectedItem.ToString());
+            GameGenerationInfo.PlayerRace = Enum.Parse<Race>(RaceCB.SelectedItem.ToString());
+            GameGenerationInfo.BattleClass = Enum.Parse<BattleClass>(BattleClassCB.SelectedItem.ToString());
             _acceptButtonAction.Invoke();
+        }
+
+        private void OnTextBoxNameChanged(object sender, TextChangedEventArgs e)
+        {
+            if (AcceptButton != null)
+            {
+                AcceptButton.IsEnabled = TextBlockName.Text.Length > 0;
+            }
         }
     }
 }
