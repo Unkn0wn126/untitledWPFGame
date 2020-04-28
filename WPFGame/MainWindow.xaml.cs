@@ -29,6 +29,7 @@ using WPFGame.UI.DeathScreen;
 using WPFGame.UI.WinnerScreen;
 using Engine.Models.Components.Life;
 using WPFGame.UI.GameCreationMenu;
+using Engine.Models.Factories.LifeComponents;
 
 namespace WPFGame
 {
@@ -274,7 +275,8 @@ namespace WPFGame
             Random rnd = new Random();
             int numOnX = rnd.Next(gameGenerationInfo.MinOnX, gameGenerationInfo.MaxOnX + 1);
             int numOnY = rnd.Next(gameGenerationInfo.MinOnY, gameGenerationInfo.MaxOnY + 1);
-
+            ILifeComponent playerCharacter = LivingComponentFactory.GenerateLifeComponent(gameGenerationInfo.PlayerName, gameGenerationInfo.PlayerRace, gameGenerationInfo.PlayerGender, gameGenerationInfo.BattleClass);
+            playerCharacter.IsPlayer = true;
             // Scene generation should take place elsewhere
             List<byte[]> metaScenes = new List<byte[]>();
             using (MemoryStream stream = new MemoryStream())
@@ -283,7 +285,7 @@ namespace WPFGame
                 var binaryFormatter = new BinaryFormatter();
                 for (int i = 0; i < gameGenerationInfo.NumberOfLevels; i++)
                 {
-                    MetaScene metaScene = SceneFactory.CreateMetaScene(new LifeComponent() { IsPlayer = true}, numOnX, numOnY, 1, 5);
+                    MetaScene metaScene = SceneFactory.CreateMetaScene(playerCharacter, numOnX, numOnY, 1, 5);
                     binaryFormatter.Serialize(stream, metaScene);
                     current = stream.ToArray();
                     metaScenes.Add(current);

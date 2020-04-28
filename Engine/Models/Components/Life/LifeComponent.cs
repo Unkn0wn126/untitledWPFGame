@@ -84,7 +84,15 @@ namespace Engine.Models.Components.Life
                 {
                     CurrentLevel++;
                     NextLevelXP += CurrentLevel * 100;
-                    AttributePoints += 2;
+                    Strength++;
+                    Agility++;
+                    Intelligence++;
+                    MaxHP += 10;
+                    MaxMP += 10;
+                    MaxStamina += 10;
+                    HP += MaxMP / 10;
+                    MP += MaxMP / 10;
+                    Stamina += MaxStamina / 10;
                 }
             } 
         }
@@ -110,8 +118,8 @@ namespace Engine.Models.Components.Life
             MP = 100;
             AttributePoints = 0;
             NextLevelXP = 0;
-            CurrentXP = 0;
             CurrentLevel = 0;
+            CurrentXP = 0;
         }
     }
 }
