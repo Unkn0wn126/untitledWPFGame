@@ -18,14 +18,14 @@
                     <TextBlock VerticalAlignment="Center">Maximum objects on X</TextBlock>
                     <DockPanel>
                         <TextBox Text="{Binding ElementName=MaximumOnXSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" VerticalAlignment="Center" IsReadOnly="True"/>
-                        <Slider Minimum="10" Maximum="200" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="5" x:Name="MaximumOnXSlider" VerticalAlignment="Center" Margin="10"></Slider>
+                        <Slider Minimum="30" Maximum="200" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="5" x:Name="MaximumOnXSlider" VerticalAlignment="Center" Margin="10"></Slider>
                     </DockPanel>
                 </UniformGrid>
                 <UniformGrid Columns="2">
                     <TextBlock VerticalAlignment="Center">Minimum objects on Y</TextBlock>
                     <DockPanel>
                         <TextBox Text="{Binding ElementName=MaximumOnYSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" VerticalAlignment="Center" IsReadOnly="True"/>
-                        <Slider Minimum="10" Maximum="200" TickPlacement="BottomRight"  IsSnapToTickEnabled="True" TickFrequency="5" x:Name="MaximumOnYSlider"  VerticalAlignment="Center" Margin="10"></Slider>
+                        <Slider Minimum="30" Maximum="200" TickPlacement="BottomRight"  IsSnapToTickEnabled="True" TickFrequency="5" x:Name="MaximumOnYSlider"  VerticalAlignment="Center" Margin="10"></Slider>
                     </DockPanel>
                 </UniformGrid>
                 <UniformGrid Columns="2">
