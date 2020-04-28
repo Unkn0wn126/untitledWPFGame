@@ -175,8 +175,8 @@ namespace WPFGame
 
         private void CloseGameGeneration()
         {
-            RemoveOverlay(_gameCreationMenu);
             _gameCreationMenu.RestoreDefaultState();
+            RemoveOverlay(_gameCreationMenu);
             AddOverlay(_mainMenu);
         }
 
@@ -275,7 +275,10 @@ namespace WPFGame
             Random rnd = new Random();
             int numOnX = rnd.Next(gameGenerationInfo.MinOnX, gameGenerationInfo.MaxOnX + 1);
             int numOnY = rnd.Next(gameGenerationInfo.MinOnY, gameGenerationInfo.MaxOnY + 1);
-            ILifeComponent playerCharacter = LivingComponentFactory.GenerateLifeComponent(gameGenerationInfo.PlayerName, gameGenerationInfo.PlayerRace, gameGenerationInfo.PlayerGender, gameGenerationInfo.BattleClass);
+
+            ILifeComponent playerCharacter = LivingComponentFactory.GenerateLifeComponent(gameGenerationInfo.PlayerName, 
+                gameGenerationInfo.PlayerRace, gameGenerationInfo.PlayerGender, gameGenerationInfo.BattleClass);
+
             playerCharacter.IsPlayer = true;
             // Scene generation should take place elsewhere
             List<byte[]> metaScenes = new List<byte[]>();

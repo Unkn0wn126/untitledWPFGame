@@ -423,7 +423,6 @@ namespace Engine.Models.Factories
         /// <param name="currentEntity"></param>
         private static void DetermineEntityType(MetaScene metaScene, MetaEntity currentEntity)
         {
-            // TODO: Update this to the new structure
             if (IsGroundEntity(currentEntity))
             {
                 metaScene.GroundEntities.Add(currentEntity);

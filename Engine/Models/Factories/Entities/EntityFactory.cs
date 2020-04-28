@@ -62,7 +62,6 @@ namespace Engine.Models.Factories.Entities
         {
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
             {
-                // TODO: get the speed from LifeComponent
                 manager.AddComponentToEntity<IScriptComponent>(entity, new AiMovementScript(gameTime, scene, entity, 1 * scene.BaseObjectSize, battleInitialize));
             }
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.PlayerMovement))
