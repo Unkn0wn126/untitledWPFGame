@@ -7,6 +7,47 @@ namespace Engine.Models.Factories.LifeComponents
 {
     public static class LivingComponentFactory
     {
+        private static Random _random = new Random();
+        private static List<string> _maleNames = new List<string> 
+        { 
+            "Prak",
+            "Larry",
+            "Dr. Strange",
+            "Doom Guy",
+            "The Chief",
+            "The Chosen One",
+            "Liam",
+            "Shay Patric Cormac",
+            "Bayek of Siwa",
+            "Ezio Auditore Da Firenze",
+            "Altaïr Ibn-La'Ahad",
+            "Achilles Davenport",
+            "Connor",
+            "Haytham Kenway",
+            "Edward Kenway",
+            "Ratonhnhaké:ton",
+            "Jacob Frye"
+        };
+        private static List<string> _femaleNames = new List<string> 
+        { 
+            "Triss",
+            "Yennefer",
+            "Karen",
+            "Emma",
+            "Olivia",
+            "Ava",
+            "Isabella",
+            "Sophia",
+            "Charlotte",
+            "Mia",
+            "Amelia",
+            "Nikki",
+            "Claudia Auditore",
+            "Christina Vespucci",
+            "Sofia Sartor",
+            "Evie Frye",
+            "Aya"
+        };
         public static ILifeComponent GenerateLifeComponent(string name, Race race, Gender gender, BattleClass battleClass)
         {
             int strength = DetermineStrength(race, gender, battleClass);
@@ -119,6 +160,35 @@ namespace Engine.Models.Factories.LifeComponents
         {
             int baseValue = 100;
             return baseValue + intelligence / 5;
+        }
+
+        public static Gender RandomlyGenerateGender()
+        {
+            return (Gender)_random.Next(Enum.GetValues(typeof(Gender)).Length);
+        }
+
+        public static Race RandomlyGenerateRace()
+        {
+            return (Race)_random.Next(Enum.GetValues(typeof(Race)).Length);
+        }
+
+        public static BattleClass RandomlyGenerateBattleClass()
+        {
+            return (BattleClass)_random.Next(Enum.GetValues(typeof(BattleClass)).Length);
+        }
+
+        public static string GenerateFittingName(Gender gender)
+        {
+            if (gender == Gender.Male)
+            {
+                int index = _random.Next(_maleNames.Count);
+                return _maleNames[index];
+            }
+            else
+            {
+                int index = _random.Next(_femaleNames.Count);
+                return _femaleNames[index];
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using Engine.Models.Components.Life;
 using Engine.Models.Components.Navmesh;
 using Engine.Models.Components.Script;
 using Engine.Models.Factories.Entities;
+using Engine.Models.Factories.LifeComponents;
 using Engine.Models.Factories.Scenes;
 using Engine.Models.Scenes;
 using GameInputHandler;
@@ -315,14 +316,11 @@ namespace Engine.Models.Factories
                 SizeY = baseObjectSize 
             };
             metaMapEntity.Scripts = ScriptType.AiMovement;
-            metaMapEntity.LifeComponent = new LifeComponent 
-            { 
-                Agility = 10, AttributePoints = 0, BattleClass = BattleClass.Swordsman, 
-                CurrentLevel = 1, CurrentXP = 0, Gender = Gender.Male, MaxHP = 100, HP = 100, 
-                Intelligence = 10, IsPlayer = false, MaxMP = 100, MaxStamina = 100, MP = 100, 
-                Name = "Prak", NextLevelXP = 100, Race = Race.Human, Stamina = 100, 
-                Strength = 10 
-            };
+            Gender entityGender = LivingComponentFactory.RandomlyGenerateGender();
+            Race entityRace = LivingComponentFactory.RandomlyGenerateRace();
+            BattleClass entitybattleClass = LivingComponentFactory.RandomlyGenerateBattleClass();
+            string entityName = LivingComponentFactory.GenerateFittingName(entityGender);
+            metaMapEntity.LifeComponent = LivingComponentFactory.GenerateLifeComponent(entityName, entityRace, entityGender, entitybattleClass);
             return metaMapEntity;
         }
 

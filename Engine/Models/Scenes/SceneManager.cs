@@ -33,6 +33,7 @@ namespace Engine.Models.Scenes
 
         private uint _enemyEntityToRemove;
         private bool _removeEnemyEntity;
+        private bool _alreadInBattle;
 
         public SceneManager(GameInput gameInput, GameTime gameTime)
         {
@@ -152,8 +153,9 @@ namespace Engine.Models.Scenes
 
         public void LoadBattleScene(ILifeComponent player, ILifeComponent enemy)
         {
-            if (CurrentScene.SceneType != SceneType.Battle)
+            if (CurrentScene.SceneType != SceneType.Battle && !_alreadInBattle)
             {
+                _alreadInBattle = true;
                 SceneChangeStarted.Invoke();
                 ISpatialIndex grid = new Grid(2, 2, 2);
                 IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
@@ -203,6 +205,7 @@ namespace Engine.Models.Scenes
         private void LoadBackWorld()
         {
             SceneChangeStarted.Invoke();
+            _alreadInBattle = false;
             if (_removeEnemyEntity)
             {
                 _returnWorldScene.EntityManager.RemoveEntity(_enemyEntityToRemove);
