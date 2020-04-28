@@ -62,9 +62,6 @@
     <None Update="Resources\Sounds\arena_loop2.ogg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\Sounds\arena_loop2.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Saves\Info.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
