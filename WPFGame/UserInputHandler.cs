@@ -15,7 +15,7 @@ namespace WPFGame
         private readonly Dictionary<Key, GameKey> _keyCodes =
             new Dictionary<Key, GameKey>();
 
-        private GameInput _gameInputHandler;
+        private readonly GameInput _gameInputHandler;
 
         public UserInputHandler(GameInput gameInputHandler, Configuration gameConfig)
         {

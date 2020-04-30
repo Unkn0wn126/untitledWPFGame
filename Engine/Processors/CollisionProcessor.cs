@@ -73,6 +73,13 @@ namespace Engine.Processors
             }
         }
 
+        /// <summary>
+        /// Checks if two collision components
+        /// are colliding
+        /// </summary>
+        /// <param name="firstItem"></param>
+        /// <param name="secondItem"></param>
+        /// <returns></returns>
         private bool IsPairColliding(ITransformComponent firstItem, ITransformComponent secondItem)
         {
             float itemOneMinX = firstItem.Position.X;
@@ -90,6 +97,14 @@ namespace Engine.Processors
             return (IsBetween(itemOneMinX, itemOneMaxX, itemTwoMinX) || IsBetween(itemOneMinX, itemOneMaxX, itemTwoMaxX)) && (IsBetween(itemOneMinY, itemOneMaxY, itemTwoMinY) || IsBetween(itemOneMinY, itemOneMaxY, itemTwoMaxY));
         }
 
+        /// <summary>
+        /// Checks if a value is between
+        /// a minimum and a maximum
+        /// </summary>
+        /// <param name="minBound"></param>
+        /// <param name="maxBound"></param>
+        /// <param name="tested"></param>
+        /// <returns></returns>
         private bool IsBetween(float minBound, float maxBound, float tested)
         {
             return tested >= minBound && tested <= maxBound;

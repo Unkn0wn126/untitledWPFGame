@@ -4,26 +4,22 @@ using Engine.Models.Scenes;
 using Engine.Processors;
 using GameInputHandler;
 using System.Collections.Generic;
-using System.Diagnostics;
 using TimeUtils;
 
 namespace Engine.ViewModels
 {
-    /// <summary>
-    /// Container of the current game context
-    /// Keeps track of the context as a whole
-    /// </summary>
+
     public class Game : IGame
     {
-        public GameStateMachine State { get; set; }
+        private readonly List<IProcessor> _processors;
+        private readonly GameTime _gameTime;
+        private readonly GameInput _gameInputHandler;
 
-        private IProcessor _graphicsProcessor;
-        private List<IProcessor> _processors;
-
-        private GameTime _gameTime;
-        private GameInput _gameInputHandler;
-        public ISceneManager SceneManager { get; set; }
         private bool _contextNeedsUpdate;
+        private IProcessor _graphicsProcessor;
+
+        public GameStateMachine State { get; set; }
+        public ISceneManager SceneManager { get; set; }
 
         public Game(GameInput gameInputHandler, GameTime gameTime)
         {
@@ -36,8 +32,10 @@ namespace Engine.ViewModels
                 CurrentState = GameState.Loading // prevent update of logic while not ready
             };
 
-            SceneManager = new SceneManager(_gameInputHandler, _gameTime);
-            SceneManager.BattleSceneMediator = new BattleSceneMediator();
+            SceneManager = new SceneManager(_gameInputHandler, _gameTime)
+            {
+                BattleSceneMediator = new BattleSceneMediator()
+            };
 
             SceneManager.SceneChangeStarted += SetStateToLoading;
             SceneManager.SceneChangeFinished += InitializeContextUpdate;
@@ -51,6 +49,13 @@ namespace Engine.ViewModels
             State.CurrentState = GameState.Loading;
         }
 
+        /// <summary>
+        /// Saves the information
+        /// that the context should update.
+        /// Used to not update context
+        /// directly via a delegate
+        /// to prevent several crashes.
+        /// </summary>
         private void InitializeContextUpdate()
         {
             _contextNeedsUpdate = true;
@@ -69,9 +74,6 @@ namespace Engine.ViewModels
                 GameState.Running : GameState.Battle;
         }
 
-        /// <summary>
-        /// Updates the processor context
-        /// </summary>
         public void UpdateProcessorContext()
         {
             InitializeProcessors();
@@ -83,12 +85,10 @@ namespace Engine.ViewModels
             }
         }
 
-        /// <summary>
-        /// Updates the game logic
-        /// </summary>
         public void Update()
         {
             _gameTime.UpdateDeltaTime(); // keep track of elapsed time
+
             if (_contextNeedsUpdate)
             {
                 SetStateToRunning();
@@ -106,9 +106,6 @@ namespace Engine.ViewModels
             }
         }
 
-        /// <summary>
-        /// Updates which entities should be visible
-        /// </summary>
         public void UpdateGraphics()
         {
             _graphicsProcessor?.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
@@ -131,10 +128,6 @@ namespace Engine.ViewModels
             }
         }
 
-        /// <summary>
-        /// Initializes a new game instance
-        /// </summary>
-        /// <param name="metaScenes"></param>
         public void InitializeGame(List<byte[]> metaScenes, int currentIndex)
         {
             SceneManager.UpdateScenes(metaScenes, currentIndex);

@@ -2,6 +2,11 @@
 
 namespace WPFGame
 {
+    /// <summary>
+    /// Helper class to hold
+    /// the info needed to
+    /// generate a new game
+    /// </summary>
     public class GameGenerationInfo
     {
         public int MinOnX { get; set; }

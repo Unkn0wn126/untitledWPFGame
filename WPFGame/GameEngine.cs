@@ -13,17 +13,18 @@ namespace WPFGame
     /// </summary>
     public class GameEngine
     {
-        private IGame _logicEngine;
+        private readonly IGame _logicEngine;
 
-        private MainWindow _graphicsEngine;
+        private readonly MainWindow _graphicsEngine;
+        private readonly Task _logicThread;
+
+        private readonly GameTime _gameTime;
+        private readonly GameInput _gameInputHandler;
+        private readonly ImagePaths _imagePaths;
+
         private App _app;
 
         private bool _isRunning = false;
-        private Task _logicThread;
-
-        private GameTime _gameTime;
-        private GameInput _gameInputHandler;
-        private ImagePaths _imagePaths;
 
         public GameEngine()
         {

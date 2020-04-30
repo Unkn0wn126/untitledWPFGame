@@ -98,6 +98,15 @@ namespace Engine.Processors
             }
         }
 
+        /// <summary>
+        /// Updates the position
+        /// based on the force applied
+        /// to a given entity
+        /// </summary>
+        /// <param name="force"></param>
+        /// <param name="transform"></param>
+        /// <param name="lastFrameTime"></param>
+        /// <returns></returns>
         private Vector2 UpdatePos(IRigidBodyComponent force, Vector2 transform, float lastFrameTime)
         {
             Vector2 newPos = transform;

@@ -44,16 +44,22 @@ namespace WPFGame
         private readonly UserInputHandler _inputHandler;
         private readonly GameInput _gameInput;
 
+        private readonly Uri _savesPath;
+
+        private readonly string _configPath; 
+
+        private readonly ImagePaths _imagePaths;
+
+        private readonly DrawingVisual _drawingVisual = new DrawingVisual();
+
         // image to render to
         private RenderTargetBitmap bitmap;
 
         // needed for rendering
-        private DrawingVisual _drawingVisual = new DrawingVisual();
 
         // get the sprites and images from here
         private ImageResourceManager _imageResourceManager;
 
-        private ImagePaths _imagePaths;
 
         private DispatcherTimer _updateTimer;
 
@@ -70,7 +76,7 @@ namespace WPFGame
         private WinnerScreenOverlay _winnerScreen;
         private GameCreationBaseMenu _gameCreationMenu;
 
-        Rect _rectangle;
+        private Rect _rectangle;
 
         // for the context of window size
         private int _xRes;
@@ -79,7 +85,6 @@ namespace WPFGame
         private int _sizeMultiplier;
 
         private Configuration _gameConfiguration;
-        private readonly string _configPath; 
 
         private ProcessMenuButtonClick _pauseResumeAction;
         private ProcessMenuButtonClick _pauseLoadMainAction;
@@ -90,7 +95,6 @@ namespace WPFGame
         private ProcessSaveActionButtonClick _saveGameAction;
         private ProcessSaveActionButtonClick _loadGameAction;
 
-        private readonly Uri _savesPath;
 
 
         public MainWindow(ImagePaths imagePaths, GameInput gameInputHandler, IGame session)
@@ -173,6 +177,9 @@ namespace WPFGame
             _deathScreen = new DeathScreenOverlay();
         }
 
+        /// <summary>
+        /// Closes the game generation menu
+        /// </summary>
         private void CloseGameGeneration()
         {
             _gameCreationMenu.RestoreDefaultState();
@@ -180,6 +187,9 @@ namespace WPFGame
             AddOverlay(_mainMenu);
         }
 
+        /// <summary>
+        /// Loads the battle screen menu
+        /// </summary>
         private void LoadBattleScreen()
         {
             Dispatcher.Invoke(() =>
@@ -260,6 +270,9 @@ namespace WPFGame
                 RemoveOverlay(_pauseMenu);
         }
 
+        /// <summary>
+        /// Loads the map generation menu
+        /// </summary>
         private void LoadMapGenerationMenu()
         {
             AddOverlay(_gameCreationMenu);
@@ -325,6 +338,11 @@ namespace WPFGame
             ResetBattleScreen(control);
         }
 
+        /// <summary>
+        /// Resets the battle screen
+        /// to its initial state
+        /// </summary>
+        /// <param name="control"></param>
         private void ResetBattleScreen(UserControl control)
         {
             if (control == _battleScreen)
@@ -487,6 +505,10 @@ namespace WPFGame
             });
         }
 
+        /// <summary>
+        /// Updates the camera focus point
+        /// according to the scene
+        /// </summary>
         private void UpdateCameraFocusPoint()
         {
             if (_session.SceneManager.CurrentScene != null)
@@ -714,6 +736,9 @@ namespace WPFGame
             });
         }
 
+        /// <summary>
+        /// Shows the "YOU DIED" overlay
+        /// </summary>
         private void ShowDeathOverlay()
         {
             Dispatcher.Invoke(() =>
@@ -723,6 +748,9 @@ namespace WPFGame
             });
         }
 
+        /// <summary>
+        /// Shows the "YOU WON" overlay
+        /// </summary>
         private void ShowWinnerOverlay()
         {
             Dispatcher.Invoke(() =>
@@ -732,6 +760,12 @@ namespace WPFGame
             });
         }
 
+        /// <summary>
+        /// Helper method to add
+        /// an overlay only if not
+        /// already present on the scene
+        /// </summary>
+        /// <param name="control"></param>
         private void AddOverlay(UserControl control)
         {
             if (!GameGrid.Children.Contains(control))

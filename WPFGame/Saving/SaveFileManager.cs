@@ -1,12 +1,14 @@
 ﻿using Engine.Saving;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
 namespace WPFGame.Saving
 {
+    /// <summary>
+    /// Helper class to take
+    /// care of save saving
+    /// and loading
+    /// </summary>
     public static class SaveFileManager
     {
         /// <summary>
