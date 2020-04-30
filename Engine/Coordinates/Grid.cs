@@ -6,9 +6,9 @@ namespace Engine.Coordinates
 {
     public class Grid : ISpatialIndex
     {
-        private int _numOfCellsOnX;
-        private int _numOfCellsOnY;
-        private int _cellSize;
+        private readonly int _numOfCellsOnX;
+        private readonly int _numOfCellsOnY;
+        private readonly int _cellSize;
         public List<uint>[][] Cells { get; set; }
 
         public Grid(int numOfCellsOnX, int numOfCellsOnY, int cellSize)
@@ -32,6 +32,12 @@ namespace Engine.Coordinates
             }
         }
 
+        /// <summary>
+        /// Adds the entity to the grid
+        /// based on its current position
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="position"></param>
         public void Add(uint unit, Vector2 position)
         {
             int cellX = (int)(position.X / _cellSize);
@@ -39,6 +45,13 @@ namespace Engine.Coordinates
             Cells[cellX][cellY].Add(unit);
         }
 
+        /// <summary>
+        /// Gets all of the entities in a given
+        /// radius from the provided position
+        /// </summary>
+        /// <param name="focus"></param>
+        /// <param name="cellRadius"></param>
+        /// <returns></returns>
         public List<uint> GetObjectsInRadius(ITransformComponent focus, int cellRadius)
         {
             int cellX = (int)(focus.Position.X / _cellSize);
@@ -62,6 +75,13 @@ namespace Engine.Coordinates
             return gameObjects;
         }
 
+        /// <summary>
+        /// Moves the given entity from
+        /// its old position to a new one
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="oldPos"></param>
+        /// <param name="newPos"></param>
         public void Move(uint unit, Vector2 oldPos, Vector2 newPos)
         {
             int oldCellX = (int)(oldPos.X / _cellSize);
@@ -73,7 +93,7 @@ namespace Engine.Coordinates
             // If it didn't change cells, we're done.
             if (oldCellX == cellX && oldCellY == cellY) return;
 
-            //// Unlink it from the list of its old cell.
+            // Unlink it from the list of its old cell.
             if (cellX < Cells.Length && cellX >= 0 && cellY < Cells[0].Length && cellY >= 0)
             {
                 Cells[oldCellX][oldCellY].Remove(unit);
@@ -84,6 +104,12 @@ namespace Engine.Coordinates
 
         }
 
+        /// <summary>
+        /// Removes the given entity
+        /// from this grid
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="entityTransform"></param>
         public void Remove(uint unit, ITransformComponent entityTransform)
         {
             int cellX = (int)(entityTransform.Position.X / _cellSize);
