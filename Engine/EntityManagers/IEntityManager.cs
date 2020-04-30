@@ -7,7 +7,8 @@ using System.Collections.Generic;
 namespace Engine.EntityManagers
 {
     /// <summary>
-    /// This should hold all the entities and their components
+    /// Holds all entities and their respective
+    /// components.
     /// </summary>
     public interface IEntityManager
     {

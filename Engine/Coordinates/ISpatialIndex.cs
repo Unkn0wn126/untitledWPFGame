@@ -4,6 +4,13 @@ using System.Numerics;
 
 namespace Engine.Coordinates
 {
+    /// <summary>
+    /// Used for spatial indexing.
+    /// Speeds up the process of
+    /// filtering and processing entities
+    /// by grouping them into smaller groups
+    /// based on their position
+    /// </summary>
     public interface ISpatialIndex
     {
         List<uint>[][] Cells { get; set; }
