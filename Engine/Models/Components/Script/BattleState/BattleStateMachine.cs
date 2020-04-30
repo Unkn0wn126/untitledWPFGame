@@ -1,10 +1,11 @@
 ﻿using Engine.Models.Components.Life;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Engine.Models.Components.Script.BattleState
 {
+    /// <summary>
+    /// Used to determine attack direction
+    /// </summary>
     public enum AttackDirection
     {
         None,
@@ -13,12 +14,20 @@ namespace Engine.Models.Components.Script.BattleState
         Right,
         Bottom
     }
+
+    /// <summary>
+    /// Used to determine attack type
+    /// </summary>
     public enum AttackType
     {
         None,
         Normal,
         Heavy
     }
+
+    /// <summary>
+    /// Used to determine movement type
+    /// </summary>
     public enum MovementType
     {
         None,
@@ -33,16 +42,22 @@ namespace Engine.Models.Components.Script.BattleState
         public AttackDirection AttackDirection { get; set; }
         public MovementType MovementType { get; set; }
 
-        private ILifeComponent _owner { get; set; }
+        private ILifeComponent Owner { get; set; }
 
-        private Random _rnd;
+        private readonly Random _rnd;
 
         public BattleStateMachine(ILifeComponent owner)
         {
-            _owner = owner;
+            Owner = owner;
             _rnd = new Random();
         }
 
+        /// <summary>
+        /// Produces an output based
+        /// on its inner state
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public string ProcessState(ILifeComponent target)
         {
             string returnMessage;
@@ -56,7 +71,7 @@ namespace Engine.Models.Components.Script.BattleState
             }
             else if (MovementType == MovementType.None)
             {
-                returnMessage = $"{_owner.Name} is passing this round\n" + ReplenishStaminaAndMP();
+                returnMessage = $"{Owner.Name} is passing this round\n" + ReplenishStaminaAndMP();
             }
             else
             {
@@ -67,74 +82,130 @@ namespace Engine.Models.Components.Script.BattleState
             return returnMessage;
         }
 
+        /// <summary>
+        /// Checks if stamina is
+        /// sufficient for attack
+        /// </summary>
+        /// <returns></returns>
         public bool CanAttack()
         {
-            return _owner.Stamina >= DetermineStaminaCost();
+            return Owner.Stamina >= DetermineStaminaCost();
         }
 
+        /// <summary>
+        /// Checks if mana is
+        /// sufficient for heal
+        /// </summary>
+        /// <returns></returns>
         public bool CanHeal()
         {
-            return _owner.MP >= DetermineHealCost();
+            return Owner.MP >= DetermineHealCost();
         }
 
+        /// <summary>
+        /// Calculates the stamina
+        /// cost based on the agility
+        /// </summary>
+        /// <returns></returns>
         private float DetermineStaminaCost()
         {
             float baseStaminaDecreaseValue = 10f;
-            baseStaminaDecreaseValue -= _owner.Agility / 2f;
+            baseStaminaDecreaseValue -= Owner.Agility / 2f;
 
             return baseStaminaDecreaseValue;
         }
 
+        /// <summary>
+        /// Calculates the mana
+        /// cost based on the intelligence
+        /// </summary>
+        /// <returns></returns>
         private float DetermineHealCost()
         {
             float baseMPCost = 30;
-            baseMPCost -= _owner.Intelligence / 2f;
+            baseMPCost -= Owner.Intelligence / 2f;
 
             return baseMPCost;
         }
 
+        /// <summary>
+        /// Decreases the amount of
+        /// available stamina for
+        /// the owner character
+        /// </summary>
+        /// <returns></returns>
         private string DecreaseStamina()
         {
             float baseStaminaDecreaseValue = DetermineStaminaCost();
 
-            _owner.Stamina -= (int)baseStaminaDecreaseValue;
+            Owner.Stamina -= (int)baseStaminaDecreaseValue;
 
-            return $"{_owner.Name} used {baseStaminaDecreaseValue} stamina";
+            return $"{Owner.Name} used {baseStaminaDecreaseValue} stamina";
         }
 
+        /// <summary>
+        /// Checks if the hp
+        /// value is lower than 1/4 of
+        /// its maximum potential value
+        /// </summary>
+        /// <returns></returns>
         public bool IsCloseToDeath()
         {
-            return _owner.HP <= _owner.MaxHP / 4f;
+            return Owner.HP <= Owner.MaxHP / 4f;
         }
 
+        /// <summary>
+        /// Checks if the stamina
+        /// value is lower than 1/4 of
+        /// its maximum potential value
+        /// </summary>
+        /// <returns></returns>
         public bool IsCloseToExhaustion()
         {
-            return _owner.Stamina <= _owner.MaxStamina / 4f;
+            return Owner.Stamina <= Owner.MaxStamina / 4f;
         }
 
+        /// <summary>
+        /// Adds back some percentage
+        /// of hp for some mp
+        /// </summary>
+        /// <returns></returns>
         private string ReplenishHP()
         {
             float baseMPCost = DetermineHealCost();
             float baseHealValue = 15;
-            baseHealValue += _owner.Intelligence / 2f;
-            _owner.HP += (int)baseHealValue;
-            _owner.MP -= (int)baseMPCost;
+            baseHealValue += Owner.Intelligence / 2f;
+            Owner.HP += (int)baseHealValue;
+            Owner.MP -= (int)baseMPCost;
 
-            return $"{_owner.Name} healed {baseHealValue} HP for {baseMPCost} MP!";
+            return $"{Owner.Name} healed {baseHealValue} HP for {baseMPCost} MP!";
         }
 
+        /// <summary>
+        /// Replenishes some value
+        /// of stamina and mp
+        /// </summary>
+        /// <returns></returns>
         private string ReplenishStaminaAndMP()
         {
             float baseStaminaAddition = 5f;
-            baseStaminaAddition += _owner.Agility / 2f;
-            _owner.Stamina += (int)baseStaminaAddition;
+            baseStaminaAddition += Owner.Agility / 2f;
+            Owner.Stamina += (int)baseStaminaAddition;
 
             float baseMPAddition = 5f;
-            baseMPAddition += _owner.Intelligence / 2f;
-            _owner.MP += (int)baseMPAddition;
-            return $"{_owner.Name} replenished {baseStaminaAddition} stamina and {baseMPAddition} MP!";
+            baseMPAddition += Owner.Intelligence / 2f;
+            Owner.MP += (int)baseMPAddition;
+            return $"{Owner.Name} replenished {baseStaminaAddition} stamina and {baseMPAddition} MP!";
         }
 
+        /// <summary>
+        /// Determines the chance of hit
+        /// and executes the attack if
+        /// the action was determined
+        /// successful
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         private string ProcessAttack(ILifeComponent target)
         {
             float missChance = DetermineAttackMissChance(target);
@@ -151,38 +222,43 @@ namespace Engine.Models.Components.Script.BattleState
             }
         }
 
+        /// <summary>
+        /// Determines the amount
+        /// of damage based on the stats
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         private float DetermineAttackDamage(ILifeComponent target)
         {
-            float baseAttackDamage = _owner.Strength + (_owner.Stamina / 10f) + (_owner.Agility / 10f);
+            float baseAttackDamage = Owner.Strength + (Owner.Stamina / 10f) + (Owner.Agility / 10f);
             float headDamage = 10;
             float bottomDamage = 5;
             float sideDamage = 3;
 
             if (AttackType == AttackType.Heavy)
-            {
-                baseAttackDamage += _owner.Strength;
-            }
+                baseAttackDamage += Owner.Strength;
 
             if (AttackDirection == AttackDirection.Head)
-            {
                 baseAttackDamage += headDamage;
-            }
             else if (AttackDirection == AttackDirection.Bottom)
-            {
                 baseAttackDamage += bottomDamage;
-            }
             else if (AttackDirection == AttackDirection.Left || AttackDirection == AttackDirection.Right)
-            {
                 baseAttackDamage += sideDamage;
-            }
 
             baseAttackDamage -= target.Strength / 10f;
-            float levelDifference = _owner.CurrentLevel - target.CurrentLevel;
+            float levelDifference = Owner.CurrentLevel - target.CurrentLevel;
             baseAttackDamage += levelDifference * 10;
 
             return baseAttackDamage;
         }
 
+        /// <summary>
+        /// Determines the chance of
+        /// an attack missing its target
+        /// based on the attributes
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         private float DetermineAttackMissChance(ILifeComponent target)
         {
             float baseMissChance = 100;
@@ -191,24 +267,16 @@ namespace Engine.Models.Components.Script.BattleState
             float sideMissChance = 3;
 
             if (AttackType == AttackType.Heavy)
-            {
-                baseMissChance += baseMissChance - (_owner.Strength + (_owner.Stamina / 10f));
-            }
+                baseMissChance += baseMissChance - (Owner.Strength + (Owner.Stamina / 10f));
 
             baseMissChance += ((target.Agility / 2f) + (target.Stamina / 10f));
 
             if (AttackDirection == AttackDirection.Head)
-            {
                 baseMissChance += headMissChance;
-            }
             else if (AttackDirection == AttackDirection.Bottom)
-            {
                 baseMissChance += bottomMissChance;
-            }
             else if (AttackDirection == AttackDirection.Left || AttackDirection == AttackDirection.Right)
-            {
                 baseMissChance += sideMissChance;
-            }
 
             return baseMissChance;
         }
