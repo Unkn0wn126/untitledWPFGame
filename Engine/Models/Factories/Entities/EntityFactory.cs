@@ -14,6 +14,11 @@ using TimeUtils;
 
 namespace Engine.Models.Factories.Entities
 {
+    /// <summary>
+    /// Used to represent what
+    /// game components the entity
+    /// has or should have
+    /// </summary>
     [Flags]
     public enum ComponentState
     {
@@ -26,6 +31,11 @@ namespace Engine.Models.Factories.Entities
         NavMeshComponent = 1 << 5,
         LifeComponent = 1 << 6
     }
+
+    /// <summary>
+    /// Factory class for meta entity generation
+    /// or generation of entity from a meta entity
+    /// </summary>
     public static class EntityFactory
     {
         /// <summary>
@@ -40,7 +50,8 @@ namespace Engine.Models.Factories.Entities
         /// <param name="gameTime"></param>
         /// <param name="gameInput"></param>
         /// <returns></returns>
-        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange, BattleInitialization battleInitialize)
+        public static uint GenerateEntity(MetaEntity metaEntity, IScene scene, IEntityManager manager, 
+            GameTime gameTime, GameInput gameInput, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
             uint entity = manager.AddEntity();
             DetermineComponents(entity, metaEntity, manager);
@@ -58,19 +69,23 @@ namespace Engine.Models.Factories.Entities
         /// <param name="manager"></param>
         /// <param name="gameTime"></param>
         /// <param name="gameInput"></param>
-        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, GameTime gameTime, GameInput gameInput, SceneChange sceneChange, BattleInitialization battleInitialize)
+        private static void DetermineScripts(uint entity, MetaEntity metaEntity, IScene scene, IEntityManager manager, 
+            GameTime gameTime, GameInput gameInput, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.AiMovement))
             {
-                manager.AddComponentToEntity<IScriptComponent>(entity, new AiMovementScript(gameTime, scene, entity, 1 * scene.BaseObjectSize, battleInitialize));
+                manager.AddComponentToEntity<IScriptComponent>(entity, 
+                    new AiMovementScript(gameTime, scene, entity, 1 * scene.BaseObjectSize, battleInitialize));
             }
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.PlayerMovement))
             {
-                manager.AddComponentToEntity<IScriptComponent>(entity, new PlayerMovementScript(gameTime, gameInput, scene, entity, 2 * scene.BaseObjectSize));
+                manager.AddComponentToEntity<IScriptComponent>(entity, 
+                    new PlayerMovementScript(gameTime, gameInput, scene, entity, 2 * scene.BaseObjectSize));
             }            
             if (IsScriptRequired(metaEntity.Scripts, ScriptType.SceneChanger))
             {
-                manager.AddComponentToEntity<IScriptComponent>(entity, new SceneChangeScript(scene, sceneChange, entity));
+                manager.AddComponentToEntity<IScriptComponent>(entity, 
+                    new SceneChangeScript(scene, sceneChange, entity));
             }
         }
 
