@@ -5,19 +5,24 @@ using TimeUtils;
 
 namespace Engine.Models.Components.Script
 {
+    /// <summary>
+    /// Script component used
+    /// to move the player character
+    /// around based on the player input
+    /// </summary>
     public class PlayerMovementScript : IScriptComponent
     {
-        private float _baseVelocity;
-        private uint _player;
+        private readonly float _baseVelocity;
+        private readonly uint _player;
 
-        private float _baseForceX;
-        private float _baseForceY;
+        private readonly float _baseForceX;
+        private readonly float _baseForceY;
 
-        private IScene _context;
+        private readonly IScene _context;
 
-        private GameInput _gameInputHandler;
+        private readonly GameInput _gameInputHandler;
 
-        private GameTime _gameTime;
+        private readonly GameTime _gameTime;
 
         public PlayerMovementScript(GameTime gameTime, GameInput gameInputHandler, IScene context, uint player, float baseVelocity)
         {
@@ -31,6 +36,12 @@ namespace Engine.Models.Components.Script
             _baseForceY = 0;
         }
 
+        /// <summary>
+        /// Changes the player avatar
+        /// based on the direction headed to
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="currValue"></param>
         private void ChangeAvatar(IGraphicsComponent graphics, GameKey currValue)
         {
             if ((currValue & GameKey.Right) == GameKey.Right)
@@ -56,29 +67,17 @@ namespace Engine.Models.Components.Script
             ChangeAvatar(graphics, currValue);
 
             if ((currValue & GameKey.Up) == GameKey.Up)
-            {
                 rigidBody.ForceY = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
-            }
             if ((currValue & GameKey.Down) == GameKey.Down)
-            {
                 rigidBody.ForceY = +_baseVelocity * _gameTime.DeltaTimeInSeconds;
-            }
             if ((currValue & GameKey.Left) == GameKey.Left)
-            {
                 rigidBody.ForceX = -_baseVelocity * _gameTime.DeltaTimeInSeconds;
-            }
             if ((currValue & GameKey.Right) == GameKey.Right)
-            {
                 rigidBody.ForceX = +_baseVelocity * _gameTime.DeltaTimeInSeconds;
-            }
             if ((currValue & GameKey.Up) != GameKey.Up && (currValue & GameKey.Down) != GameKey.Down)
-            {
                 rigidBody.ForceY = _baseForceY * _gameTime.DeltaTimeInSeconds;
-            }
             if ((currValue & GameKey.Left) != GameKey.Left && (currValue & GameKey.Right) != GameKey.Right)
-            {
                 rigidBody.ForceX = _baseForceX * _gameTime.DeltaTimeInSeconds;
-            }
         }
     }
 }

@@ -2,24 +2,31 @@
 using Engine.Models.Components.Script.BattleState;
 using Engine.Models.Scenes;
 using System;
-using System.Diagnostics;
 
 namespace Engine.Models.Components.Script
 {
+    /// <summary>
+    /// Script used to manipulate
+    /// the flow of the battle.
+    /// Determines who starts and
+    /// whose turn it is after each turn.
+    /// </summary>
     public class HandleBattleScript : IScriptComponent
     {
-        private ILifeComponent _playerLife;
-        private ILifeComponent _enemyLife;
-        private BattleStateMachine _playerBattleState;
-        private BattleStateMachine _enemyBattleState;
-        private Random _rnd;
+        private readonly ILifeComponent _playerLife;
+        private readonly ILifeComponent _enemyLife;
+        private readonly BattleStateMachine _playerBattleState;
+        private readonly BattleStateMachine _enemyBattleState;
+        private readonly Random _rnd;
 
-        private GameEnd _onPlayerDead;
-        private GameEnd _onPlayerWon;
+        private readonly GameEnd _onPlayerDead;
+        private readonly GameEnd _onPlayerWon;
 
-        private MessageProcessor _messageProcessor;
+        private readonly MessageProcessor _messageProcessor;
 
-        public HandleBattleScript(ILifeComponent playerLife, ILifeComponent enemyLife, BattleStateMachine playerBattleState, BattleStateMachine enemyBattleState, GameEnd onPlayerDead, GameEnd onPlayerWon, MessageProcessor messageProcessor)
+        public HandleBattleScript(ILifeComponent playerLife, ILifeComponent enemyLife, 
+            BattleStateMachine playerBattleState, BattleStateMachine enemyBattleState, 
+            GameEnd onPlayerDead, GameEnd onPlayerWon, MessageProcessor messageProcessor)
         {
             _messageProcessor = messageProcessor;
             _onPlayerDead = onPlayerDead;
@@ -32,6 +39,11 @@ namespace Engine.Models.Components.Script
             SetStartingStates();
         }
 
+        /// <summary>
+        /// Randomly chooses who should
+        /// be the first one to attack
+        /// and sets the statest accordingly
+        /// </summary>
         private void SetStartingStates()
         {
             int whoStarts = _rnd.Next(41);
@@ -79,6 +91,16 @@ namespace Engine.Models.Components.Script
             }
         }
 
+        /// <summary>
+        /// Checks if the battle
+        /// should continue.
+        /// If the player is dead,
+        /// game over is invoked.
+        /// If the enemy is dead,
+        /// battle victory is
+        /// invoked.
+        /// </summary>
+        /// <returns></returns>
         private bool CheckBattleEndConditions()
         {
             if (_playerLife.HP <= 0)

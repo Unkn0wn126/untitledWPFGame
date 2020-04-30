@@ -49,7 +49,7 @@ namespace Engine.EntityManagers
         public void UpdateActiveEntities(ITransformComponent focusPoint)
         {
             _activeEntities = Coordinates.GetObjectsInRadius(focusPoint, 3);
-            foreach (var item in _entities)
+            foreach (uint item in _entities)
             {
                 // assuming they have no transform for this reason
                 if (!EntityHasComponent<ITransformComponent>(item))
@@ -91,7 +91,7 @@ namespace Engine.EntityManagers
 
         private void RemoveEntityComponents(uint id)
         {
-            foreach (var item in _gameComponents.Keys)
+            foreach (Type item in _gameComponents.Keys)
             {
                 if (_gameComponents[item].ContainsKey(id))
                     _gameComponents[item].Remove(id);
@@ -110,7 +110,7 @@ namespace Engine.EntityManagers
             if (EntityHasComponent<ICollisionComponent>(id))
             {
                 List<uint> collisionEntities = GetAllEntitiesPossessingComponent(typeof(ICollisionComponent));
-                foreach (var item in collisionEntities)
+                foreach (uint item in collisionEntities)
                 {
                     ICollisionComponent current = GetComponentOfType<ICollisionComponent>(item);
                     if (current.CollidingWith.Contains(id))
@@ -159,7 +159,7 @@ namespace Engine.EntityManagers
 
             Dictionary<uint, IGameComponent> temp = _gameComponents[typeof(T)];
             List<T> output = new List<T>();
-            foreach (var item in temp.Values)
+            foreach (IGameComponent item in temp.Values)
             {
                 output.Add((T)item);
             }
@@ -175,7 +175,7 @@ namespace Engine.EntityManagers
 
             Dictionary<uint, IGameComponent> temp = _gameComponents[typeof(T)];
             List<T> output = new List<T>();
-            foreach (var item in _activeEntities)
+            foreach (uint item in _activeEntities)
             {
                 if (temp.ContainsKey(item))
                 {

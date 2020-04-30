@@ -77,10 +77,10 @@ namespace Engine.ViewModels
             InitializeProcessors();
             _graphicsProcessor.ChangeContext(SceneManager.CurrentScene);
 
-            _processors.ForEach(x =>
+            foreach (IProcessor item in _processors)
             {
-                x.ChangeContext(SceneManager.CurrentScene);
-            });
+                item.ChangeContext(SceneManager.CurrentScene);
+            }
         }
 
         /// <summary>

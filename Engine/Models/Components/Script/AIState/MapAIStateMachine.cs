@@ -151,7 +151,7 @@ namespace Engine.Models.Components.Script.AIState
         /// </summary>
         private void RecalculateOnCollision()
         {
-            foreach (var item in _ownerCollision.CollidingWith)
+            foreach (uint item in _ownerCollision.CollidingWith)
             {
                 ICollisionComponent current = _context.EntityManager.GetComponentOfType<ICollisionComponent>(item);
                 if (current.IsSolid && !current.IsDynamic)
