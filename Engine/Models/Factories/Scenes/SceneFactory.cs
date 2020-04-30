@@ -23,7 +23,7 @@ namespace Engine.Models.Factories
     /// </summary>
     public static class SceneFactory
     {
-        private static Random _rnd = new Random();
+        private static readonly Random _rnd = new Random();
 
         /// <summary>
         /// Generates ground meta entities
@@ -33,7 +33,8 @@ namespace Engine.Models.Factories
         /// <param name="baseObjectSize"></param>
         /// <param name="staticCollisionsPositions"></param>
         /// <returns></returns>
-        private static List<MetaEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, bool[,] staticCollisionsPositions)
+        private static List<MetaEntity> GenerateGround(int numOfObjectsOnX, int numOfObjectsOnY, 
+            int baseObjectSize, bool[,] staticCollisionsPositions)
         {
             MetaEntity[,] metaMap = new MetaEntity[numOfObjectsOnX, numOfObjectsOnY];
 
@@ -191,7 +192,8 @@ namespace Engine.Models.Factories
         /// <param name="baseObjectSize"></param>
         /// <param name="numOfObjectsInCell"></param>
         /// <returns></returns>
-        public static MetaScene CreateMetaScene(ILifeComponent lifeComponent, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize, int numOfObjectsInCell)
+        public static MetaScene CreateMetaScene(ILifeComponent lifeComponent, int numOfObjectsOnX, int numOfObjectsOnY, 
+            int baseObjectSize, int numOfObjectsInCell)
         {
             MetaScene metaScene = new MetaScene(SceneType.General)
             {
@@ -215,7 +217,8 @@ namespace Engine.Models.Factories
         /// <param name="numOfObjectsOnX"></param>
         /// <param name="numOfObjectsOnY"></param>
         /// <param name="baseObjectSize"></param>
-        private static void CreateMetaSceneEntities(MetaScene metaScene, ILifeComponent lifeComponent, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        private static void CreateMetaSceneEntities(MetaScene metaScene, ILifeComponent lifeComponent, int numOfObjectsOnX, 
+            int numOfObjectsOnY, int baseObjectSize)
         {
             bool[,] staticCollisionsPositions = GenerateCollisions(numOfObjectsOnX, numOfObjectsOnY);
 
@@ -236,7 +239,8 @@ namespace Engine.Models.Factories
         /// <param name="numOfObjectsOnY"></param>
         /// <param name="baseObjectSize"></param>
         /// <returns></returns>
-        private static List<MetaEntity> GenerateLivingEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        private static List<MetaEntity> GenerateLivingEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, 
+            int numOfObjectsOnY, int baseObjectSize)
         {
             List<MetaEntity> livingEntities = new List<MetaEntity>();
             int numOfEnemies = numOfObjectsOnX / 2;
@@ -268,7 +272,8 @@ namespace Engine.Models.Factories
         /// <param name="numOfObjectsOnY"></param>
         /// <param name="baseObjectSize"></param>
         /// <returns></returns>
-        private static List<MetaEntity> GenerateTriggerEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, int numOfObjectsOnY, int baseObjectSize)
+        private static List<MetaEntity> GenerateTriggerEntities(bool[,] staticCollisionsPositions, int numOfObjectsOnX, 
+            int numOfObjectsOnY, int baseObjectSize)
         {
             List<MetaEntity> triggerEntities = new List<MetaEntity>();
             int numOfEntities = 1;
@@ -501,7 +506,8 @@ namespace Engine.Models.Factories
                 currentEntity.LifeComponent == null;
         }
 
-        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, GameTime gameTime, ILifeComponent currentPlayer, SceneChange sceneChange, BattleInitialization battleInitialize)
+        public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, 
+            GameTime gameTime, ILifeComponent currentPlayer, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
             ICamera oldCamera = camera;
             int cellSize = metaScene.BaseObjectSize * metaScene.NumOfObjectsInCell;
@@ -601,7 +607,16 @@ namespace Engine.Models.Factories
             ProcessNonCollisionIndexes(map, vacantToCheck, visitedIndexes);
         }
 
-        private static void GenerateNonCollisionForColumns(List<int> possibleYCoords, bool[,] map, Tuple<int, int> tuple, Stack<Tuple<int, int>> vacantToCheck)
+        /// <summary>
+        /// Generates non-collision path
+        /// for column entities
+        /// </summary>
+        /// <param name="possibleYCoords"></param>
+        /// <param name="map"></param>
+        /// <param name="tuple"></param>
+        /// <param name="vacantToCheck"></param>
+        private static void GenerateNonCollisionForColumns(List<int> possibleYCoords, bool[,] map, Tuple<int, int> tuple, 
+            Stack<Tuple<int, int>> vacantToCheck)
         {
             bool vacantFound = false;
             foreach (var item in possibleYCoords)
@@ -624,6 +639,14 @@ namespace Engine.Models.Factories
             }
         }
 
+        /// <summary>
+        /// Generates non-collision path
+        /// for row entities
+        /// </summary>
+        /// <param name="possibleXCoords"></param>
+        /// <param name="map"></param>
+        /// <param name="tuple"></param>
+        /// <param name="vacantToCheck"></param>
         private static void GenerateNonCollisionForRows(List<int> possibleXCoords, bool[,] map, Tuple<int, int> tuple, Stack<Tuple<int, int>> vacantToCheck)
         {
             bool vacantFound = false;
@@ -647,9 +670,21 @@ namespace Engine.Models.Factories
             }
         }
 
+        /// <summary>
+        /// Based on the possible directions
+        /// determines which entities should
+        /// not have collisions
+        /// </summary>
+        /// <param name="moveUpDown"></param>
+        /// <param name="moveLeftRight"></param>
+        /// <param name="possibleXCoords"></param>
+        /// <param name="possibleYCoords"></param>
+        /// <param name="tuple"></param>
+        /// <param name="map"></param>
+        /// <param name="vacantToCheck"></param>
         private static void ProcessNonCollisionIndexDirection(bool moveUpDown, bool moveLeftRight, 
-            List<int> possibleXCoords, List<int> possibleYCoords, 
-            Tuple<int, int> tuple, bool[,] map, Stack<Tuple<int, int>> vacantToCheck)
+            List<int> possibleXCoords, List<int> possibleYCoords, Tuple<int, int> tuple, bool[,] map, 
+            Stack<Tuple<int, int>> vacantToCheck)
         {
             if (moveLeftRight)
             {
@@ -661,6 +696,13 @@ namespace Engine.Models.Factories
             }
         }
 
+        /// <summary>
+        /// Determines which surrounding
+        /// entities should be non-collision ones
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="vacantToCheck"></param>
+        /// <param name="tuple"></param>
         private static void ProcessNonCollisionIndex(bool[,] map, Stack<Tuple<int, int>> vacantToCheck, Tuple<int, int> tuple)
         {
             bool canGoLeft = tuple.Item2 > 2;
@@ -686,6 +728,13 @@ namespace Engine.Models.Factories
             ProcessNonCollisionIndexDirection(moveUpDown, moveLeftRight, possibleXCoords, possibleYCoords, tuple, map, vacantToCheck);
         }
 
+        /// <summary>
+        /// Used to create walkable paths from
+        /// one non-collision place to another
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="vacantToCheck"></param>
+        /// <param name="visitedIndexes"></param>
         private static void ProcessNonCollisionIndexes(bool[,] map, Stack<Tuple<int, int>> vacantToCheck, List<Tuple<int, int>> visitedIndexes)
         {
             while (vacantToCheck.Count > 0)
