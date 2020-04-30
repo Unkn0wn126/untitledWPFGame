@@ -1,7 +1,6 @@
 ﻿using Engine.Models.Components.RigidBody;
 using Engine.Models.Scenes;
 using System;
-using System.Diagnostics;
 using TimeUtils;
 
 namespace Engine.Models.Components.Script.AIState
@@ -16,6 +15,11 @@ namespace Engine.Models.Components.Script.AIState
         Walking,
         Following
     }
+
+    /// <summary>
+    /// Used to process the desired
+    /// map AI behavior
+    /// </summary>
     public class MapAIStateMachine
     {
         private readonly float _baseVelocity;
@@ -41,11 +45,13 @@ namespace Engine.Models.Components.Script.AIState
         private int _direction;
 
         private int _waitTime;
-        public uint Owner { get; set; }
-        public uint Target { get; set; }
+
         private MapAIState _state;
 
         private ITransformComponent _targetTransform;
+
+        public uint Owner { get; set; }
+        public uint Target { get; set; }
 
         public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, 
             ITransformComponent ownerTransform, ICollisionComponent ownerCollision, float baseVelocity, 
@@ -73,6 +79,11 @@ namespace Engine.Models.Components.Script.AIState
             _state = MapAIState.Walking;
         }
 
+        /// <summary>
+        /// Sets the current state to "follow the entity"
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="targetTransform"></param>
         public void SetStateToFollow(uint target, ITransformComponent targetTransform)
         {
             Target = target;
@@ -80,11 +91,19 @@ namespace Engine.Models.Components.Script.AIState
             _state = MapAIState.Following;
         }
 
+        /// <summary>
+        /// Sets the current state to "minding my own business"
+        /// i. e. walk around
+        /// </summary>
         public void SetStateToWalk()
         {
             _state = MapAIState.Walking;
         }
 
+        /// <summary>
+        /// Takes an action based on the
+        /// current inner state
+        /// </summary>
         public void ProcessState()
         {
             if (_state == MapAIState.Walking)
@@ -97,6 +116,10 @@ namespace Engine.Models.Components.Script.AIState
             }
         }
 
+        /// <summary>
+        /// Makes the owner entity move towards
+        /// the target entity
+        /// </summary>
         private void FollowTarget()
         {
             float diffX = _ownerTransform.Position.X - _targetTransform.Position.X;
@@ -121,27 +144,43 @@ namespace Engine.Models.Components.Script.AIState
             }
         }
 
+        /// <summary>
+        /// Recalculates the direction of
+        /// the owner entity based on
+        /// the current collisions
+        /// </summary>
+        private void RecalculateOnCollision()
+        {
+            foreach (var item in _ownerCollision.CollidingWith)
+            {
+                ICollisionComponent current = _context.EntityManager.GetComponentOfType<ICollisionComponent>(item);
+                if (current.IsSolid && !current.IsDynamic)
+                {
+                    int originalDirection = _direction;
+                    while (_direction == originalDirection)
+                    {
+                        _direction = _random.Next(6);
+                    }
+
+                    _timer = 0;
+                    _waitTime = _random.Next(10);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Randomly chooses a direction
+        /// and then makes the entity go
+        /// in that direction for a given
+        /// period of time
+        /// </summary>
         private void WalkAround()
         {
             _timer += _gameTime.DeltaTimeInSeconds;
 
             if (_ownerCollision.CollidingWith.Count > 0)
             {
-                foreach (var item in _ownerCollision.CollidingWith)
-                {
-                    ICollisionComponent current = _context.EntityManager.GetComponentOfType<ICollisionComponent>(item);
-                    if (current.IsSolid && !current.IsDynamic)
-                    {
-                        int originalDirection = _direction;
-                        while (_direction == originalDirection)
-                        {
-                            _direction = _random.Next(6);
-                        }
-
-                        _timer = 0;
-                        _waitTime = _random.Next(10);
-                    }
-                }
+                RecalculateOnCollision();
             }
 
             if (_timer >= _waitTime)

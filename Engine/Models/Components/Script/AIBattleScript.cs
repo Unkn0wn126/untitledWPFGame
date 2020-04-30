@@ -1,20 +1,25 @@
 ﻿using Engine.Models.Components.Script.BattleState;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using TimeUtils;
 
 namespace Engine.Models.Components.Script
 {
+    /// <summary>
+    /// A script component used to
+    /// control the AI behavior
+    /// during the battle
+    /// </summary>
     public class AIBattleScript : IScriptComponent
     {
         private readonly BattleStateMachine _ownerState;
-        private GameTime _gameTime;
+        private readonly GameTime _gameTime;
         private readonly Random _rnd;
+        private readonly List<int> _possibleMovements;
+
         private bool _strategySet;
         private float _timeElapsed;
 
-        private List<int> _possibleMovements;
         public AIBattleScript(BattleStateMachine ownerState, GameTime gameTime)
         {
             _rnd = new Random();
@@ -30,17 +35,13 @@ namespace Engine.Models.Components.Script
             {
                 int initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
                 if (_ownerState.IsCloseToDeath() && _rnd.Next(101) <= 25)
-                {
                     initialAction = (int)MovementType.Heal;
-                }
 
                 while (!IsMovementValid((MovementType)initialAction))
                 {
                     initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
                     if ((MovementType)initialAction == MovementType.None && !_ownerState.IsCloseToExhaustion())
-                    {
                         initialAction = _possibleMovements[_rnd.Next(_possibleMovements.Count)];
-                    }
                 }
 
                 _ownerState.MovementType = (MovementType)initialAction;
@@ -49,10 +50,18 @@ namespace Engine.Models.Components.Script
                 _strategySet = true;
             }
             else
-            {
                 _timeElapsed += _gameTime.DeltaTimeInSeconds;
-            }
 
+            CheckTheThrillTimer();
+        }
+
+        /// <summary>
+        /// Checks if the time has come
+        /// to come out with the action.
+        /// Used for dramatic purposes.
+        /// </summary>
+        private void CheckTheThrillTimer()
+        {
             if (_timeElapsed >= 1)
             {
                 _strategySet = false;
@@ -61,6 +70,12 @@ namespace Engine.Models.Components.Script
             }
         }
 
+        /// <summary>
+        /// Checks if the chosen movement is valid
+        /// under the current circumstances
+        /// </summary>
+        /// <param name="movementType"></param>
+        /// <returns></returns>
         private bool IsMovementValid(MovementType movementType)
         {
             if (movementType == MovementType.Attack)
@@ -75,6 +90,12 @@ namespace Engine.Models.Components.Script
             return true;
         }
 
+        /// <summary>
+        /// Sets the type of the attack
+        /// int the corresponding
+        /// battle state machine
+        /// </summary>
+        /// <param name="direction"></param>
         private void SetAttackType(AttackDirection direction)
         {
             if (direction == AttackDirection.None)
@@ -88,6 +109,12 @@ namespace Engine.Models.Components.Script
             }
         }
 
+        /// <summary>
+        /// Sets the direction of the attack
+        /// in the corresponding battle
+        /// state machine
+        /// </summary>
+        /// <param name="movementType"></param>
         private void SetAttackDirection(MovementType movementType)
         {
             if (movementType == MovementType.Heal)

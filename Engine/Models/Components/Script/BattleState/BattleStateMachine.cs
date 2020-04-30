@@ -34,17 +34,21 @@ namespace Engine.Models.Components.Script.BattleState
         Attack,
         Heal
     }
+
+    /// <summary>
+    /// Used to process the desired
+    /// battle behavior
+    /// </summary>
     public class BattleStateMachine
     {
+        private readonly Random _rnd;
+        private ILifeComponent Owner { get; set; }
+
         public bool IsOnTurn { get; set; }
         public bool TurnDecided { get; set; }
         public AttackType AttackType { get; set; }
         public AttackDirection AttackDirection { get; set; }
         public MovementType MovementType { get; set; }
-
-        private ILifeComponent Owner { get; set; }
-
-        private readonly Random _rnd;
 
         public BattleStateMachine(ILifeComponent owner)
         {
