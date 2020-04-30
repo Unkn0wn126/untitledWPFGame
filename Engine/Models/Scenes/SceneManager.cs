@@ -16,24 +16,23 @@ namespace Engine.Models.Scenes
 {
     public class SceneManager : ISceneManager
     {
+        private readonly GameInput _gameInput;
+        private readonly GameTime _gameTime;
+
+        private uint _enemyEntityToRemove;
+        private bool _removeEnemyEntity;
+        private bool _alreadInBattle;
+
+        private IScene _returnWorldScene;
         public IScene CurrentScene { get; set; }
+        public int CurrentIndex { get; set; }
         public List<byte[]> MetaScenes { get; set; }
-        private GameInput _gameInput;
-        private GameTime _gameTime;
+        public BattleSceneMediator BattleSceneMediator { get; set; }
 
         public event SceneChangeStarted SceneChangeStarted;
         public event SceneChangeFinished SceneChangeFinished;
         public event GameEnd GameWon;
         public event GameEnd GameLost;
-
-        private IScene _returnWorldScene;
-
-        public int CurrentIndex { get; set; }
-        public BattleSceneMediator BattleSceneMediator { get; set; }
-
-        private uint _enemyEntityToRemove;
-        private bool _removeEnemyEntity;
-        private bool _alreadInBattle;
 
         public SceneManager(GameInput gameInput, GameTime gameTime)
         {
@@ -72,11 +71,6 @@ namespace Engine.Models.Scenes
             CurrentIndex = 0;
         }
 
-        /// <summary>
-        /// Serializes the current state
-        /// of the game
-        /// </summary>
-        /// <returns></returns>
         public List<byte[]> GetScenesToSave()
         {
             byte[] currentScene;
@@ -90,10 +84,6 @@ namespace Engine.Models.Scenes
             return MetaScenes;
         }
 
-        /// <summary>
-        /// Basically loads a new game
-        /// </summary>
-        /// <param name="newScenes"></param>
         public void UpdateScenes(List<byte[]> newScenes, int currentIndex)
         {
             CurrentIndex = currentIndex;
@@ -141,6 +131,15 @@ namespace Engine.Models.Scenes
             return current;
         }
 
+        /// <summary>
+        /// Takes note of the id of the entity
+        /// to remove whe fight successful.
+        /// Also takes the life component
+        /// of affected entities and
+        /// passes them when creating
+        /// the corresponding battle scene.
+        /// </summary>
+        /// <param name="enemy"></param>
         private void PrepareBattleScene(uint enemy)
         {
             _enemyEntityToRemove = enemy;
@@ -158,9 +157,14 @@ namespace Engine.Models.Scenes
                 _alreadInBattle = true;
                 SceneChangeStarted.Invoke();
                 ISpatialIndex grid = new Grid(2, 2, 2);
-                IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height), new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
-                uint playerID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
-                uint enemyID = scene.EntityManager.AddEntity(new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+                IScene scene = new GeneralScene(new Camera(CurrentScene.SceneCamera.Width, CurrentScene.SceneCamera.Height),
+                    new EntityManagers.EntityManager(grid), grid, SceneType.Battle);
+
+                uint playerID = scene.EntityManager.AddEntity(
+                    new TransformComponent(new System.Numerics.Vector2(0, 0), 1, 1, new System.Numerics.Vector2(0, 0), 1));
+
+                uint enemyID = scene.EntityManager.AddEntity(
+                    new TransformComponent(new System.Numerics.Vector2(0, 1), 1, 1, new System.Numerics.Vector2(0, 0), 1));
                 uint battleManager = scene.EntityManager.AddEntity();
 
                 IGraphicsComponent playerAvatar = new GraphicsComponent(ResourceManagers.Images.ImgName.Player);
@@ -174,9 +178,14 @@ namespace Engine.Models.Scenes
 
                 BattleStateMachine enemyBattleSceneState = new BattleStateMachine(enemy);
                 BattleStateMachine playerBattleSceneState = new BattleStateMachine(player);
+
                 UpdateBattleSceneMediator(playerAvatar, enemyAvatar, enemy, player, playerBattleSceneState);
+
                 scene.EntityManager.AddComponentToEntity<IScriptComponent>(enemyID, new AIBattleScript(enemyBattleSceneState, _gameTime));
-                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, new GameEnd(EndGame), new GameEnd(LoadNextScene), BattleSceneMediator.MessageProcessor));
+
+                scene.EntityManager.AddComponentToEntity<IScriptComponent>(battleManager, 
+                    new HandleBattleScript(player, enemy, playerBattleSceneState, enemyBattleSceneState, 
+                    new GameEnd(EndGame), new GameEnd(LoadNextScene), BattleSceneMediator.MessageProcessor));
 
                 scene.PlayerEntity = playerID;
 
@@ -187,13 +196,27 @@ namespace Engine.Models.Scenes
             }
         }
 
+        /// <summary>
+        /// Invokes the action
+        /// bound to happen at game over
+        /// </summary>
         private void EndGame()
         {
             SceneChangeStarted.Invoke();
             GameLost.Invoke();
         }
 
-        private void UpdateBattleSceneMediator(IGraphicsComponent playerAvatar, IGraphicsComponent enemyAvatar, ILifeComponent enemyLife, ILifeComponent playerLife, BattleStateMachine playerBattleState)
+        /// <summary>
+        /// Updates the state of the battle scene mediator
+        /// so the GUI can update the information displayed
+        /// </summary>
+        /// <param name="playerAvatar"></param>
+        /// <param name="enemyAvatar"></param>
+        /// <param name="enemyLife"></param>
+        /// <param name="playerLife"></param>
+        /// <param name="playerBattleState"></param>
+        private void UpdateBattleSceneMediator(IGraphicsComponent playerAvatar, IGraphicsComponent enemyAvatar, 
+            ILifeComponent enemyLife, ILifeComponent playerLife, BattleStateMachine playerBattleState)
         {
             BattleSceneMediator.PlayerAvatar = playerAvatar;
             BattleSceneMediator.EnemyAvatar = enemyAvatar;
@@ -202,6 +225,10 @@ namespace Engine.Models.Scenes
             BattleSceneMediator.PlayerBattleState = playerBattleState;
         }
 
+        /// <summary>
+        /// Loads back the world after
+        /// being victorious in a battle
+        /// </summary>
         private void LoadBackWorld()
         {
             SceneChangeStarted.Invoke();
@@ -218,6 +245,13 @@ namespace Engine.Models.Scenes
             SceneChangeFinished.Invoke();
         }
 
+        /// <summary>
+        /// Updates the player stats of a loaded
+        /// scene according to the ones in the
+        /// curren scene.
+        /// </summary>
+        /// <param name="oldStats"></param>
+        /// <param name="newStats"></param>
         private void UpdatePlayerStats(ILifeComponent oldStats, ILifeComponent newStats)
         {
             oldStats.IsPlayer = newStats.IsPlayer;
@@ -240,9 +274,6 @@ namespace Engine.Models.Scenes
             oldStats.NextLevelXP = newStats.NextLevelXP;
         }
 
-        /// <summary>
-        /// Loads the next scene in the list
-        /// </summary>
         public void LoadNextScene()
         {
             if (CurrentScene?.SceneType == SceneType.Battle)
@@ -264,7 +295,9 @@ namespace Engine.Models.Scenes
             {
                 currentPlayer = CurrentScene.EntityManager.GetComponentOfType<ILifeComponent>(CurrentScene.PlayerEntity);
             }
-            CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, new Camera(800, 600), _gameInput, _gameTime, currentPlayer, LoadNextScene, new BattleInitialization(PrepareBattleScene));
+            CurrentScene = SceneFactory.GenerateSceneFromMeta(searched, 
+                new Camera(800, 600), _gameInput, _gameTime, currentPlayer, LoadNextScene, new BattleInitialization(PrepareBattleScene));
+
             CurrentScene.SceneCamera.UpdateFocusPoint(CurrentScene.EntityManager.GetComponentOfType<ITransformComponent>(CurrentScene.PlayerEntity));
             SceneChangeFinished.Invoke();
         }

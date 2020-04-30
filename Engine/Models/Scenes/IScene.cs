@@ -6,6 +6,11 @@ using Engine.Models.Factories.Scenes;
 namespace Engine.Models.Scenes
 {
     public delegate void SceneChange();
+
+    /// <summary>
+    /// A container for entity manager
+    /// basically a location with its own context
+    /// </summary>
     public interface IScene
     {
         SceneType SceneType { get; set; }
