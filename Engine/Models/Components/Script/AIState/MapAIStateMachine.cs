@@ -6,6 +6,11 @@ using TimeUtils;
 
 namespace Engine.Models.Components.Script.AIState
 {
+    /// <summary>
+    /// Used to represent the
+    /// states of the AI on
+    /// the world map
+    /// </summary>
     public enum MapAIState
     {
         Walking,
@@ -13,18 +18,25 @@ namespace Engine.Models.Components.Script.AIState
     }
     public class MapAIStateMachine
     {
-        private float _baseVelocity;
+        private readonly float _baseVelocity;
 
-        private float _baseForceX;
-        private float _baseForceY;
+        private readonly float _baseForceX;
+        private readonly float _baseForceY;
 
-        private GameTime _gameTime;
+        private readonly IScene _context;
+
+        private readonly Random _random;
+
+        private readonly IRigidBodyComponent _ownerRigidBody;
+        private readonly ICollisionComponent _ownerCollision;
+
+        private readonly ITransformComponent _ownerTransform;
+
+        private readonly BattleInitialization _battleInitialize;
+
+        private readonly GameTime _gameTime;
 
         private float _timer;
-
-        private IScene _context;
-
-        private Random _random;
 
         private int _direction;
 
@@ -33,15 +45,11 @@ namespace Engine.Models.Components.Script.AIState
         public uint Target { get; set; }
         private MapAIState _state;
 
-        private IRigidBodyComponent _ownerRigidBody;
-        private ICollisionComponent _ownerCollision;
-
-        private ITransformComponent _ownerTransform;
         private ITransformComponent _targetTransform;
 
-        private BattleInitialization _battleInitialize;
-
-        public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, ITransformComponent ownerTransform, ICollisionComponent ownerCollision, float baseVelocity, BattleInitialization battleInitialize)
+        public MapAIStateMachine(GameTime gameTime, IScene context, uint player, IRigidBodyComponent rigidBody, 
+            ITransformComponent ownerTransform, ICollisionComponent ownerCollision, float baseVelocity, 
+            BattleInitialization battleInitialize)
         {
             _battleInitialize = battleInitialize;
             _context = context;
