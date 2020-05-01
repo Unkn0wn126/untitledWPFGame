@@ -10,12 +10,14 @@ namespace WPFGame.UI.MainMenu.SaveSaveSubMenu
     /// </summary>
     public partial class SaveSaveMenu : UserControl
     {
-        private ProcessMenuBackButtonClick _backButtonAction;
-        private Uri _saveFolder;
-        ProcessSaveActionButtonClick _saveAction;
+        private readonly ProcessMenuBackButtonClick _backButtonAction;
+        private readonly Uri _saveFolder;
+        readonly ProcessSaveActionButtonClick _saveAction;
 
         private Uri _currentFilePath;
-        public SaveSaveMenu(ProcessMenuBackButtonClick backButtonAction, ProcessSaveActionButtonClick saveAction, Uri saveFolder)
+
+        public SaveSaveMenu(ProcessMenuBackButtonClick backButtonAction, 
+            ProcessSaveActionButtonClick saveAction, Uri saveFolder)
         {
             InitializeComponent();
                         OverWriteBtn.IsEnabled = SaveListView.SelectedItem != null;
@@ -26,6 +28,11 @@ namespace WPFGame.UI.MainMenu.SaveSaveSubMenu
             UpdateSaveList();
         }
 
+        /// <summary>
+        /// Updates the save list
+        /// based on the contents
+        /// of the save folder
+        /// </summary>
         public void UpdateSaveList()
         {
             string[] filePaths = Directory.GetFiles(_saveFolder.ToString(), "*.save",

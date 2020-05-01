@@ -10,11 +10,12 @@ namespace WPFGame.UI.MainMenu.LoadSaveSubMenu
     /// </summary>
     public partial class LoadSaveMenu : UserControl
     {
-        private Uri _saveFolder;
-        private ProcessMenuBackButtonClick _backButtonAction;
-        private ProcessSaveActionButtonClick _loadAction;
+        private readonly Uri _saveFolder;
+        private readonly ProcessMenuBackButtonClick _backButtonAction;
+        private readonly ProcessSaveActionButtonClick _loadAction;
 
         private Uri _currentFilePath;
+
         public LoadSaveMenu(ProcessMenuBackButtonClick backButtonAction, ProcessSaveActionButtonClick loadAction, Uri savesPath)
         {
             InitializeComponent();
@@ -25,6 +26,11 @@ namespace WPFGame.UI.MainMenu.LoadSaveSubMenu
             UpdateSaveList();
         }
 
+        /// <summary>
+        /// Updates the save file list
+        /// based on the contents of
+        /// the saves folder
+        /// </summary>
         public void UpdateSaveList()
         {
             string[] filePaths = Directory.GetFiles(_saveFolder.ToString(), "*.save",

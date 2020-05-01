@@ -9,13 +9,14 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
     /// </summary>
     public partial class GraphicsMenu : UserControl
     {
-        private ProcessMenuBackButtonClick _cancelAction;
-        private ProcessSettingsApplyButtonClick _applyAction;
+        private readonly ProcessMenuBackButtonClick _cancelAction;
+        private readonly ProcessSettingsApplyButtonClick _applyAction;
+        private readonly List<ConfigResolution> _resolutions;
 
         private Configuration _currentConfiguration;
 
-        private List<ConfigResolution> _resolutions;
-        public GraphicsMenu(ProcessMenuBackButtonClick cancelAction, ProcessSettingsApplyButtonClick applyAction, Configuration originalConfiguration)
+        public GraphicsMenu(ProcessMenuBackButtonClick cancelAction, 
+            ProcessSettingsApplyButtonClick applyAction, Configuration originalConfiguration)
         {
             InitializeComponent();
             _cancelAction = cancelAction;
@@ -27,6 +28,10 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
             ResolutionsContainOption(originalConfiguration.Resolution);
         }
 
+        /// <summary>
+        /// Updates the original game configuration
+        /// </summary>
+        /// <param name="originalConfiguration"></param>
         public void UpdateOriginalConfiguration(Configuration originalConfiguration)
         {
             _currentConfiguration = new Configuration(originalConfiguration);
@@ -34,6 +39,11 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
             ResolutionsContainOption(_currentConfiguration.Resolution);
         }
 
+        /// <summary>
+        /// Checks if the resolutions list contains
+        /// the given resolution from the configuration provided
+        /// </summary>
+        /// <param name="resolution"></param>
         private void ResolutionsContainOption(ConfigResolution resolution)
         {
             foreach (var item in _resolutions)
@@ -51,6 +61,9 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
             ResolutionCB.SelectedItem = resolution;
         }
 
+        /// <summary>
+        /// Initializes combobox for resolution selection
+        /// </summary>
         private void InitializeResolutionCombobox()
         {
             _resolutions.Add(new ConfigResolution { Width = 640, Height = 480 });
@@ -60,13 +73,14 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Graphics
             ResolutionCB.ItemsSource = _resolutions;
         }
 
+        /// <summary>
+        /// Initializes checkboxes for fullscreen and window decoration
+        /// </summary>
         private void InitializeCheckBoxes()
         {
             WindowModeCheckBox.IsChecked = _currentConfiguration.WindowState == 1;
             WindowStyleCheckBox.IsChecked = _currentConfiguration.WindowStyle == 0;
         }
-
-        // TODO: Bind properties of settings with the configuration
 
         private void OnApplyClick(object sender, RoutedEventArgs e)
         {

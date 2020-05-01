@@ -1,16 +1,5 @@
 ﻿using Engine.Models.Components.Life;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WPFGame.UI.BattleScreen.LifeStats
 {
@@ -24,6 +13,11 @@ namespace WPFGame.UI.BattleScreen.LifeStats
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Updates the state of
+        /// the stats to display
+        /// </summary>
+        /// <param name="entityStats"></param>
         public void UpdateStats(ILifeComponent entityStats)
         {
             if (entityStats != null)
@@ -42,8 +36,22 @@ namespace WPFGame.UI.BattleScreen.LifeStats
             }
         }
 
+        /// <summary>
+        /// Gets the percental value
+        /// in relation to the max value
+        /// </summary>
+        /// <param name="whole"></param>
+        /// <param name="part"></param>
+        /// <returns></returns>
         private float GetPercentalValue(int whole, int part) => (float) part / whole * 100;
 
+        /// <summary>
+        /// Helper method to convert
+        /// enum values to a more
+        /// user friendly representation
+        /// </summary>
+        /// <param name="race"></param>
+        /// <returns></returns>
         private string GetNameOfRace(Race race)
         {
             if (race == Race.Human)
@@ -62,6 +70,13 @@ namespace WPFGame.UI.BattleScreen.LifeStats
             return "Undefined";
         }
 
+        /// <summary>
+        /// Helper method to convert
+        /// enum values to a more
+        /// user friendly representation
+        /// </summary>
+        /// <param name="gender"></param>
+        /// <returns></returns>
         private string GetNameOfGender(Gender gender)
         {
             if (gender == Gender.Male)
@@ -76,6 +91,13 @@ namespace WPFGame.UI.BattleScreen.LifeStats
             return "Battle helicopter";
         }
 
+        /// <summary>
+        /// Helper method to convert
+        /// enum values to a more
+        /// user friendly representation
+        /// </summary>
+        /// <param name="battleClass"></param>
+        /// <returns></returns>
         private string GetNameOfBattleClass(BattleClass battleClass)
         {
             if (battleClass == BattleClass.Swordsman)

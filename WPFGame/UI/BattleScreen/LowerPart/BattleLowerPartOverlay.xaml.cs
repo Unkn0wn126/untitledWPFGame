@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
 namespace WPFGame.UI.BattleScreen.LowerPart
 {
@@ -23,6 +12,11 @@ namespace WPFGame.UI.BattleScreen.LowerPart
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Adds the given message
+        /// to the battle message log
+        /// </summary>
+        /// <param name="message"></param>
         public void UpdateLogTextBox(string message)
         {
             LogTextBox.Text += message;

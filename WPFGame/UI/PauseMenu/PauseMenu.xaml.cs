@@ -15,14 +15,16 @@ namespace WPFGame.UI.PauseMenu
     /// </summary>
     public partial class PauseMenu : UserControl
     {
+        private readonly SettingsMenu _settingsMenu;
+        private readonly GraphicsMenu _graphicsMenu;
+        private readonly ControlsMenu _controlsMenu;
+        private readonly LoadSaveMenu _loadSaveMenu;
+        private readonly SaveSaveMenu _saveSaveMenu;
+
         private DefaultPauseMenu _defaultMenu;
-        private SettingsMenu _settingsMenu;
-        private GraphicsMenu _graphicsMenu;
-        private ControlsMenu _controlsMenu;
-        private LoadSaveMenu _loadSaveMenu;
-        private SaveSaveMenu _saveSaveMenu;
 
         private Configuration _currentConfig;
+
         public PauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, 
             ProcessMenuButtonClick quitGameAction, ProcessSettingsApplyButtonClick settingsApplyAction, 
             Configuration originalConfiguration, ProcessSaveActionButtonClick loadSaveAction, 
@@ -122,7 +124,9 @@ namespace WPFGame.UI.PauseMenu
             _saveSaveMenu.UpdateSaveList();
         }
 
-
+        /// <summary>
+        /// Loads the controls menu
+        /// </summary>
         private void LoadControlsMenu()
         {
             _controlsMenu.UpdateOriginalConfiguration(_currentConfig);
@@ -134,6 +138,9 @@ namespace WPFGame.UI.PauseMenu
             _controlsMenu.SetValue(Grid.ColumnSpanProperty, 3);
         }
 
+        /// <summary>
+        /// Loads the graphics menu
+        /// </summary>
         private void LoadGraphicsMenu()
         {
             _graphicsMenu.UpdateOriginalConfiguration(_currentConfig);
@@ -145,6 +152,9 @@ namespace WPFGame.UI.PauseMenu
             _graphicsMenu.SetValue(Grid.ColumnSpanProperty, 3);
         }
 
+        /// <summary>
+        /// Loads the settings menu
+        /// </summary>
         private void LoadSettingsMenu()
         {
             MainGrid.Children.Remove(_defaultMenu);
@@ -153,6 +163,10 @@ namespace WPFGame.UI.PauseMenu
             _settingsMenu.SetValue(Grid.ColumnProperty, 1);
         }
 
+        /// <summary>
+        /// Loads the previous menu
+        /// </summary>
+        /// <param name="userControl"></param>
         private void LoadPreviousMenu(UserControl userControl)
         {
             MainGrid.Children.Remove(userControl);

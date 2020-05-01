@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.BattleScreen.CommandConsole.MovementTypeMenu
@@ -19,9 +9,9 @@ namespace WPFGame.UI.BattleScreen.CommandConsole.MovementTypeMenu
     /// </summary>
     public partial class MovementTypeSubMenu : UserControl
     {
-        private ProcessMenuButtonClick _passButtonAction;
-        private ProcessMenuButtonClick _healButtonAction;
-        private ProcessMenuButtonClick _attackButtonAction;
+        private readonly ProcessMenuButtonClick _passButtonAction;
+        private readonly ProcessMenuButtonClick _healButtonAction;
+        private readonly ProcessMenuButtonClick _attackButtonAction;
 
         public MovementTypeSubMenu(ProcessMenuButtonClick passButtonAction, 
             ProcessMenuButtonClick healButtonAction, 

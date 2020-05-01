@@ -8,10 +8,12 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu
     /// </summary>
     public partial class SettingsMenu : UserControl
     {
-        private ProcessMenuBackButtonClick _processMenuBackButtonClick;
-        private ProcessMenuButtonClick _graphicsButtonAction;
-        private ProcessMenuButtonClick _controlstButtonAction;
-        public SettingsMenu(ProcessMenuBackButtonClick processMenuBackButtonClick, ProcessMenuButtonClick graphicsButtonAction, ProcessMenuButtonClick controlstButtonAction)
+        private readonly ProcessMenuBackButtonClick _processMenuBackButtonClick;
+        private readonly ProcessMenuButtonClick _graphicsButtonAction;
+        private readonly ProcessMenuButtonClick _controlstButtonAction;
+
+        public SettingsMenu(ProcessMenuBackButtonClick processMenuBackButtonClick, 
+            ProcessMenuButtonClick graphicsButtonAction, ProcessMenuButtonClick controlstButtonAction)
         {
             InitializeComponent();
             _processMenuBackButtonClick = processMenuBackButtonClick;

@@ -8,11 +8,12 @@ namespace WPFGame.UI.MainMenu.DefaultView
     /// </summary>
     public partial class DefaultMenu : UserControl
     {
-        private ProcessMenuButtonClick _processSettingsClick;
-        private ProcessMenuButtonClick _processQuitClick;
-        private ProcessMenuButtonClick _processNewGameClick;
-        private ProcessMenuButtonClick _loadGameAction;
-        public DefaultMenu(ProcessMenuButtonClick processSettingsClick, ProcessMenuButtonClick processQuitClick, ProcessMenuButtonClick processNewGameClick, ProcessMenuButtonClick loadGameAction)
+        private readonly ProcessMenuButtonClick _processSettingsClick;
+        private readonly ProcessMenuButtonClick _processQuitClick;
+        private readonly ProcessMenuButtonClick _processNewGameClick;
+        private readonly ProcessMenuButtonClick _loadGameAction;
+        public DefaultMenu(ProcessMenuButtonClick processSettingsClick, ProcessMenuButtonClick processQuitClick, 
+            ProcessMenuButtonClick processNewGameClick, ProcessMenuButtonClick loadGameAction)
         {
             InitializeComponent();
             _processSettingsClick = processSettingsClick;

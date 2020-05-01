@@ -1,16 +1,5 @@
 ﻿using Engine.Models.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.ResourceManagers;
 using WPFGame.UI.BattleScreen.CommandConsole;
 using WPFGame.UI.BattleScreen.LifeStats;
@@ -23,14 +12,16 @@ namespace WPFGame.UI.BattleScreen
     /// </summary>
     public partial class BattleScreenOverlay : UserControl
     {
+        private readonly ImageResourceManager _imageResourceManager;
+        private readonly BattleSceneMediator _battleSceneMediator;
+
         private BattleLowerPartOverlay _lowerPart;
         private LifeStatsOverlay _playerLifeStats;
         private LifeStatsOverlay _enemyLifeStats;
         private CommandConsoleOverlay _commandConsole;
-        private ImageResourceManager _imageResourceManager;
 
-        private BattleSceneMediator _battleSceneMediator;
-        public BattleScreenOverlay(BattleSceneMediator battleSceneMediator, ImageResourceManager imageResourceManager)
+        public BattleScreenOverlay(BattleSceneMediator battleSceneMediator, 
+            ImageResourceManager imageResourceManager)
         {
             InitializeComponent();
             _imageResourceManager = imageResourceManager;
@@ -47,12 +38,21 @@ namespace WPFGame.UI.BattleScreen
             UpdateState();
         }
 
+        /// <summary>
+        /// Updates the state of 
+        /// the battle screen
+        /// </summary>
         public void UpdateState()
         {
             UpdateAvatars();
             UpdateLifeStats();
         }
 
+        /// <summary>
+        /// Updates availability state
+        /// of certain battle actions
+        /// for the player
+        /// </summary>
         private void UpdateActionAvailability()
         {
             Dispatcher.Invoke(() =>
@@ -61,6 +61,10 @@ namespace WPFGame.UI.BattleScreen
             });
         }
 
+        /// <summary>
+        /// Updates the life stats of
+        /// the player and the enemy
+        /// </summary>
         private void UpdateLifeStats()
         {
             Dispatcher.Invoke(() => 
@@ -70,11 +74,17 @@ namespace WPFGame.UI.BattleScreen
             });
         }
 
+        /// <summary>
+        /// Clears the battle message log
+        /// </summary>
         public void ClearMessageLog()
         {
             _lowerPart.LogTextBox.Text = string.Empty;
         }
 
+        /// <summary>
+        /// Updates the battle avatars
+        /// </summary>
         private void UpdateAvatars()
         {
             Dispatcher.Invoke(() =>
@@ -87,6 +97,10 @@ namespace WPFGame.UI.BattleScreen
             });
         }
 
+        /// <summary>
+        /// Updates the battle log messages
+        /// </summary>
+        /// <param name="message"></param>
         private void UpdateLogMessages(string message)
         {
             Dispatcher.Invoke(() => 
@@ -98,6 +112,10 @@ namespace WPFGame.UI.BattleScreen
             UpdateActionAvailability();
         }
 
+        /// <summary>
+        /// Initializes the lower part
+        /// of the battle screen
+        /// </summary>
         private void InitializeLowerPart()
         {
             _lowerPart = new BattleLowerPartOverlay();
@@ -107,6 +125,9 @@ namespace WPFGame.UI.BattleScreen
             _lowerPart.SetValue(Grid.ColumnSpanProperty, 3);
         }
 
+        /// <summary>
+        /// Initializes the player life stats
+        /// </summary>
         private void InitializePlayerLifeStats()
         {
             _playerLifeStats = new LifeStatsOverlay();
@@ -115,6 +136,9 @@ namespace WPFGame.UI.BattleScreen
             _playerLifeStats.SetValue(Grid.ColumnProperty, 0);
         }
 
+        /// <summary>
+        /// Initializes the enemy life stats
+        /// </summary>
         private void InitializeEnemyLifeStats()
         {
             _enemyLifeStats = new LifeStatsOverlay();
@@ -123,6 +147,10 @@ namespace WPFGame.UI.BattleScreen
             _enemyLifeStats.SetValue(Grid.ColumnProperty, 2);
         }
 
+        /// <summary>
+        /// Initializes the battle
+        /// command options for the player
+        /// </summary>
         private void InitializeCommandConsole()
         {
             _commandConsole = new CommandConsoleOverlay(_battleSceneMediator);

@@ -13,38 +13,50 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
     /// </summary>
     public partial class CommandConsoleOverlay : UserControl
     {
-        private AttackTypeSubMenu _attackTypeSubMenu;
-        private AttackDirectionSubMenu _attackDirectionSubMenu;
-        private MovementTypeSubMenu _movementTypeSubMenu;
+        private readonly AttackTypeSubMenu _attackTypeSubMenu;
+        private readonly AttackDirectionSubMenu _attackDirectionSubMenu;
+        private readonly MovementTypeSubMenu _movementTypeSubMenu;
 
-        private BattleSceneMediator _battleSceneMediator;
+        private readonly BattleSceneMediator _battleSceneMediator;
 
         public CommandConsoleOverlay(BattleSceneMediator battleSceneMediator)
         {
             InitializeComponent();
             _battleSceneMediator = battleSceneMediator;
-            _attackDirectionSubMenu = new AttackDirectionSubMenu(new ProcessMenuButtonClick(SetAttackDirectionToHead), 
-                new ProcessMenuButtonClick(SetAttackDirectionToLeft), new ProcessMenuButtonClick(SetAttackDirectionToRight), 
-                new ProcessMenuButtonClick(SetAttackDirectionToBottom), new ProcessMenuBackButtonClick(LoadPreviousMenu));
+            _attackDirectionSubMenu = new AttackDirectionSubMenu(
+                new ProcessMenuButtonClick(SetAttackDirectionToHead), new ProcessMenuButtonClick(SetAttackDirectionToLeft), 
+                new ProcessMenuButtonClick(SetAttackDirectionToRight), new ProcessMenuButtonClick(SetAttackDirectionToBottom), 
+                new ProcessMenuBackButtonClick(LoadPreviousMenu));
 
             _movementTypeSubMenu = new MovementTypeSubMenu(new ProcessMenuButtonClick(SetMovementStateToPass), 
-                new ProcessMenuButtonClick(SetMovementStateToHeal), 
-                new ProcessMenuButtonClick(SetMovementStateToAttack));
+                new ProcessMenuButtonClick(SetMovementStateToHeal), new ProcessMenuButtonClick(SetMovementStateToAttack));
 
             _attackTypeSubMenu = new AttackTypeSubMenu(new ProcessMenuButtonClick(SetAttackTypeToNormal), 
-                new ProcessMenuButtonClick(SetAttackTypeToHeavy), 
-                new ProcessMenuBackButtonClick(LoadPreviousMenu));
+                new ProcessMenuButtonClick(SetAttackTypeToHeavy), new ProcessMenuBackButtonClick(LoadPreviousMenu));
 
             RestoreDefaultState();
         }
 
+        /// <summary>
+        /// Updates the available
+        /// battle actions based
+        /// on the current context
+        /// </summary>
         public void UpdateButtonAvailability()
         {
-            _movementTypeSubMenu.AttackButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn && _battleSceneMediator.PlayerBattleState.CanAttack();
-            _movementTypeSubMenu.HealButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn && _battleSceneMediator.PlayerBattleState.CanHeal();
+            _movementTypeSubMenu.AttackButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn &&
+                _battleSceneMediator.PlayerBattleState.CanAttack();
+
+            _movementTypeSubMenu.HealButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn && 
+                _battleSceneMediator.PlayerBattleState.CanHeal();
+
             _movementTypeSubMenu.PassButton.IsEnabled = _battleSceneMediator.PlayerBattleState.IsOnTurn;
         }
 
+        /// <summary>
+        /// Loads the previous menu
+        /// </summary>
+        /// <param name="control"></param>
         private void LoadPreviousMenu(UserControl control)
         {
             if (control == _attackDirectionSubMenu)
@@ -61,6 +73,9 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             RemoveComponent(control);
         }
 
+        /// <summary>
+        /// Sets the battle movement to pass
+        /// </summary>
         private void SetMovementStateToPass()
         {
             _battleSceneMediator.PlayerBattleState.MovementType = MovementType.None;
@@ -69,6 +84,9 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             _battleSceneMediator.PlayerBattleState.TurnDecided = true;
         }
 
+        /// <summary>
+        /// Sets the battle movement to heal
+        /// </summary>
         private void SetMovementStateToHeal()
         {
             _battleSceneMediator.PlayerBattleState.MovementType = MovementType.Heal;
@@ -77,6 +95,9 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             _battleSceneMediator.PlayerBattleState.TurnDecided = true;
         }
 
+        /// <summary>
+        /// Sets the battle movement to attack
+        /// </summary>
         private void SetMovementStateToAttack()
         {
             _battleSceneMediator.PlayerBattleState.MovementType = MovementType.Attack;
@@ -85,36 +106,61 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             AddComponent(_attackTypeSubMenu);
         }
 
+        /// <summary>
+        /// Sets the attack type to normal
+        /// </summary>
         private void SetAttackTypeToNormal()
         {
             ProcessAttackTypeMenu(AttackType.Normal);
         }
 
+        /// <summary>
+        /// Sets the attack type to heavy
+        /// </summary>
         private void SetAttackTypeToHeavy()
         {
             ProcessAttackTypeMenu(AttackType.Heavy);
         }
 
+        /// <summary>
+        /// Sets the attack direction to head
+        /// </summary>
         private void SetAttackDirectionToHead()
         {
             ProcessAttacktDirectionMenu(AttackDirection.Head);
         }
 
+        /// <summary>
+        /// Sets the attack direction to bottom
+        /// </summary>
         private void SetAttackDirectionToBottom()
         {
             ProcessAttacktDirectionMenu(AttackDirection.Bottom);
         }
 
+        /// <summary>
+        /// Sets the attack direction to left
+        /// </summary>
         private void SetAttackDirectionToLeft()
         {
             ProcessAttacktDirectionMenu(AttackDirection.Left);
         }
 
+        /// <summary>
+        /// Sets the attack direction to right
+        /// </summary>
         private void SetAttackDirectionToRight()
         {
             ProcessAttacktDirectionMenu(AttackDirection.Right);
         }
 
+        /// <summary>
+        /// Sets the attack direction to a given value,
+        /// informs the logic that the turn has been
+        /// decided and loads back the initial
+        /// movement type options menu
+        /// </summary>
+        /// <param name="direction"></param>
         private void ProcessAttacktDirectionMenu(AttackDirection direction)
         {
             SetAttackDirectionToValue(direction);
@@ -123,11 +169,20 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             AddComponent(_movementTypeSubMenu);
         }
 
+        /// <summary>
+        /// Sets the attack direction to a given value
+        /// </summary>
+        /// <param name="direction"></param>
         private void SetAttackDirectionToValue(AttackDirection direction)
         {
             _battleSceneMediator.PlayerBattleState.AttackDirection = direction;
         }
 
+        /// <summary>
+        /// Sets the attack type to a given value
+        /// and loads the attack direction options menu
+        /// </summary>
+        /// <param name="type"></param>
         private void ProcessAttackTypeMenu(AttackType type)
         {
             SetAttackTypeToValue(type);
@@ -135,11 +190,20 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             AddComponent(_attackDirectionSubMenu);
         }
 
+        /// <summary>
+        /// Sets the attack type to a given value
+        /// </summary>
+        /// <param name="type"></param>
         private void SetAttackTypeToValue(AttackType type)
         {
             _battleSceneMediator.PlayerBattleState.AttackType = type;
         }
 
+        /// <summary>
+        /// Helper method to remove a component
+        /// only if already present
+        /// </summary>
+        /// <param name="component"></param>
         private void RemoveComponent(UserControl component)
         {
             if (MainGrid.Children.Contains(component))
@@ -148,6 +212,11 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
             }
         }
 
+        /// <summary>
+        /// Helper method to add a component
+        /// only if not already present
+        /// </summary>
+        /// <param name="component"></param>
         private void AddComponent(UserControl component)
         {
             if (!MainGrid.Children.Contains(component))
@@ -157,6 +226,9 @@ namespace WPFGame.UI.BattleScreen.CommandConsole
 
         }
 
+        /// <summary>
+        /// Restores the default state of this menu
+        /// </summary>
         public void RestoreDefaultState()
         {
             RemoveComponent(_attackDirectionSubMenu);

@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.BattleScreen.CommandConsole.AttackTypeMenu
@@ -19,11 +9,12 @@ namespace WPFGame.UI.BattleScreen.CommandConsole.AttackTypeMenu
     /// </summary>
     public partial class AttackTypeSubMenu : UserControl
     {
-        private ProcessMenuButtonClick _lightAttackAction;
-        private ProcessMenuButtonClick _heavyAttackAction;
-        private ProcessMenuBackButtonClick _cancelAction;
+        private readonly ProcessMenuButtonClick _lightAttackAction;
+        private readonly ProcessMenuButtonClick _heavyAttackAction;
+        private readonly ProcessMenuBackButtonClick _cancelAction;
 
-        public AttackTypeSubMenu(ProcessMenuButtonClick lightAttackAction, ProcessMenuButtonClick heavyAttackAction, ProcessMenuBackButtonClick cancelAction)
+        public AttackTypeSubMenu(ProcessMenuButtonClick lightAttackAction, 
+            ProcessMenuButtonClick heavyAttackAction, ProcessMenuBackButtonClick cancelAction)
         {
             InitializeComponent();
             _lightAttackAction = lightAttackAction;

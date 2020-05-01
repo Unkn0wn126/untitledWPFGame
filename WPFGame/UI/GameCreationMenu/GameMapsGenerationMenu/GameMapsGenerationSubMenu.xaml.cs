@@ -9,10 +9,12 @@ namespace WPFGame.UI.GameCreationMenu.GameMapsGenerationMenu
     /// </summary>
     public partial class GameMapsGenerationSubMenu : UserControl
     {
-        private ProcessMenuButtonClick _cancelButtonAction;
-        private ProcessMenuButtonClick _acceptButtonAction;
+        private readonly ProcessMenuButtonClick _cancelButtonAction;
+        private readonly ProcessMenuButtonClick _acceptButtonAction;
         public GameGenerationInfo GameGenerationInfo { get; set; }
-        public GameMapsGenerationSubMenu(GameGenerationInfo gameGenerationInfo, ProcessMenuButtonClick acceptButtonAction,  ProcessMenuButtonClick cancelButtonAction)
+
+        public GameMapsGenerationSubMenu(GameGenerationInfo gameGenerationInfo, 
+            ProcessMenuButtonClick acceptButtonAction,  ProcessMenuButtonClick cancelButtonAction)
         {
             InitializeComponent();
             _acceptButtonAction = acceptButtonAction;

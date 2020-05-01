@@ -1,16 +1,8 @@
 ﻿using Engine.Models.Components.Life;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
@@ -20,10 +12,11 @@ namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
     /// </summary>
     public partial class CharacterCreationSubMenu : UserControl
     {
-        private ProcessMenuButtonClick _backButtonAction;
-        private ProcessMenuButtonClick _acceptButtonAction;
+        private readonly ProcessMenuButtonClick _backButtonAction;
+        private readonly ProcessMenuButtonClick _acceptButtonAction;
         public GameGenerationInfo GameGenerationInfo { get; set; }
-        public CharacterCreationSubMenu(GameGenerationInfo gameGenerationInfo, ProcessMenuButtonClick acceptButtonAction, ProcessMenuButtonClick cancelButtonAction)
+        public CharacterCreationSubMenu(GameGenerationInfo gameGenerationInfo, 
+            ProcessMenuButtonClick acceptButtonAction, ProcessMenuButtonClick cancelButtonAction)
         {
             InitializeComponent();
             _acceptButtonAction = acceptButtonAction;
@@ -35,6 +28,9 @@ namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
             InitializeBattleClassCombobox();
         }
 
+        /// <summary>
+        /// Initializes the gender combobox
+        /// </summary>
         private void InitializeGenderCombobox()
         {
             List<string> genderValues = new List<string>(Enum.GetNames(typeof(Gender)));
@@ -42,6 +38,9 @@ namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
             GenderCB.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Initializes the race combobox
+        /// </summary>
         private void InitializeRaceCombobox()
         {
             List<string> raceValues = new List<string>(Enum.GetNames(typeof(Race)));
@@ -49,6 +48,9 @@ namespace WPFGame.UI.GameCreationMenu.CharacterCreationMenu
             RaceCB.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Initializes the battle class combobox
+        /// </summary>
         private void InitializeBattleClassCombobox()
         {
             List<string> battleClassValues = new List<string>(Enum.GetNames(typeof(BattleClass)));

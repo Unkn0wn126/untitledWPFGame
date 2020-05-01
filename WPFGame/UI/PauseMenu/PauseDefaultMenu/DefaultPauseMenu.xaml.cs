@@ -9,12 +9,12 @@ namespace WPFGame.UI.PauseMenu.PauseDefaultMenu
     /// </summary>
     public partial class DefaultPauseMenu : UserControl
     {
-        private ProcessMenuButtonClick _resumeAction;
-        private ProcessMenuButtonClick _exitToMainAction;
-        private ProcessMenuButtonClick _loadGameAction;
-        private ProcessMenuButtonClick _saveGameAction;
-        private ProcessMenuButtonClick _settingsAction;
-        private ProcessMenuButtonClick _quitGameAction;
+        private readonly ProcessMenuButtonClick _resumeAction;
+        private readonly ProcessMenuButtonClick _exitToMainAction;
+        private readonly ProcessMenuButtonClick _loadGameAction;
+        private readonly ProcessMenuButtonClick _saveGameAction;
+        private readonly ProcessMenuButtonClick _settingsAction;
+        private readonly ProcessMenuButtonClick _quitGameAction;
         public DefaultPauseMenu(ProcessMenuButtonClick resumeAction, ProcessMenuButtonClick exitToMainAction, 
             ProcessMenuButtonClick quitGameAction, ProcessMenuButtonClick settingsAction, 
             ProcessMenuButtonClick loadGameAction, ProcessMenuButtonClick saveGameAction)

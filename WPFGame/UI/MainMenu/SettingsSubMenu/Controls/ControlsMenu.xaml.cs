@@ -11,14 +11,15 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
     /// </summary>
     public partial class ControlsMenu : UserControl
     {
-        private ProcessMenuBackButtonClick _cancelAction;
-        private ProcessSettingsApplyButtonClick _applyAction;
+        private readonly ProcessMenuBackButtonClick _cancelAction;
+        private readonly ProcessSettingsApplyButtonClick _applyAction;
+
+        private readonly List<Key> _possibleKeys;
 
         private Configuration _currentConfiguration;
 
-        private List<Key> _possibleKeys;
-
-        public ControlsMenu(ProcessMenuBackButtonClick cancelAction, ProcessSettingsApplyButtonClick applyAction, Configuration originalConfiguration)
+        public ControlsMenu(ProcessMenuBackButtonClick cancelAction, 
+            ProcessSettingsApplyButtonClick applyAction, Configuration originalConfiguration)
         {
             InitializeComponent();
             _cancelAction = cancelAction;
@@ -29,6 +30,11 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             UpdateSelectedItems(originalConfiguration);
         }
 
+        /// <summary>
+        /// Returns a list of possible 
+        /// keyboard key values
+        /// </summary>
+        /// <returns></returns>
         private List<Key> GetPossibleKeyValues()
         {
             List<Key> keys = new List<Key>();
@@ -41,6 +47,10 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             return keys;
         }
 
+        /// <summary>
+        /// Updates the key bindings in game configuration
+        /// </summary>
+        /// <param name="originalConfiguration"></param>
         public void UpdateSelectedItems(Configuration originalConfiguration)
         {
             _currentConfiguration = new Configuration(originalConfiguration);
@@ -55,6 +65,10 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             SpaceCB.SelectedItem = _currentConfiguration.Space;
         }
 
+        /// <summary>
+        /// Initializes input 
+        /// selection comboboxes
+        /// </summary>
         private void InitializeCBOptions()
         {
             UpCB.ItemsSource = _possibleKeys;
@@ -68,6 +82,10 @@ namespace WPFGame.UI.MainMenu.SettingsSubMenu.Controls
             SpaceCB.ItemsSource = _possibleKeys;
         }
 
+        /// <summary>
+        /// Updates the original game configuration
+        /// </summary>
+        /// <param name="originalConfiguration"></param>
         public void UpdateOriginalConfiguration(Configuration originalConfiguration)
         {
             _currentConfiguration = new Configuration(originalConfiguration);

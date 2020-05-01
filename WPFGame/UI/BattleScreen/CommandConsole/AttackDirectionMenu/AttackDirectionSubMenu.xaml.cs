@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFGame.UI.MainMenu;
 
 namespace WPFGame.UI.BattleScreen.CommandConsole.AttackDirectionMenu
@@ -19,11 +9,12 @@ namespace WPFGame.UI.BattleScreen.CommandConsole.AttackDirectionMenu
     /// </summary>
     public partial class AttackDirectionSubMenu : UserControl
     {
-        private ProcessMenuButtonClick _headAction;
-        private ProcessMenuButtonClick _leftAction;
-        private ProcessMenuButtonClick _rightAction;
-        private ProcessMenuButtonClick _bottomAction;
-        private ProcessMenuBackButtonClick _cancelAction;
+        private readonly ProcessMenuButtonClick _headAction;
+        private readonly ProcessMenuButtonClick _leftAction;
+        private readonly ProcessMenuButtonClick _rightAction;
+        private readonly ProcessMenuButtonClick _bottomAction;
+        private readonly ProcessMenuBackButtonClick _cancelAction;
+
         public AttackDirectionSubMenu(ProcessMenuButtonClick headAction, 
             ProcessMenuButtonClick leftAction, ProcessMenuButtonClick rightAction, 
             ProcessMenuButtonClick bottomAction, ProcessMenuBackButtonClick cancelAction)
