@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Models\Factories\Scenes\SceneFactory.cs~RFff6d994.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="..\..\..\..\..\2011-09 %2528září%2529\Projects\c#\WPFGame\Engine\Adapters\" />
   </ItemGroup>
 

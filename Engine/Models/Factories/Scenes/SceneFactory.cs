@@ -506,6 +506,17 @@ namespace Engine.Models.Factories
                 currentEntity.LifeComponent == null;
         }
 
+        /// <summary>
+        /// Creates a scene from a given meta scene
+        /// </summary>
+        /// <param name="metaScene"></param>
+        /// <param name="camera"></param>
+        /// <param name="gameInput"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="currentPlayer"></param>
+        /// <param name="sceneChange"></param>
+        /// <param name="battleInitialize"></param>
+        /// <returns></returns>
         public static IScene GenerateSceneFromMeta(MetaScene metaScene, ICamera camera, GameInput gameInput, 
             GameTime gameTime, ILifeComponent currentPlayer, SceneChange sceneChange, BattleInitialization battleInitialize)
         {
