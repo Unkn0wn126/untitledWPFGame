@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Resolution>
+    <Width>800</Width>
+    <Height>600</Height>
+  </Resolution>
+  <WindowStyle>0</WindowStyle>
+  <WindowState>0</WindowState>
+  <Up>W</Up>
+  <Down>S</Down>
+  <Left>A</Left>
+  <Right>D</Right>
+  <Escape>Escape</Escape>
+  <Action>E</Action>
+  <DetectiveMode>F</DetectiveMode>
+  <Back>B</Back>
+  <Space>Space</Space>
+</Configuration>

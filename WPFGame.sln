@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFGame", "WPFGame\WPFGame.csproj", "{771E7780-25BF-4DAB-A0D3-1CE3F577DD5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFGame", "WPFGame\WPFGame.csproj", "{771E7780-25BF-4DAB-A0D3-1CE3F577DD5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "Engine\Engine.csproj", "{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter", "Adapter\Adapter.csproj", "{34B9788C-B99F-43D0-B46E-FBED128AE94F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInputHandler", "GameInputHandler\GameInputHandler.csproj", "{3FDA6037-4E37-41BE-8D55-C433952B7340}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceManagers", "ResourceManagers\ResourceManagers.csproj", "{925379F6-E0BA-41EF-811B-EF678ACCBEDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeUtils", "TimeUtils\TimeUtils.csproj", "{B879344A-B98F-4998-8849-9ADFBE3D476A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +27,18 @@ Global
 		{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96ECC84C-B6A4-4FFE-85AC-54B49ADD6152}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34B9788C-B99F-43D0-B46E-FBED128AE94F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34B9788C-B99F-43D0-B46E-FBED128AE94F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34B9788C-B99F-43D0-B46E-FBED128AE94F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34B9788C-B99F-43D0-B46E-FBED128AE94F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FDA6037-4E37-41BE-8D55-C433952B7340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{925379F6-E0BA-41EF-811B-EF678ACCBEDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B879344A-B98F-4998-8849-9ADFBE3D476A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

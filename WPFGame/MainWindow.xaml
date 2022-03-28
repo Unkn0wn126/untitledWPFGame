@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFGame"
         mc:Ignorable="d"
-        Title="MainWindow" Width="800" Height="600" ResizeMode="NoResize"
-        KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
-    <Grid>
-        <Canvas x:Name="GameCanvas" Width="800" Height="600">
-            <Image x:Name="GameImage" Width="800" Height="600">
+        Title="MainWindow" ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Background="Black">
+    <Grid x:Name="GameGrid">
+        <Canvas x:Name="GameCanvas">
+            <Image x:Name="GameImage">
                 
             </Image>
         </Canvas>

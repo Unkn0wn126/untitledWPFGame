@@ -1,78 +1,137 @@
-﻿using Engine.Models.Components;
-using Engine.Models.GameObjects;
+﻿using Engine.Models.Factories.Scenes;
+using Engine.Models.GameStateMachine;
 using Engine.Models.Scenes;
-using System;
+using Engine.Processors;
+using GameInputHandler;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
+using TimeUtils;
 
 namespace Engine.ViewModels
 {
-    /// <summary>
-    /// Container of all the game objects, scenes, etc.
-    /// Keeps track of the context as a whole
-    /// </summary>
+
     public class Game : IGame
     {
-        private List<IScene> _scenes;
-        private IScene _currentScene;
+        private readonly List<IProcessor> _processors;
+        private readonly GameTime _gameTime;
+        private readonly GameInput _gameInputHandler;
 
-        private IGameComponent _playerMovement;
-        private IGameObject _player;
+        private bool _contextNeedsUpdate;
+        private IProcessor _graphicsProcessor;
 
-        private List<IGraphicsComponent> _graphicsComponents;
-        private List<IGameObject> _gameObjects;
+        public GameStateMachine State { get; set; }
+        public ISceneManager SceneManager { get; set; }
 
-        public IScene CurrentScene { get => _currentScene; set => _currentScene = value; }
-
-
-        public List<IGraphicsComponent> GraphicsComponents { get => _graphicsComponents; set => _graphicsComponents = value; }
-
-        public Game()
+        public Game(GameInput gameInputHandler, GameTime gameTime)
         {
-            GraphicsComponents = new List<IGraphicsComponent>();
+            _gameTime = gameTime;
+            _gameInputHandler = gameInputHandler;
+            _processors = new List<IProcessor>();
 
-            _playerMovement = new PlayerMovementComponent();
-            List<string> testList = new List<string> { "ground.png" };
-            _gameObjects = new List<IGameObject>();
-            IGraphicsComponent test = new GraphicsComponent(testList);
-            GraphicsComponents.Add(test);
-            _player = new LivingEntity(test, _playerMovement, 50, 50, new Vector2(0, 0), 10);
-            _scenes = new List<IScene>();
-
-
-            for (int i = 0; i < 100; i++)
+            State = new GameStateMachine
             {
-                for (int j = 0; j < 100; j++)
-                {
-                    IGraphicsComponent current = new GraphicsComponent(new List<string> { "ground.png" });
-                    current.Width = 50;
-                    current.Height = 50;
-                    Vector2 currentPos = current.Position;
-                    currentPos.X = i * 50;
-                    currentPos.Y = j * 50;
-                    current.Position = currentPos;
-                    GraphicsComponents.Add(current);
+                CurrentState = GameState.Loading // prevent update of logic while not ready
+            };
 
-                    _gameObjects.Add(new Ground(current, new Vector2(i * 50, j * 50), 50, 50));
-                }
-            }
-            _gameObjects.Add(_player);
+            SceneManager = new SceneManager(_gameInputHandler, _gameTime)
+            {
+                BattleSceneMediator = new BattleSceneMediator()
+            };
 
-            _scenes.Add(new GeneralScene(_gameObjects, _player));
-            _currentScene = _scenes[0];
+            SceneManager.SceneChangeStarted += SetStateToLoading;
+            SceneManager.SceneChangeFinished += InitializeContextUpdate;
         }
 
-        public void HandleUserInput(MovementState newState)
+        /// <summary>
+        /// Sets game state to loading
+        /// </summary>
+        private void SetStateToLoading()
         {
-            ((PlayerMovementComponent)_playerMovement).SetMovementState(newState);
+            State.CurrentState = GameState.Loading;
         }
 
-        // Create objects here? Through factories...
+        /// <summary>
+        /// Saves the information
+        /// that the context should update.
+        /// Used to not update context
+        /// directly via a delegate
+        /// to prevent several crashes.
+        /// </summary>
+        private void InitializeContextUpdate()
+        {
+            _contextNeedsUpdate = true;
+        }
+
+        /// <summary>
+        /// Sets game state to running
+        /// </summary>
+        private void SetStateToRunning()
+        {
+            UpdateProcessorContext();
+            _contextNeedsUpdate = false;
+
+            State.CurrentState = 
+                SceneManager.CurrentScene.SceneType == SceneType.General ? 
+                GameState.Running : GameState.Battle;
+        }
+
+        public void UpdateProcessorContext()
+        {
+            InitializeProcessors();
+            _graphicsProcessor.ChangeContext(SceneManager.CurrentScene);
+
+            foreach (IProcessor item in _processors)
+            {
+                item.ChangeContext(SceneManager.CurrentScene);
+            }
+        }
 
         public void Update()
         {
-            _currentScene.Update();
+            _gameTime.UpdateDeltaTime(); // keep track of elapsed time
+
+            if (_contextNeedsUpdate)
+            {
+                SetStateToRunning();
+            }
+            if (State.IsRunning())
+            {
+
+                SceneManager.CurrentScene.EntityManager.UpdateActiveEntities(SceneManager.CurrentScene.SceneCamera.FocusPoint);
+
+                foreach (var x in _processors)
+                {
+                    if (State.IsRunning())
+                        x.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+                }
+            }
+        }
+
+        public void UpdateGraphics()
+        {
+            _graphicsProcessor?.ProcessOneGameTick(_gameTime.DeltaTimeInMilliseconds);
+        }
+
+        /// <summary>
+        /// Initializes processors
+        /// </summary>
+        private void InitializeProcessors()
+        {
+            if (_graphicsProcessor == null)
+            {
+                _graphicsProcessor = new GraphicsProcessor(SceneManager.CurrentScene);
+            }
+            if (_processors.Count == 0)
+            {
+                _processors.Add(new CollisionProcessor(SceneManager.CurrentScene));
+                _processors.Add(new RigidBodyProcessor(SceneManager.CurrentScene));
+                _processors.Add(new ScriptProcessor(SceneManager.CurrentScene));
+            }
+        }
+
+        public void InitializeGame(List<byte[]> metaScenes, int currentIndex)
+        {
+            SceneManager.UpdateScenes(metaScenes, currentIndex);
+            UpdateProcessorContext();
         }
     }
 }

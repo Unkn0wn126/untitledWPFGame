@@ -1,38 +1,29 @@
-﻿using Engine.Models.Cameras;
-using Engine.Models.Components;
-using Engine.Models.GameObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Engine.Coordinates;
+using Engine.EntityManagers;
+using Engine.Models.Cameras;
+using Engine.Models.Factories.Scenes;
 
 namespace Engine.Models.Scenes
 {
-    /// <summary>
-    /// A container for game objects
-    /// basically a location with its own context
-    /// </summary>
     public class GeneralScene : IScene
     {
-        private List<IGameObject> _sceneElements;
-        private IGameObject _playerObject;
-        private ICamera _sceneCamera;
-        public List<IGameObject> SceneElements { get => _sceneElements; set => _sceneElements = value; }
-        public IGameObject PlayerObject { get => _playerObject; set => _playerObject = value; }
-        public ICamera SceneCamera { get => _sceneCamera; set => _sceneCamera = value; }
+        public SceneType SceneType { get; set; }
+        public IEntityManager EntityManager { get; set; }
+        public ICamera SceneCamera { get; set; }
+        public uint PlayerEntity { get; set; }
+        public int NumOfObjectsInCell { get; set; }
+        public int BaseObjectSize { get; set; }
+        public int NumOfEntitiesOnX { get; set; }
+        public int NumOfEntitiesOnY { get; set; }
+        public ISpatialIndex Coordinates { get; set; }
 
-        public GeneralScene(List<IGameObject> sceneElements, IGameObject playerObject)
+        public GeneralScene(ICamera camera, IEntityManager entityManager, ISpatialIndex coordinates, SceneType sceneType)
         {
-            SceneElements = sceneElements;
-            PlayerObject = playerObject;
-            SceneCamera = new Camera();
+            SceneType = sceneType;
+            EntityManager = entityManager;
+            SceneCamera = camera;
+            Coordinates = coordinates;
         }
 
-        public void Update()
-        {
-            foreach (var item in _sceneElements)
-            {
-                item.Update(this);
-            }
-        }
     }
 }

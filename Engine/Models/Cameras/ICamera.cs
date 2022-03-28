@@ -1,20 +1,47 @@
-﻿using Engine.Models.GameObjects;
-using Engine.Models.Scenes;
-using System;
+﻿using Engine.EntityManagers;
+using Engine.Models.Components;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 
 namespace Engine.Models.Cameras
 {
+    /// <summary>
+    /// Serves as a mediator between
+    /// logical positions and
+    /// the graphics engine
+    /// </summary>
     public interface ICamera
     {
-        public Vector2 Position { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
         public float XOffset { get; set; }
         public float YOffset { get; set; }
-        public List<IGameObject> VisibleObjects { get; set; }
-        public void UpdatePosition(IGameObject focusPoint, IScene context);
+        public ITransformComponent FocusPoint { get; set; }
+        public List<IGraphicsComponent> VisibleObjects { get; set; }
+        public List<ITransformComponent> VisibleTransforms { get; set; }
+
+        /// <summary>
+        /// Updates the size information
+        /// for this camera.
+        /// Used to keep 
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        void UpdateSize(float width, float height);
+
+        /// <summary>
+        /// Updates the point that
+        /// is in the middle of the rendered window
+        /// </summary>
+        /// <param name="focusPoint"></param>
+        public void UpdateFocusPoint(ITransformComponent focusPoint);
+
+        /// <summary>
+        /// Updates the position of a point that
+        /// is in the middle of the rendered window.
+        /// Based on this position also updates visible
+        /// entities and their positions.
+        /// </summary>
+        /// <param name="renderables"></param>
+        public void UpdatePosition(Dictionary<ITransformComponent, IGraphicsComponent> renderables);
     }
 }

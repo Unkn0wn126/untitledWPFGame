@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="WPFGame.UI.MainMenu.SettingsSubMenu.Controls.ControlsMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFGame.UI.MainMenu.SettingsSubMenu.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="White" Margin="10 10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <TextBlock 
+            Grid.Row="0" Grid.Column="1" 
+            VerticalAlignment="Center" HorizontalAlignment="Center"
+            FontSize="30">
+            Controls Settings Menu
+        </TextBlock>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0">
+                <UniformGrid Columns="1" MinHeight="250">
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Up
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="UpCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Down
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="DownCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Left
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="LeftCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Right
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="RightCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Action
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="ActionCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Detective Mode
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="DetectiveModeCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Escape
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="EscapeCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Back
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="BackCB"></ComboBox>
+                    </UniformGrid>
+                    <UniformGrid Columns="2" Margin="0, 5, 0, 5">
+                        <TextBlock Margin="5, 0, 5, 0" VerticalAlignment="Center">
+                        Space
+                        </TextBlock>
+                        <ComboBox Margin="5, 0, 5, 0" VerticalAlignment="Center" x:Name="SpaceCB"></ComboBox>
+                    </UniformGrid>
+                </UniformGrid>
+            </ScrollViewer>
+            <UniformGrid Columns="2" Grid.Row="1" Margin="10">
+                <Button Margin="5, 0, 5, 0" Click="OnApplyClick">Apply</Button>
+                <Button Margin="5, 0, 5, 0" Click="OnCancelClick">Cancel</Button>
+            </UniformGrid>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="WPFGame.UI.BattleScreen.LifeStats.LifeStatsOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFGame.UI.BattleScreen.LifeStats"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300">
+    <Grid Background="White" Margin="10, 10">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <UniformGrid Columns="1">
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Name:</TextBlock>
+                    <TextBlock x:Name="TextBlockName" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Race:</TextBlock>
+                    <TextBlock x:Name="TextBlockRace" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Gender:</TextBlock>
+                    <TextBlock x:Name="TextBlockGender" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Battle class:</TextBlock>
+                    <TextBlock x:Name="TextBlockBattleClass" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Strength:</TextBlock>
+                    <TextBlock x:Name="TextBlockStrength" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Agility:</TextBlock>
+                    <TextBlock x:Name="TextBlockAgility" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Intelligence:</TextBlock>
+                    <TextBlock x:Name="TextBlockIntelligence" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >Stamina:</TextBlock>
+                    <ProgressBar x:Name="StaminaBar" Foreground="Green" Margin="10, 10">
+                    </ProgressBar>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center">HP:</TextBlock>
+                    <ProgressBar x:Name="HPBar"  Foreground="Red" Margin="10, 10"></ProgressBar>
+                </UniformGrid>                
+                <UniformGrid Columns="2">
+                    <TextBlock VerticalAlignment="Center" >MP:</TextBlock>
+                    <ProgressBar x:Name="MPBar"  Foreground="Blue" Margin="10, 10"></ProgressBar>
+                </UniformGrid>
+                <UniformGrid Columns="2">
+                    <TextBlock  VerticalAlignment="Center" >CurrentLevel:</TextBlock>
+                    <TextBlock x:Name="TextBlockCurrentLevel" VerticalAlignment="Center" HorizontalAlignment="Center">N/A</TextBlock>
+                </UniformGrid>
+            </UniformGrid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,59 +1,57 @@
-﻿#define TRACE
-using Engine.Models.GameObjects;
-using Engine.Models.Scenes;
+﻿using Engine.Models.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace Engine.Models.Cameras
 {
     public class Camera : ICamera
     {
-        private Vector2 _position;
-        private float _width;
-        private float _height;
-        private List<IGameObject> _visibleObjects;
-        private float _xOffset;
-        private float _yOffset;
-        public Vector2 Position { get => _position; set => _position = value; }
-        public float Width { get => _width; set => _width = value; }
-        public float Height { get => _height; set => _height = value; }
-        public List<IGameObject> VisibleObjects { get => _visibleObjects; set => _visibleObjects = value; }
-        public float XOffset { get => _xOffset; set => _xOffset = value; }
-        public float YOffset { get => _yOffset; set => _yOffset = value; }
+        private float _halfWidth;
+        private float _halfHeight;
+        private float _sizeMultiplier;
 
-        public Camera()
+        public float Width { get; set; }
+        public float Height { get; set; }
+        public List<IGraphicsComponent> VisibleObjects { get; set; }
+        public List<ITransformComponent> VisibleTransforms { get; set; }
+        public float XOffset { get; set; }
+        public float YOffset { get; set; }
+        public ITransformComponent FocusPoint { get; set; }
+
+
+        public Camera(float width, float height)
         {
-            VisibleObjects = new List<IGameObject>();
-            // This should be passed as a value in the future
-            // gonna be based on the size of the window
-            Width = 400;
-            Height = 300;
-            XOffset = 350;
-            YOffset = 250;
+            VisibleObjects = new List<IGraphicsComponent>();
+            VisibleTransforms = new List<ITransformComponent>();
+
+            UpdateSize(width, height);
         }
 
-        /// <summary>
-        /// Updates the list of objects visible by this camera
-        /// </summary>
-        /// <param name="focusPoint"></param>
-        /// <param name="context"></param>
-        public void UpdatePosition(IGameObject focusPoint, IScene context)
+        public void UpdateSize(float width, float height)
         {
-            float halfWidth = Width / 2;
-            float halfHeight = Height / 2;
+            Width = width;
+            Height = height;
+            _halfWidth = Width / 2;
+            _halfHeight = Height / 2;
+            _sizeMultiplier = (int)Math.Ceiling(width / 16f);
+        }
 
-            // visible on the screen to the left and to the right of the focus point
-            float minX = focusPoint.Position.X - halfWidth;
-            float maxX = focusPoint.Position.X + halfWidth;
+        public void UpdateFocusPoint(ITransformComponent focusPoint)
+        {
+            FocusPoint = focusPoint;
+        }
 
-            // visible on the screen up and down of the focus point
-            float minY = focusPoint.Position.Y - halfHeight;
-            float maxY = focusPoint.Position.Y + halfHeight;
+        public void UpdatePosition(Dictionary<ITransformComponent, IGraphicsComponent> renderables)
+        {
+            Dictionary<ITransformComponent, IGraphicsComponent> keyValuePairs = 
+                renderables.OrderBy(x => x.Key.ZIndex).ToDictionary(x => x.Key, x => x.Value);
 
-            // Check boundary of x axis and then of y axis on reduced set of objects
-            VisibleObjects = context.SceneElements.Where(x => x.Position.X + x.Width > minX && x.Position.X - x.Width < maxX && x != focusPoint)
-                .Where(y => y.Position.Y + y.Height > minY && y.Position.Y - y.Height < maxY).ToList();
+            VisibleObjects = keyValuePairs.Values.ToList();
+            VisibleTransforms = keyValuePairs.Keys.ToList();
+
+            XOffset = Math.Abs(_halfWidth - ((FocusPoint.ScaleX * _sizeMultiplier) / 2f));
+            YOffset = Math.Abs(_halfHeight - ((FocusPoint.ScaleY * _sizeMultiplier) / 2f));
         }
     }
 }

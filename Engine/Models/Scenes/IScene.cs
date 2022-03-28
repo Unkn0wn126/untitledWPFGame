@@ -1,16 +1,26 @@
-﻿using Engine.Models.Cameras;
-using Engine.Models.GameObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Engine.Coordinates;
+using Engine.EntityManagers;
+using Engine.Models.Cameras;
+using Engine.Models.Factories.Scenes;
 
 namespace Engine.Models.Scenes
 {
+    public delegate void SceneChange();
+
+    /// <summary>
+    /// A container for entity manager
+    /// basically a location with its own context
+    /// </summary>
     public interface IScene
     {
-        public List<IGameObject> SceneElements { get; set; }
-        public IGameObject PlayerObject { get; set; }
-        public ICamera SceneCamera { get; set; }
-        public void Update();
+        SceneType SceneType { get; set; }
+        uint PlayerEntity { get; set; }
+        int NumOfObjectsInCell { get; set; }
+        int BaseObjectSize { get; set; }
+        int NumOfEntitiesOnX { get; set; }
+        int NumOfEntitiesOnY { get; set; }
+        ISpatialIndex Coordinates { get; set; }
+        IEntityManager EntityManager { get; set; }
+        ICamera SceneCamera { get; set; }
     }
 }
